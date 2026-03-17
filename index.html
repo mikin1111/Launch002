@@ -2932,6 +2932,11 @@
         });
       }, []);
 
+      const handleTabChange = useCallback((tab) => {
+        setActiveTab(tab);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, []);
+
       const isLaunchHome = activeTab === 0;
       const isCandyDrop = activeTab === 1;
       const isLaunchpool = activeTab === 2;
@@ -2942,7 +2947,7 @@
       return (
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
           <Header isDark={isDark} onToggleTheme={toggleTheme} />
-          <SubNav activeTab={activeTab} onTabChange={setActiveTab} />
+          <SubNav activeTab={activeTab} onTabChange={handleTabChange} />
           {isLaunchHome ? (
             <>
               <HeroSection isDark={isDark} />
