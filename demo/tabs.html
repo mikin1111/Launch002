@@ -1,0 +1,2188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tabs 组件规范预览 · Tabs Guidelines</title>
+  <style>
+    /*
+     * Tabs 组件规范预览
+     * 字体规范：Guidelines/Font.md（字阶 B7 500 14px / S7 600 16px）
+     * 颜色规范：Guidelines/Color.md（Token 对应见 Tabs.md §9.2）
+     * 优先使用 Color.md Token，未加载时回退到本地 Fallback
+     */
+    :root {
+      /* Text：Color.md §1 */
+      --color-text-text-primary: var(--text-primary, #070808);
+      --color-text-text-secondary: var(--text-secondary, #84888C);
+      --color-text-text-tertiary: var(--text-tertiary, #A0A3A7);
+      --color-text-text-disable: var(--text-disabled, #C4C7CA);
+      /* Line：Color.md §3 */
+      --color-line-border-subtle: var(--line-border-subtle, #f2f3f4);
+      /* Background：Color.md §2 */
+      --color-bg-page: var(--bg-secondary, #f5f5f5);
+      --color-bg-surface: var(--bg-primary, #ffffff);
+      --color-bg-primary: var(--bg-primary, #ffffff);
+      --color-bg-tertiary: var(--bg-tertiary, #F2F3F4);
+      --color-border-strong: rgba(23, 34, 75, 0.08);
+      /* Layer / Cmpt：Color.md §7 §8 */
+      --color-cmpt-input: var(--cmpt-input, #F5F6F7);
+      --color-cmpt-button-soft: var(--cmpt-button-soft, #F5F6F7);
+      --color-layer-active: var(--layer-active, #ffffff);
+      --font-tabs: Switzer, -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI", sans-serif;
+      --tabs-gap: 16px;
+      --tabs-underline-height: 3px;
+      --tabs-underline-width: 16px;
+      --tabs-transition: 100ms ease-out;
+      /* Function：Color.md §5 §9 */
+      --color-function-hot: var(--function-hot, #F7594B);
+      --color-function-tag-primary: var(--function-tag-primary, #A7F757);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 48px 24px 80px;
+      background: var(--color-bg-page);
+      color: var(--color-text-text-primary);
+      font-family: var(--font-tabs);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page-title {
+      font-weight: 600;
+      font-size: 32px;
+      line-height: 1.3;
+      margin: 0 0 8px;
+    }
+
+    .page-meta {
+      font-size: 14px;
+      color: var(--color-text-text-secondary);
+      margin-bottom: 40px;
+    }
+
+    .section {
+      background: var(--color-bg-surface);
+      border-radius: 16px;
+      padding: 32px 40px;
+      margin-bottom: 24px;
+      border: 1px solid var(--color-border-strong);
+    }
+
+    .section-title {
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 1.3;
+      margin: 0 0 8px;
+    }
+
+    .section-desc {
+      font-size: 13px;
+      color: var(--color-text-text-secondary);
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    /* ----- Tabs 基础结构（规范） ----- */
+    .tabs {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      width: 100%;
+    }
+
+    .tabs__list {
+      display: flex;
+      align-items: stretch;
+      justify-content: flex-start;
+      gap: var(--tabs-gap);
+      margin-bottom: -1px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .tabs__item {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-family: var(--font-tabs);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.3;
+      letter-spacing: 0;
+      color: var(--color-text-text-secondary);
+      background: transparent;
+      border: none;
+      padding: 0;
+      box-sizing: border-box;
+      transition: color var(--tabs-transition);
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      text-align: center;
+      height: 40px;
+      min-height: 40px;
+    }
+
+    .tabs__item:hover:not(.tabs__item--active):not(.tabs__item--disabled) {
+      color: var(--color-text-text-tertiary);
+    }
+
+    /* 文案区：所有 Tab 统一高度（40px 档为 37px），保证三文案垂直对齐且与底部分割线间距一致 */
+    .tabs__item-inner {
+      flex: 0 0 37px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+    }
+
+    /* 无 padding-bottom，文案区 37px 高度直达底边，短横线贴底与分割线紧贴 */
+
+    .tabs__item--active {
+      color: var(--color-text-text-primary);
+    }
+
+    .tabs__item--active .tabs__underline {
+      opacity: 1;
+    }
+
+    .tabs__item--disabled {
+      color: var(--color-text-text-disable);
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .tabs__item:focus-visible {
+      outline: 2px solid var(--color-text-text-primary);
+      outline-offset: 2px;
+    }
+
+    .tabs__underline {
+      width: var(--tabs-underline-width);
+      height: var(--tabs-underline-height);
+      margin-top: 0;
+      margin-bottom: 0;
+      flex-shrink: 0;
+      background: var(--color-text-text-primary);
+      border-radius: 1px;
+      opacity: 0;
+      transition: opacity var(--tabs-transition);
+      align-self: center;
+    }
+
+    .tabs__divider {
+      height: 1px;
+      width: 100%;
+      background: var(--color-line-border-subtle);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* 无底部分割线的 Tabs */
+    .tabs--no-divider .tabs__divider {
+      display: none;
+    }
+
+    /* ----- 尺寸变体：行高 56/48/44/40/28px，字号 24/18/16/14/12px，选项无左右间距，选项间净间距 24/20/16/16/12px ----- */
+    .tabs.tabs--size-56 .tabs__list { min-height: 56px; align-items: stretch; gap: 24px; }
+    .tabs.tabs--size-56 .tabs__item {
+      height: 56px !important;
+      min-height: 56px !important;
+      padding: 0;
+      font-size: 24px;
+      font-weight: 600;
+    }
+    .tabs.tabs--size-56 .tabs__item-inner { flex: 0 0 53px; min-height: 53px; }
+
+    .tabs.tabs--size-48 .tabs__list { min-height: 48px; align-items: stretch; gap: 20px; }
+    .tabs.tabs--size-48 .tabs__item {
+      height: 48px !important;
+      min-height: 48px !important;
+      padding: 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .tabs.tabs--size-48 .tabs__item-inner { flex: 0 0 45px; min-height: 45px; }
+
+    .tabs.tabs--size-44 .tabs__list { min-height: 44px; align-items: stretch; gap: 16px; }
+    .tabs.tabs--size-44 .tabs__item {
+      height: 44px !important;
+      min-height: 44px !important;
+      padding: 0;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .tabs.tabs--size-44 .tabs__item-inner { flex: 0 0 41px; min-height: 41px; }
+
+    .tabs.tabs--size-40 .tabs__list { min-height: 40px; align-items: stretch; gap: 16px; }
+    .tabs.tabs--size-40 .tabs__item {
+      height: 40px !important;
+      min-height: 40px !important;
+      padding: 0;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .tabs.tabs--size-40 .tabs__item-inner { flex: 0 0 37px; min-height: 37px; }
+
+    .tabs.tabs--size-32 .tabs__list { min-height: 32px; align-items: stretch; gap: 16px; }
+    .tabs.tabs--size-32 .tabs__item {
+      height: 32px !important;
+      min-height: 32px !important;
+      padding: 0;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .tabs.tabs--size-32 .tabs__item-inner { flex: 0 0 29px; min-height: 29px; }
+
+    .tabs.tabs--size-28 .tabs__list { min-height: 28px; align-items: stretch; gap: 12px; }
+    .tabs.tabs--size-28 .tabs__item {
+      height: 28px !important;
+      min-height: 28px !important;
+      padding: 0;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .tabs.tabs--size-28 .tabs__item-inner { flex: 0 0 25px; min-height: 25px; }
+
+    /* ----- Text 类型（无下划线，文案区占满以垂直居中） ----- */
+    .tabs--text .tabs__item--active .tabs__underline {
+      display: none;
+    }
+    .tabs--text .tabs__item-inner {
+      flex: 1;
+    }
+    .tabs--text .tabs__item {
+      padding-bottom: 0;
+    }
+
+    /* ----- 文案与角标；总高 40px，文案区 37px，底部 3px 给短横线贴分割线 ----- */
+    /* text-block 总高 = 尺寸（默认 40px），文案区 = 尺寸-3px，下划线占底 3px 紧贴灰色分割线 */
+    .tabs__text-block {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      flex: 0 1 auto;
+      width: auto;
+      height: 40px;
+      min-height: 40px;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+    .tabs__text-block-inner {
+      flex: 0 0 37px;
+      min-height: 37px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tabs__text-block .tabs__underline {
+      flex: 0 0 3px;
+      flex-shrink: 0;
+      margin-bottom: 0;
+      align-self: center;
+    }
+    .tabs__item--active .tabs__text-block .tabs__underline {
+      opacity: 1;
+    }
+    .tabs__item-inner:has(.tabs__text-block) {
+      display: inline-flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 6px;
+      flex: 0 0 40px;
+      min-height: 40px;
+    }
+    /* 带 text-block 的 item-inner 占满尺寸高度（56/48/44/40/28px） */
+    .tabs.tabs--size-56 .tabs__item-inner:has(.tabs__text-block) { flex: 0 0 56px; min-height: 56px; }
+    .tabs.tabs--size-48 .tabs__item-inner:has(.tabs__text-block) { flex: 0 0 48px; min-height: 48px; }
+    .tabs.tabs--size-44 .tabs__item-inner:has(.tabs__text-block) { flex: 0 0 44px; min-height: 44px; }
+    .tabs.tabs--size-40 .tabs__item-inner:has(.tabs__text-block) { flex: 0 0 40px; min-height: 40px; }
+    .tabs.tabs--size-28 .tabs__item-inner:has(.tabs__text-block) { flex: 0 0 28px; min-height: 28px; }
+    /* text-block 总高 = 尺寸，文案区 = 尺寸-3px，下划线占底 3px */
+    .tabs.tabs--size-56 .tabs__text-block { height: 56px; min-height: 56px; }
+    .tabs.tabs--size-56 .tabs__text-block-inner { flex: 0 0 53px; min-height: 53px; }
+    .tabs.tabs--size-48 .tabs__text-block { height: 48px; min-height: 48px; }
+    .tabs.tabs--size-48 .tabs__text-block-inner { flex: 0 0 45px; min-height: 45px; }
+    .tabs.tabs--size-44 .tabs__text-block { height: 44px; min-height: 44px; }
+    .tabs.tabs--size-44 .tabs__text-block-inner { flex: 0 0 41px; min-height: 41px; }
+    .tabs.tabs--size-40 .tabs__text-block { height: 40px; min-height: 40px; }
+    .tabs.tabs--size-40 .tabs__text-block-inner { flex: 0 0 37px; min-height: 37px; }
+    .tabs.tabs--size-28 .tabs__text-block { height: 28px; min-height: 28px; }
+    .tabs.tabs--size-28 .tabs__text-block-inner { flex: 0 0 25px; min-height: 25px; }
+    .tabs__label {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-align: center;
+    }
+    .tabs__tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 20px;
+      height: 20px;
+      padding: 0 4px;
+      border-radius: 2px;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1;
+      box-sizing: border-box;
+    }
+    .tabs__tag--label {
+      background: #A7F757;
+      color: #070808;
+    }
+    .tabs__icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+    .tabs__icon img {
+      width: 14px;
+      height: 14px;
+      display: block;
+    }
+    .tabs__item-inner:has(.tabs__tag) {
+      gap: 4px;
+    }
+    .tabs__item-inner:has(.tabs__icon) {
+      gap: 4px;
+    }
+    .tabs__arrow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tabs__arrow:hover {
+      opacity: 0.8;
+    }
+    .tabs__arrow img {
+      width: 14px;
+      height: 14px;
+      display: block;
+    }
+    .tabs__arrow .tabs__arrow-icon--down {
+      display: none;
+    }
+    .tabs__arrow--down .tabs__arrow-icon--up {
+      display: none;
+    }
+    .tabs__arrow--down .tabs__arrow-icon--down {
+      display: block;
+    }
+    .tabs__item-inner:has(.tabs__arrow) {
+      gap: 4px;
+    }
+
+    /* 带箭头的 Tab 下拉框 */
+    .tabs__item-with-dropdown {
+      position: relative;
+      display: inline-flex;
+    }
+    .tabs__dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      margin-top: 2px;
+      min-width: 120px;
+      max-height: 200px;
+      overflow-y: auto;
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-line-border-subtle);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      z-index: 100;
+      padding: 4px;
+      scrollbar-width: thin;
+      opacity: 0;
+      transform: translateY(-6px);
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 150ms ease-out, transform 150ms ease-out, visibility 150ms;
+    }
+    .tabs__dropdown.is-open {
+      opacity: 1;
+      transform: translateY(0);
+      visibility: visible;
+      pointer-events: auto;
+    }
+    .tabs__dropdown::-webkit-scrollbar {
+      width: 6px;
+    }
+    .tabs__dropdown::-webkit-scrollbar-thumb {
+      background: rgba(0,0,0,0.2);
+      border-radius: 3px;
+    }
+    .tabs__dropdown-item {
+      padding: 8px 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-text-text-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      transition: background 100ms ease-out;
+      border-radius: 4px;
+    }
+    .tabs__dropdown-item:hover {
+      background: #F5F6F7;
+    }
+    .tabs__dropdown-item--selected .tabs__dropdown-icon {
+      display: block;
+    }
+    .tabs__dropdown-icon {
+      display: none;
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+    .tabs__arrow {
+      transition: transform 150ms ease-out;
+    }
+    .tabs__arrow.is-open.tabs__arrow--down .tabs__arrow-icon--up { display: block; }
+    .tabs__arrow.is-open.tabs__arrow--down .tabs__arrow-icon--down { display: none; }
+
+    /* ----- Tabs Capsules 类型（胶囊式，依据 Figma 21644:18412） ----- */
+    .tabs--capsules {
+      display: inline-flex;
+      align-items: center;
+      background: transparent;
+      border: none;
+    }
+    .tabs--capsules .tabs__list {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 0;
+    }
+    .tabs--capsules .tabs__divider { display: none; }
+    .tabs--capsules .tabs__underline { display: none; }
+    .tabs--capsules .tabs__item {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-family: var(--font-tabs);
+      color: var(--color-text-text-secondary);
+      background: transparent;
+      border: none;
+      padding: 0;
+      transition: background var(--tabs-transition), color var(--tabs-transition);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tabs--capsules .tabs__item-inner { flex: 0 0 auto; }
+    .tabs--capsules .tabs__item--active {
+      background: var(--color-cmpt-button-soft);
+      color: var(--color-text-text-primary);
+    }
+    .tabs--capsules .tabs__item:hover:not(.tabs__item--active):not(.tabs__item--disabled) {
+      color: var(--color-text-text-tertiary);
+    }
+    .tabs--capsules.tabs--capsules-40 .tabs__item { height: 40px; min-height: 40px; padding: 0 20px; border-radius: 8px; font-size: 14px; font-weight: 500; }
+    .tabs--capsules.tabs--capsules-36 .tabs__item { height: 36px; min-height: 36px; padding: 0 16px; border-radius: 6px; font-size: 14px; font-weight: 500; }
+    .tabs--capsules.tabs--capsules-32 .tabs__item { height: 32px; min-height: 32px; padding: 0 12px; border-radius: 6px; font-size: 14px; font-weight: 500; }
+    .tabs--capsules.tabs--capsules-28 .tabs__item { height: 28px; min-height: 28px; padding: 0 12px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+
+    /* ----- Tabs Card 类型（卡片式，依据 Figma TabsCardV5-web） ----- */
+    .tabs--card {
+      width: fit-content;
+      align-self: flex-start;
+      background: var(--color-cmpt-input);
+      border-radius: 8px;
+      padding: 4px;
+      border: none;
+    }
+    .tabs--card .tabs__list {
+      gap: 0;
+      margin-bottom: 0;
+      background: transparent;
+    }
+    .tabs--card .tabs__divider {
+      display: none;
+    }
+    .tabs--card .tabs__item {
+      height: 32px;
+      min-height: 32px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      color: var(--color-text-text-secondary);
+      transition: background var(--tabs-transition), color var(--tabs-transition);
+    }
+    .tabs--card .tabs__item-inner {
+      flex: 0 0 auto;
+      min-height: 0;
+    }
+    .tabs--card .tabs__underline {
+      display: none;
+    }
+    .tabs--card .tabs__item--active {
+      background: var(--color-layer-active);
+      color: var(--color-text-text-primary);
+    }
+    .tabs--card .tabs__item:hover:not(.tabs__item--active):not(.tabs__item--disabled) {
+      color: var(--color-text-text-tertiary);
+    }
+    /* 卡片 Tab 尺寸变体（Figma 7895:11391） */
+    .tabs--card.tabs--card-size-44 {
+      padding: 4px;
+      border-radius: 10px;
+    }
+    .tabs--card.tabs--card-size-44 .tabs__item {
+      height: 48px;
+      min-height: 48px;
+      padding: 8px 32px;
+      border-radius: 8px;
+      font-size: 20px;
+    }
+    .tabs--card.tabs--card-size-40 {
+      padding: 4px;
+      border-radius: 8px;
+    }
+    .tabs--card.tabs--card-size-40 .tabs__item {
+      height: 32px;
+      min-height: 32px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .tabs--card.tabs--card-size-32 {
+      padding: 4px;
+      border-radius: 8px;
+    }
+    .tabs--card.tabs--card-size-32 .tabs__item {
+      height: 32px;
+      min-height: 32px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .tabs--card.tabs--card-size-28 {
+      padding: 2px;
+      border-radius: 6px;
+    }
+    .tabs--card.tabs--card-size-28 .tabs__item {
+      height: 28px;
+      min-height: 28px;
+      padding: 5px 16px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .tabs--card.tabs--card-size-24 {
+      padding: 2px;
+      border-radius: 6px;
+    }
+    .tabs--card.tabs--card-size-24 .tabs__item {
+      height: 24px;
+      min-height: 24px;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .tabs--card .tabs__item--disabled {
+      color: var(--color-text-text-disable);
+      cursor: default;
+      pointer-events: none;
+    }
+    .tabs--card .tabs__item--disabled.tabs__item--active {
+      background: var(--color-layer-active);
+      color: var(--color-text-text-disable);
+    }
+    /* 未选中态：无背景，与容器融合 */
+    .tabs--card-states .tabs__item:not(.tabs__item--active):not(.tabs__item--disabled) {
+      background: transparent;
+    }
+    /* 态3：未选中 + Hover 预览（模拟悬停效果） */
+    .tabs--card-states .tabs__item.tabs__item--hover-preview {
+      background: var(--color-layer-active);
+      color: var(--color-text-text-secondary);
+    }
+
+    /* 卡片 Tab 五态展示（Figma 7900:16826） */
+    .tabs-card-states {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px 48px;
+      align-items: flex-start;
+    }
+    .tabs-card-state-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .tabs-card-state-item .tabs--card {
+      margin: 0;
+    }
+    .tabs-card-state-num {
+      min-width: 24px;
+      height: 24px;
+      padding: 0 6px;
+      background: var(--color-text-text-primary);
+      color: #fff;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    /* ----- H5 Capsules（对应 Web Capsules-32/28，Figma 21644:18412） ----- */
+    .tabs--capsules-h5 {
+      width: 100%;
+      max-width: 375px;
+    }
+    .tabs--capsules-h5 .tabs__list {
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      padding: 4px 16px 4px 16px;
+      gap: 4px;
+      margin-bottom: -1px;
+    }
+    .tabs--capsules-h5 .tabs__divider {
+      display: block;
+    }
+    .tabs--capsules-h5 .tabs__list::-webkit-scrollbar { display: none; }
+    .tabs--capsules-h5 .tabs__item { flex-shrink: 0; }
+    .tabs--capsules-h5.tabs--capsules-h5-32 .tabs__item { height: 24px; min-height: 24px; padding: 0 10px; border-radius: 4px; font-size: 14px; font-weight: 500; }
+    .tabs--capsules-h5.tabs--capsules-h5-28 .tabs__item { height: 24px; min-height: 24px; padding: 0 10px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+
+    /* ----- H5 适配（用于 Web/H5 映射对比） ----- */
+    /* TabsV5-H5 基础：375px 宽，8px 内边距，横向滚动 */
+    .tabs--h5 {
+      width: 100%;
+      max-width: 375px;
+    }
+    .tabs--h5 .tabs__list {
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      padding-left: 8px;
+      margin-bottom: -1px;
+    }
+    .tabs--h5 .tabs__list::-webkit-scrollbar {
+      display: none;
+    }
+    .tabs--h5 .tabs__item {
+      padding: 0 8px;
+      flex-shrink: 0;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    /* H5 短横线紧贴灰色分割线：参考 Web，item-inner 占 (height-3px)，underline 占底 3px */
+    .tabs--h5 .tabs__item-inner {
+      flex: 0 0 auto;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tabs--h5 .tabs__underline {
+      width: 16px;
+      height: 3px;
+      margin-top: 0;
+      margin-bottom: 0;
+      flex-shrink: 0;
+    }
+    /* H5 尺寸变体：Web Primary 56/48/44/40/32 → H5 对应尺寸（Figma 7642:89107） */
+    .tabs--h5.tabs--h5-size-56 .tabs__item { height: 44px; min-height: 44px; font-size: 18px; font-weight: 600; }
+    .tabs--h5.tabs--h5-size-56 .tabs__item-inner { flex: 0 0 41px; min-height: 41px; }
+    .tabs--h5.tabs--h5-size-48 .tabs__item { height: 44px; min-height: 44px; font-size: 16px; font-weight: 600; }
+    .tabs--h5.tabs--h5-size-48 .tabs__item-inner { flex: 0 0 41px; min-height: 41px; }
+    .tabs--h5.tabs--h5-size-44 .tabs__item { height: 44px; min-height: 44px; font-size: 16px; font-weight: 500; }
+    .tabs--h5.tabs--h5-size-44 .tabs__item-inner { flex: 0 0 41px; min-height: 41px; }
+    .tabs--h5.tabs--h5-size-40 .tabs__item { height: 40px; min-height: 40px; font-size: 14px; font-weight: 500; }
+    .tabs--h5.tabs--h5-size-40 .tabs__item-inner { flex: 0 0 37px; min-height: 37px; }
+    .tabs--h5.tabs--h5-size-32 .tabs__item { height: 40px; min-height: 40px; font-size: 14px; font-weight: 500; }
+    .tabs--h5.tabs--h5-size-32 .tabs__item-inner { flex: 0 0 37px; min-height: 37px; }
+    /* Web 与 H5 尺寸对应表格（7642:89107） */
+    .web-h5-mapping {
+      border: 1px solid var(--color-line-border-subtle);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .web-h5-mapping__header,
+    .web-h5-mapping__row {
+      display: grid;
+      grid-template-columns: 100px 1fr 1fr;
+      gap: 16px;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--color-line-border-subtle);
+    }
+    .web-h5-mapping__row:last-child {
+      border-bottom: none;
+    }
+    .web-h5-mapping__header {
+      background: rgba(0,0,0,0.02);
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .web-h5-mapping__label {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--color-text-text-primary);
+    }
+    .web-h5-mapping__col {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--color-text-text-secondary);
+    }
+    .web-h5-mapping__demo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 60px;
+    }
+    .web-h5-mapping__demo.web-h5-mapping__h5 {
+      padding: 8px;
+      background: transparent;
+      border-radius: 8px;
+      max-width: 375px;
+      margin: 0 auto;
+    }
+    .web-h5-mapping__demo.web-h5-mapping__empty {
+      min-height: 60px;
+      background: transparent;
+    }
+    .web-h5-mapping__demo .tabs {
+      margin: 0;
+    }
+    .web-h5-mapping__demo .tabs__divider {
+      background: var(--color-line-border-subtle);
+    }
+
+    /* TabsCard V5-H5 基础：375px 宽，横向滚动 */
+    .tabs--card-h5 {
+      width: 100%;
+      max-width: 375px;
+      overflow: hidden;
+    }
+    .tabs--card-h5 .tabs__list {
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      padding: 0 8px;
+      gap: 0;
+    }
+    .tabs--card-h5 .tabs__list::-webkit-scrollbar {
+      display: none;
+    }
+    .tabs--card-h5 .tabs__item {
+      flex-shrink: 0;
+      font-weight: 500;
+    }
+    /* H5 卡片 Tab 尺寸变体（Figma 21644:18412 Tabscard Web/H5 映射） */
+    .tabs--card-h5.tabs--card-h5-size-56 {
+      padding: 2px;
+      border-radius: 6px;
+    }
+    .tabs--card-h5.tabs--card-h5-size-56 .tabs__list {
+      padding: 0;
+    }
+    .tabs--card-h5.tabs--card-h5-size-56 .tabs__item {
+      height: 28px;
+      min-height: 28px;
+      padding: 0 16px;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    .tabs--card-h5.tabs--card-h5-size-40 {
+      padding: 4px;
+      border-radius: 8px;
+    }
+    .tabs--card-h5.tabs--card-h5-size-40 .tabs__item {
+      height: 32px;
+      min-height: 32px;
+      padding: 0 16px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .tabs--card-h5.tabs--card-h5-size-32 {
+      padding: 2px;
+      border-radius: 6px;
+    }
+    .tabs--card-h5.tabs--card-h5-size-32 .tabs__list {
+      padding: 0;
+    }
+    .tabs--card-h5.tabs--card-h5-size-32 .tabs__item {
+      height: 28px;
+      min-height: 28px;
+      padding: 0 16px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .tabs--card-h5.tabs--card-h5-size-28 {
+      padding: 2px;
+      border-radius: 6px;
+    }
+    .tabs--card-h5.tabs--card-h5-size-28 .tabs__list {
+      padding: 0;
+    }
+    .tabs--card-h5.tabs--card-h5-size-28 .tabs__item {
+      height: 24px;
+      min-height: 24px;
+      padding: 0 10px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    /* 卡片 Tab 尺寸展示 */
+    .tabs-card-sizes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px 48px;
+      align-items: flex-end;
+    }
+    .tabs-card-size-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .tabs-card-size-item .tabs--card {
+      margin: 0;
+    }
+
+    /* ----- 横向滚动 ----- */
+    .tabs--scroll .tabs__list {
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .tabs--scroll .tabs__list::-webkit-scrollbar {
+      display: none;
+    }
+    .tabs--scroll .tabs__item {
+      flex-shrink: 0;
+    }
+
+    /* ----- Tabs Menu（Figma 7719:54442）----- */
+    .tabs-menu {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+    .tabs-menu__inner {
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      margin-bottom: -1px;
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+      width: 100%;
+    }
+    /* 底部分割线通栏：100vw 水平居中于屏幕 */
+    .tabs-menu .tabs__divider {
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+    }
+    .tabs-menu__left {
+      flex: 1 0 auto;
+      display: flex;
+      align-items: stretch;
+      gap: 24px;
+      min-width: 0;
+    }
+    .tabs-menu__right {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    /* Tabs Menu 左侧 Tab：44px 高，16px 字号，600 字重，24px 间距；短横线逻辑与 Tabs 一致，紧贴底部分割线 */
+    .tabs--menu .tabs__item:hover:not(.tabs__item--active):not(.tabs__item--disabled),
+    .tabs--menu .tabs__item:active:not(.tabs__item--active):not(.tabs__item--disabled) {
+      color: var(--color-text-text-primary);
+    }
+    /* 未选中 hover/active：icon 颜色跟随文字变为黑色 */
+    .tabs--menu .tabs__item:hover:not(.tabs__item--active):not(.tabs__item--disabled) .tabs-menu__prefix-icon,
+    .tabs--menu .tabs__item:active:not(.tabs__item--active):not(.tabs__item--disabled) .tabs-menu__prefix-icon,
+    .tabs--menu .tabs__item:hover:not(.tabs__item--active):not(.tabs__item--disabled) .tabs-menu__left-hot-icon,
+    .tabs--menu .tabs__item:active:not(.tabs__item--active):not(.tabs__item--disabled) .tabs-menu__left-hot-icon {
+      filter: none;
+    }
+    .tabs--menu .tabs__list {
+      gap: 24px;
+      margin-bottom: -1px;
+    }
+    .tabs--menu .tabs__item {
+      height: 44px;
+      min-height: 44px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .tabs--menu .tabs__item-inner {
+      flex: 0 0 41px;
+      min-height: 41px;
+    }
+    /* Tabs Menu 带 Prefix Icon：item-inner 为 flex row，20px 图标，6px 间距；短横线占底 3px 紧贴分割线 */
+    .tabs__item-inner--row {
+      display: inline-flex !important;
+      flex-direction: row !important;
+      align-items: center;
+      gap: 6px;
+      flex: 0 0 auto !important;
+      min-height: 44px !important;
+    }
+    .tabs--menu .tabs__item-inner--row .tabs__text-block {
+      height: 44px;
+      min-height: 44px;
+    }
+    .tabs--menu .tabs__item-inner--row .tabs__text-block-inner {
+      flex: 0 0 41px;
+      min-height: 41px;
+    }
+    .tabs-menu__prefix-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    /* 未选中：Prefix Icon 与文字颜色统一为二级色 */
+    .tabs--menu .tabs__item:not(.tabs__item--active) .tabs-menu__prefix-icon {
+      filter: brightness(0) saturate(100%) invert(60%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(95%) contrast(90%);
+    }
+    /* Right Menu 项：14px 字号，500 字重，20px 图标，6px 间距 */
+    .tabs-menu__right-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 44px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-text-text-primary);
+      background: transparent;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      font-family: var(--font-tabs);
+      line-height: 1.3;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .tabs-menu__right-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    .tabs-menu__right-arrow {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      margin-left: 2px;
+    }
+    /* 右侧变量：带箭头的 Right Menu 项，点击切换上下箭头（Figma 7719:54515） */
+    .tabs-menu-right-variants {
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+    .tabs-menu-right-variants__row {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .tabs-menu-right-variants__label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-text-text-secondary);
+    }
+    .tabs-menu-right-variants__demo {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      align-items: center;
+    }
+    .tabs-menu__right-item-arrow {
+      display: inline-flex;
+      align-items: center;
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      margin-left: 2px;
+      position: relative;
+    }
+    .tabs-menu__right-item-arrow .tabs-menu__right-arrow-icon--up,
+    .tabs-menu__right-item-arrow .tabs-menu__right-arrow-icon--down {
+      position: absolute;
+      inset: 0;
+      width: 14px;
+      height: 14px;
+    }
+    .tabs-menu__right-item-arrow .tabs-menu__right-arrow-icon--up { display: none; }
+    .tabs-menu__right-item-arrow .tabs-menu__right-arrow-icon--down { display: block; }
+    .tabs-menu__right-item-arrow.tabs-menu__right-item-arrow--up .tabs-menu__right-arrow-icon--up { display: block; }
+    .tabs-menu__right-item-arrow.tabs-menu__right-item-arrow--up .tabs-menu__right-arrow-icon--down { display: none; }
+    /* 左侧变量：Badge Dot / Hot Icon / Badge New（Figma 7777:38363） */
+    .tabs-menu-left-variants {
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+    .tabs-menu-left-variants__row {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .tabs-menu-left-variants__label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-text-text-secondary);
+    }
+    /* Badge Dot：21px 高容器，与左侧文案垂直居中对齐；文案与红点无间距，icon 与文案保持 6px */
+    .tabs-menu__left-badge-wrap {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      height: 21px;
+      flex-shrink: 0;
+      margin-left: -6px;
+    }
+    .tabs-menu__left-badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 99px;
+      background: var(--color-function-hot, #F7594B);
+      border: 1px solid var(--color-bg-primary, #fff);
+      flex-shrink: 0;
+    }
+    .tabs-menu__left-hot-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      margin-left: 2px;
+    }
+    /* 未选中：Hot Icon 与文字颜色统一为二级色 */
+    .tabs--menu .tabs__item:not(.tabs__item--active) .tabs-menu__left-hot-icon {
+      filter: brightness(0) saturate(100%) invert(60%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(95%) contrast(90%);
+    }
+    /* Badge New：上下 2px 外间距，高 16px 不变；与左侧文案顶对齐，重叠 3px；不影响 icon（Figma 7777:38391） */
+    .tabs-menu__left-badge-new-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 0;
+      flex-shrink: 0;
+      align-self: flex-start;
+      margin-left: -9px;
+    }
+    .tabs-menu__left-badge-new {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 16px;
+      padding: 0 4px;
+      border-radius: 99px;
+      background: var(--color-function-tag-primary, #A7F757);
+      border: 1px solid var(--color-bg-primary, #fff);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--color-text-text-primary, #070808);
+      flex-shrink: 0;
+    }
+    .tabs__item-inner--row.tabs__item-inner--has-hot {
+      gap: 2px;
+    }
+    /* 类型 3 Masking：箭头在 Tab 右侧，Tab 超出与 Right Menu 重叠时显示；箭头下渐变遮罩 */
+    .tabs-menu--masking .tabs-menu__inner {
+      justify-content: flex-start;
+      gap: 24px;
+    }
+    .tabs-menu__mask-wrap {
+      display: flex;
+      align-items: stretch;
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .tabs-menu--masking .tabs-menu__left {
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+    .tabs-menu--masking .tabs-menu__left::-webkit-scrollbar {
+      display: none;
+    }
+    .tabs-menu--masking .tabs__list .tabs__item {
+      flex-shrink: 0;
+    }
+    /* 右侧渐变 + 箭头：64px 总宽 = 左 32px 透明度渐变 + 右 32px 无透明度底色，与箭头右对齐 */
+    .tabs-menu__mask-right {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 1px;
+      width: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 1;
+      transition: opacity 0.2s ease-out;
+    }
+    .tabs-menu__mask-right::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(255,255,255,0) 0%, var(--color-bg-surface, #fff) 50%, var(--color-bg-surface, #fff) 100%);
+      z-index: 1;
+    }
+    .tabs-menu__mask-chevron {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      padding: 0 16px;
+      position: relative;
+      z-index: 2;
+      pointer-events: auto;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: inherit;
+    }
+    .tabs-menu__mask-chevron img {
+      width: 16px;
+      height: 16px;
+    }
+    /* 选中最后一个 Tab 时：遮罩和箭头淡出；gap 24px 保证 Tab 与 Right Menu 间距 */
+    .tabs-menu--masking.tabs-menu--last-selected .tabs-menu__mask-right {
+      opacity: 0;
+      pointer-events: none;
+    }
+    /* 三种类型整合一卡 */
+    .tabs-menu-types {
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+    .tabs-menu-types__row {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .tabs-menu-types__label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-text-text-secondary);
+    }
+
+    /* ----- 内容区（演示用） ----- */
+    .tabs-content {
+      margin-top: 20px;
+      padding: 16px;
+      background: rgba(0,0,0,0.03);
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--color-text-text-secondary);
+    }
+
+    /* ----- 规范说明卡片 ----- */
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .spec-card {
+      border: 1px dashed var(--color-border-strong);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 12px;
+    }
+    .spec-card strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--color-text-text-primary);
+    }
+    .spec-card span {
+      color: var(--color-text-text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <h1 class="page-title">Tabs 组件规范预览</h1>
+  <p class="page-meta">依据 <a href="../Guidelines/Tabs.md">Guidelines/Tabs.md</a>；字体见 <a href="../Guidelines/Font.md">Font.md</a>，颜色见 <a href="../Guidelines/Color.md">Color.md</a>；字号 14px、字色、间距 16px、下划线 3×16px、100ms ease-out。</p>
+
+  <!-- 1. 默认 Underline + Divider -->
+  <section class="section">
+    <h2 class="section-title">1. 默认（Underline + 底部分割线）</h2>
+    <p class="section-desc">类型 Underline，尺寸 40px，带底部分割线。点击切换选中态，下划线 3px×16px。</p>
+    <div class="tabs" id="tabs-default" role="tablist">
+      <div class="tabs__list">
+        <button type="button" class="tabs__item tabs__item--active" role="tab" aria-selected="true" data-index="0">
+          <span class="tabs__item-inner"><span class="tabs__label">概览</span></span>
+          <span class="tabs__underline" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="1">
+          <span class="tabs__item-inner"><span class="tabs__label">详情</span></span>
+          <span class="tabs__underline" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="2">
+          <span class="tabs__item-inner"><span class="tabs__label">设置</span></span>
+          <span class="tabs__underline" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="tabs__divider" aria-hidden="true"></div>
+    </div>
+    <div class="tabs-content" id="content-default">当前选中：概览</div>
+  </section>
+
+  <!-- 2. 无底部分割线 -->
+  <section class="section">
+    <h2 class="section-title">2. 无底部分割线（divider=false）</h2>
+    <p class="section-desc">同一交互，仅不显示底部 1px 分割线。</p>
+    <div class="tabs tabs--no-divider" id="tabs-no-divider" role="tablist">
+      <div class="tabs__list">
+        <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="0">
+          <span class="tabs__item-inner"><span class="tabs__label">全部</span></span>
+          <span class="tabs__underline" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="tabs__item tabs__item--active" role="tab" aria-selected="true" data-index="1">
+          <span class="tabs__item-inner"><span class="tabs__label">进行中</span></span>
+          <span class="tabs__underline" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="2">
+          <span class="tabs__item-inner"><span class="tabs__label">已完成</span></span>
+          <span class="tabs__underline" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="tabs__divider" aria-hidden="true"></div>
+    </div>
+    <div class="tabs-content" id="content-no-divider">当前选中：进行中</div>
+  </section>
+
+  <!-- 3. 尺寸（56/48/44/40/28px，字号 24/18/16/14/12px） -->
+  <section class="section">
+    <h2 class="section-title">3. 尺寸（Size 56 / 48 / 44 / 40 / 28px）</h2>
+    <p class="section-desc">行高 56→24px/600、48→18px/600、44→16px/500、40→14px/500、28→12px/500。</p>
+    <div class="tabs tabs--size-56" id="tabs-56" role="tablist" style="margin-bottom: 24px;">
+      <div class="tabs__list">
+        <button type="button" class="tabs__item tabs__item--active" role="tab" aria-selected="true"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+      </div>
+      <div class="tabs__divider" aria-hidden="true"></div>
+    </div>
+    <div class="tabs tabs--size-48" id="tabs-48" role="tablist" style="margin-bottom: 24px;">
+      <div class="tabs__list">
+        <button type="button" class="tabs__item tabs__item--active" role="tab" aria-selected="true"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+      </div>
+      <div class="tabs__divider" aria-hidden="true"></div>
+    </div>
+    <div class="tabs tabs--size-44" id="tabs-44" role="tablist" style="margin-bottom: 24px;">
+      <div class="tabs__list">
+        <button type="button" class="tabs__item tabs__item--active" role="tab" aria-selected="true"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+      </div>
+      <div class="tabs__divider" aria-hidden="true"></div>
+    </div>
+    <div class="tabs tabs--size-40" id="tabs-40" role="tablist" style="margin-bottom: 24px;">
+      <div class="tabs__list">
+        <button type="button" class="tabs__item tabs__item--active" role="tab" aria-selected="true"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+      </div>
+      <div class="tabs__divider" aria-hidden="true"></div>
+    </div>
+    <div class="tabs tabs--size-28" id="tabs-28" role="tablist">
+      <div class="tabs__list">
+        <button type="button" class="tabs__item tabs__item--active" role="tab" aria-selected="true"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+      </div>
+      <div class="tabs__divider" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <!-- 4. Text 类型（无下划线） -->
+  <section class="section">
+    <h2 class="section-title">4. Text 类型（无下划线）</h2>
+    <p class="section-desc">仅通过字色区分选中/未选中，无下划线指示器。</p>
+    <div class="tabs tabs--text" id="tabs-text" role="tablist">
+      <div class="tabs__list">
+        <button type="button" class="tabs__item tabs__item--active" role="tab" aria-selected="true" data-index="0">
+          <span class="tabs__item-inner"><span class="tabs__label">推荐</span></span>
+          <span class="tabs__underline" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="1">
+          <span class="tabs__item-inner"><span class="tabs__label">最新</span></span>
+          <span class="tabs__underline" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="2">
+          <span class="tabs__item-inner"><span class="tabs__label">热门</span></span>
+          <span class="tabs__underline" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="tabs__divider" aria-hidden="true"></div>
+    </div>
+    <div class="tabs-content" id="content-text">当前选中：推荐</div>
+  </section>
+
+  <!-- 5. 含禁用态 -->
+  <section class="section">
+    <h2 class="section-title">5. 含禁用态（Disabled）</h2>
+    <p class="section-desc">禁用项使用 --color-text-text-disable (#C4C7CA)，不响应点击。</p>
+    <div class="tabs" id="tabs-disabled" role="tablist">
+      <div class="tabs__list">
+        <button type="button" class="tabs__item tabs__item--active" role="tab" aria-selected="true" data-index="0">
+          <span class="tabs__item-inner"><span class="tabs__label">可用</span></span>
+          <span class="tabs__underline" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="tabs__item tabs__item--disabled" role="tab" aria-selected="false" aria-disabled="true" data-index="1">
+          <span class="tabs__item-inner"><span class="tabs__label">禁用</span></span>
+          <span class="tabs__underline" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="2">
+          <span class="tabs__item-inner"><span class="tabs__label">可用</span></span>
+          <span class="tabs__underline" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="tabs__divider" aria-hidden="true"></div>
+    </div>
+    <div class="tabs-content" id="content-disabled">当前选中：可用</div>
+  </section>
+
+  <!-- 6. 带标签（Tag） -->
+  <section class="section">
+    <h2 class="section-title">6. 带标签（Tag）</h2>
+    <p class="section-desc">Tab 选项带标签角标，黑色短横线只居中于文字、不覆盖标签。</p>
+    <div class="tabs" id="tabs-tag" role="tablist">
+      <div class="tabs__list">
+        <button type="button" class="tabs__item tabs__item--active" role="tab" aria-selected="true" data-index="0">
+          <span class="tabs__item-inner">
+            <span class="tabs__text-block">
+              <span class="tabs__text-block-inner"><span class="tabs__label">Tabs</span></span>
+              <span class="tabs__underline" aria-hidden="true"></span>
+            </span>
+            <span class="tabs__tag tabs__tag--label">Tag</span>
+          </span>
+        </button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="1">
+          <span class="tabs__item-inner">
+            <span class="tabs__text-block">
+              <span class="tabs__text-block-inner"><span class="tabs__label">Tabs</span></span>
+              <span class="tabs__underline" aria-hidden="true"></span>
+            </span>
+          </span>
+        </button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="2">
+          <span class="tabs__item-inner">
+            <span class="tabs__text-block">
+              <span class="tabs__text-block-inner"><span class="tabs__label">Tabs</span></span>
+              <span class="tabs__underline" aria-hidden="true"></span>
+            </span>
+          </span>
+        </button>
+      </div>
+      <div class="tabs__divider" aria-hidden="true"></div>
+    </div>
+    <div class="tabs-content" id="content-tag">当前选中：Tabs（带 Tag）</div>
+  </section>
+
+  <!-- 7. 带 Icon（Hot Icon） -->
+  <section class="section">
+    <h2 class="section-title">7. 带 Icon（Hot Icon）</h2>
+    <p class="section-desc">Tab 选项右侧带热门/强调图标，下划线只居中于文字。</p>
+    <div class="tabs" id="tabs-icon" role="tablist">
+      <div class="tabs__list">
+        <button type="button" class="tabs__item tabs__item--active" role="tab" aria-selected="true" data-index="0">
+          <span class="tabs__item-inner">
+            <span class="tabs__text-block">
+              <span class="tabs__text-block-inner"><span class="tabs__label">Tabs</span></span>
+              <span class="tabs__underline" aria-hidden="true"></span>
+            </span>
+            <span class="tabs__icon" aria-hidden="true">
+              <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_hot_fill.svg" alt="" width="14" height="14" />
+            </span>
+          </span>
+        </button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="1">
+          <span class="tabs__item-inner">
+            <span class="tabs__text-block">
+              <span class="tabs__text-block-inner"><span class="tabs__label">Tabs</span></span>
+              <span class="tabs__underline" aria-hidden="true"></span>
+            </span>
+          </span>
+        </button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="2">
+          <span class="tabs__item-inner">
+            <span class="tabs__text-block">
+              <span class="tabs__text-block-inner"><span class="tabs__label">Tabs</span></span>
+              <span class="tabs__underline" aria-hidden="true"></span>
+            </span>
+          </span>
+        </button>
+      </div>
+      <div class="tabs__divider" aria-hidden="true"></div>
+    </div>
+    <div class="tabs-content" id="content-icon">当前选中：Tabs（带 Icon）</div>
+  </section>
+
+  <!-- 8. 带箭头（可交互，朝上/朝下两态，点击箭头展开选择下拉框） -->
+  <section class="section">
+    <h2 class="section-title">8. 带箭头（Arrow）</h2>
+    <p class="section-desc">Tab 选项右侧带箭头，朝上/朝下两态，点击箭头展开选择下拉框（不切换 Tab）。下划线只居中于文字。</p>
+    <div class="tabs" id="tabs-arrow" role="tablist">
+      <div class="tabs__list">
+        <div class="tabs__item-with-dropdown">
+          <button type="button" class="tabs__item tabs__item--active" role="tab" aria-selected="true" data-index="0">
+            <span class="tabs__item-inner">
+              <span class="tabs__text-block">
+                <span class="tabs__text-block-inner"><span class="tabs__label">Tabs</span></span>
+                <span class="tabs__underline" aria-hidden="true"></span>
+              </span>
+              <span class="tabs__arrow tabs__arrow--down" id="tabs-arrow-btn" role="button" aria-label="展开/收起" aria-expanded="false" aria-haspopup="listbox" title="点击展开选择">
+                <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_up_fill.svg" alt="" class="tabs__arrow-icon tabs__arrow-icon--up" width="14" height="14" />
+                <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" class="tabs__arrow-icon tabs__arrow-icon--down" width="14" height="14" />
+              </span>
+            </span>
+          </button>
+          <div class="tabs__dropdown" id="tabs-arrow-dropdown" role="listbox" aria-hidden="true">
+            <div class="tabs__dropdown-item tabs__dropdown-item--selected" role="option" aria-selected="true" data-value="option1"><span>Option</span><img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="tabs__dropdown-icon" width="16" height="16" aria-hidden="true" /></div>
+            <div class="tabs__dropdown-item" role="option" aria-selected="false" data-value="option2"><span>Option</span><img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="tabs__dropdown-icon" width="16" height="16" aria-hidden="true" /></div>
+            <div class="tabs__dropdown-item" role="option" aria-selected="false" data-value="option3"><span>Option</span><img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="tabs__dropdown-icon" width="16" height="16" aria-hidden="true" /></div>
+            <div class="tabs__dropdown-item" role="option" aria-selected="false" data-value="option4"><span>Option</span><img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="tabs__dropdown-icon" width="16" height="16" aria-hidden="true" /></div>
+            <div class="tabs__dropdown-item" role="option" aria-selected="false" data-value="option5"><span>Option</span><img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="tabs__dropdown-icon" width="16" height="16" aria-hidden="true" /></div>
+          </div>
+        </div>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="1">
+          <span class="tabs__item-inner">
+            <span class="tabs__text-block">
+              <span class="tabs__text-block-inner"><span class="tabs__label">Tabs</span></span>
+              <span class="tabs__underline" aria-hidden="true"></span>
+            </span>
+          </span>
+        </button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="2">
+          <span class="tabs__item-inner">
+            <span class="tabs__text-block">
+              <span class="tabs__text-block-inner"><span class="tabs__label">Tabs</span></span>
+              <span class="tabs__underline" aria-hidden="true"></span>
+            </span>
+          </span>
+        </button>
+      </div>
+      <div class="tabs__divider" aria-hidden="true"></div>
+    </div>
+    <div class="tabs-content" id="content-arrow">当前选中：<span id="content-arrow-text">Tabs（带箭头）</span>；箭头状态：<span id="arrow-state">朝下</span></div>
+  </section>
+
+  <!-- 9. 横向滚动 -->
+  <section class="section">
+    <h2 class="section-title">9. 横向滚动（Tab 过多）</h2>
+    <p class="section-desc">宽度不足时 overflow-x: auto，间距保持 16px，可左右滑动。</p>
+    <div class="tabs tabs--scroll" id="tabs-scroll" role="tablist" style="max-width: 360px;">
+      <div class="tabs__list">
+        <button type="button" class="tabs__item tabs__item--active" role="tab" aria-selected="true" data-index="0"><span class="tabs__item-inner"><span class="tabs__label">第一个</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="1"><span class="tabs__item-inner"><span class="tabs__label">第二个</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="2"><span class="tabs__item-inner"><span class="tabs__label">第三个</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="3"><span class="tabs__item-inner"><span class="tabs__label">第四个</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="4"><span class="tabs__item-inner"><span class="tabs__label">第五个</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="5"><span class="tabs__item-inner"><span class="tabs__label">第六个</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+      </div>
+      <div class="tabs__divider" aria-hidden="true"></div>
+    </div>
+    <div class="tabs-content" id="content-scroll">当前选中：第一个</div>
+  </section>
+
+  <!-- 10. Tabs Card 类型（卡片式） -->
+  <section class="section">
+    <h2 class="section-title">10. Tabs Card 类型（TabsCardV5-web）</h2>
+    <p class="section-desc">依据 Figma Tabs Card Guidelines。容器背景 #F5F6F7，圆角 8px，选中项白底圆角 6px，无下划线。</p>
+    <div class="tabs tabs--card" id="tabs-card" role="tablist">
+      <div class="tabs__list">
+        <button type="button" class="tabs__item tabs__item--active" role="tab" aria-selected="true" data-index="0">
+          <span class="tabs__item-inner"><span class="tabs__label">概览</span></span>
+        </button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="1">
+          <span class="tabs__item-inner"><span class="tabs__label">详情</span></span>
+        </button>
+        <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="2">
+          <span class="tabs__item-inner"><span class="tabs__label">设置</span></span>
+        </button>
+      </div>
+    </div>
+    <div class="tabs-content" id="content-card">当前选中：概览</div>
+  </section>
+
+  <!-- 10b. 卡片 Tab 五态（Figma 7900:16826） -->
+  <section class="section">
+    <h2 class="section-title">10b. 卡片 Tab 五态</h2>
+    <p class="section-desc">依据 Figma 7900:16826。1=选中 2=未选中 3=未选中+悬停 4=禁用+选中 5=禁用+未选中。</p>
+    <div class="tabs-card-states">
+      <div class="tabs-card-state-item">
+        <div class="tabs tabs--card tabs--card-states" role="presentation">
+          <div class="tabs__list">
+            <button type="button" class="tabs__item tabs__item--active" disabled tabindex="-1"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button>
+          </div>
+        </div>
+        <span class="tabs-card-state-num">1</span>
+      </div>
+      <div class="tabs-card-state-item">
+        <div class="tabs tabs--card tabs--card-states" role="presentation">
+          <div class="tabs__list">
+            <button type="button" class="tabs__item" disabled tabindex="-1"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button>
+          </div>
+        </div>
+        <span class="tabs-card-state-num">2</span>
+      </div>
+      <div class="tabs-card-state-item">
+        <div class="tabs tabs--card tabs--card-states" role="presentation">
+          <div class="tabs__list">
+            <button type="button" class="tabs__item tabs__item--hover-preview" disabled tabindex="-1"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button>
+          </div>
+        </div>
+        <span class="tabs-card-state-num">3</span>
+      </div>
+      <div class="tabs-card-state-item">
+        <div class="tabs tabs--card tabs--card-states" role="presentation">
+          <div class="tabs__list">
+            <button type="button" class="tabs__item tabs__item--active tabs__item--disabled" disabled tabindex="-1"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button>
+          </div>
+        </div>
+        <span class="tabs-card-state-num">4</span>
+      </div>
+      <div class="tabs-card-state-item">
+        <div class="tabs tabs--card tabs--card-states" role="presentation">
+          <div class="tabs__list">
+            <button type="button" class="tabs__item tabs__item--disabled" disabled tabindex="-1"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button>
+          </div>
+        </div>
+        <span class="tabs-card-state-num">5</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10c. 卡片 Tab 尺寸（Figma 7895:11391） -->
+  <section class="section">
+    <h2 class="section-title">10c. 卡片 Tab 尺寸</h2>
+    <p class="section-desc">依据 Figma 7895:11391。44px/32px/28px/24px 四档，容器圆角、内边距、Tab 高度与字号随尺寸变化。</p>
+    <div class="tabs-card-sizes">
+      <div class="tabs-card-size-item">
+        <div class="tabs tabs--card tabs--card-size-44" id="tabs-card-44" role="tablist">
+          <div class="tabs__list">
+            <button type="button" class="tabs__item tabs__item--active" role="tab" aria-selected="true" data-index="0"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button>
+            <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="1"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button>
+          </div>
+        </div>
+        <span class="tabs-card-state-num">44px</span>
+      </div>
+      <div class="tabs-card-size-item">
+        <div class="tabs tabs--card tabs--card-size-32" id="tabs-card-32" role="tablist">
+          <div class="tabs__list">
+            <button type="button" class="tabs__item tabs__item--active" role="tab" aria-selected="true" data-index="0"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button>
+            <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="1"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button>
+          </div>
+        </div>
+        <span class="tabs-card-state-num">32px</span>
+      </div>
+      <div class="tabs-card-size-item">
+        <div class="tabs tabs--card tabs--card-size-28" id="tabs-card-28" role="tablist">
+          <div class="tabs__list">
+            <button type="button" class="tabs__item tabs__item--active" role="tab" aria-selected="true" data-index="0"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button>
+            <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="1"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button>
+          </div>
+        </div>
+        <span class="tabs-card-state-num">28px</span>
+      </div>
+      <div class="tabs-card-size-item">
+        <div class="tabs tabs--card tabs--card-size-24" id="tabs-card-24" role="tablist">
+          <div class="tabs__list">
+            <button type="button" class="tabs__item tabs__item--active" role="tab" aria-selected="true" data-index="0"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button>
+            <button type="button" class="tabs__item" role="tab" aria-selected="false" data-index="1"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button>
+          </div>
+        </div>
+        <span class="tabs-card-state-num">24px</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. Web 与 H5 尺寸对应（Figma 21644:18412） -->
+  <section class="section">
+    <h2 class="section-title">11. Web 与 H5 尺寸对应</h2>
+    <p class="section-desc">依据 Figma 21644:18412。Web 8 种样式、H5 5 种样式，H5 分别对应 Web 的 Capsules-32、Capsules-28、Tabscard-56、Tabscard-32、Tabscard-28。375px 视口下展示。</p>
+    <div class="web-h5-mapping">
+      <div class="web-h5-mapping__header">
+        <div class="web-h5-mapping__label">类型</div>
+        <div class="web-h5-mapping__col">Web</div>
+        <div class="web-h5-mapping__col">H5</div>
+      </div>
+      <div class="web-h5-mapping__row">
+        <div class="web-h5-mapping__label">Capsules-40</div>
+        <div class="web-h5-mapping__demo"><div class="tabs tabs--capsules tabs--capsules-40" id="tabs-caps-40-web" role="tablist" style="width: auto;"><div class="tabs__list"><button type="button" class="tabs__item tabs__item--active"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button></div></div></div>
+        <div class="web-h5-mapping__demo web-h5-mapping__h5 web-h5-mapping__empty"></div>
+      </div>
+      <div class="web-h5-mapping__row">
+        <div class="web-h5-mapping__label">Capsules-36</div>
+        <div class="web-h5-mapping__demo"><div class="tabs tabs--capsules tabs--capsules-36" id="tabs-caps-36-web" role="tablist" style="width: auto;"><div class="tabs__list"><button type="button" class="tabs__item tabs__item--active"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button></div></div></div>
+        <div class="web-h5-mapping__demo web-h5-mapping__h5 web-h5-mapping__empty"></div>
+      </div>
+      <div class="web-h5-mapping__row">
+        <div class="web-h5-mapping__label">Capsules-32</div>
+        <div class="web-h5-mapping__demo"><div class="tabs tabs--capsules tabs--capsules-32" id="tabs-caps-32-web" role="tablist" style="width: auto;"><div class="tabs__list"><button type="button" class="tabs__item tabs__item--active"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button></div></div></div>
+        <div class="web-h5-mapping__demo web-h5-mapping__h5"><div class="tabs tabs--capsules tabs--capsules-h5 tabs--capsules-h5-32" id="tabs-caps-32-h5" role="tablist" style="max-width: 375px;"><div class="tabs__list"><button type="button" class="tabs__item tabs__item--active"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button></div><div class="tabs__divider" aria-hidden="true"></div></div></div>
+      </div>
+      <div class="web-h5-mapping__row">
+        <div class="web-h5-mapping__label">Capsules-28</div>
+        <div class="web-h5-mapping__demo"><div class="tabs tabs--capsules tabs--capsules-28" id="tabs-caps-28-web" role="tablist" style="width: auto;"><div class="tabs__list"><button type="button" class="tabs__item tabs__item--active"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button></div></div></div>
+        <div class="web-h5-mapping__demo web-h5-mapping__h5"><div class="tabs tabs--capsules tabs--capsules-h5 tabs--capsules-h5-28" id="tabs-caps-28-h5" role="tablist" style="max-width: 375px;"><div class="tabs__list"><button type="button" class="tabs__item tabs__item--active"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button></div><div class="tabs__divider" aria-hidden="true"></div></div></div>
+      </div>
+      <div class="web-h5-mapping__row">
+        <div class="web-h5-mapping__label">Tabscard-56</div>
+        <div class="web-h5-mapping__demo"><div class="tabs tabs--card tabs--card-size-44" id="tabs-card-map-56-web" role="tablist" style="width: auto;"><div class="tabs__list"><button type="button" class="tabs__item tabs__item--active"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button></div></div></div>
+        <div class="web-h5-mapping__demo web-h5-mapping__h5"><div class="tabs tabs--card tabs--card-h5 tabs--card-h5-size-56" id="tabs-card-map-56-h5" role="tablist" style="max-width: 375px;"><div class="tabs__list"><button type="button" class="tabs__item tabs__item--active"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button></div></div></div>
+      </div>
+      <div class="web-h5-mapping__row">
+        <div class="web-h5-mapping__label">Tabscard-40</div>
+        <div class="web-h5-mapping__demo"><div class="tabs tabs--card tabs--card-size-40" id="tabs-card-map-40-web" role="tablist" style="width: auto;"><div class="tabs__list"><button type="button" class="tabs__item tabs__item--active"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button></div></div></div>
+        <div class="web-h5-mapping__demo web-h5-mapping__h5 web-h5-mapping__empty"></div>
+      </div>
+      <div class="web-h5-mapping__row">
+        <div class="web-h5-mapping__label">Tabscard-32</div>
+        <div class="web-h5-mapping__demo"><div class="tabs tabs--card tabs--card-size-32" id="tabs-card-map-32-web" role="tablist" style="width: auto;"><div class="tabs__list"><button type="button" class="tabs__item tabs__item--active"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button></div></div></div>
+        <div class="web-h5-mapping__demo web-h5-mapping__h5"><div class="tabs tabs--card tabs--card-h5 tabs--card-h5-size-32" id="tabs-card-map-32-h5" role="tablist" style="max-width: 375px;"><div class="tabs__list"><button type="button" class="tabs__item tabs__item--active"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button></div></div></div>
+      </div>
+      <div class="web-h5-mapping__row">
+        <div class="web-h5-mapping__label">Tabscard-28</div>
+        <div class="web-h5-mapping__demo"><div class="tabs tabs--card tabs--card-size-28" id="tabs-card-map-28-web" role="tablist" style="width: auto;"><div class="tabs__list"><button type="button" class="tabs__item tabs__item--active"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button></div></div></div>
+        <div class="web-h5-mapping__demo web-h5-mapping__h5"><div class="tabs tabs--card tabs--card-h5 tabs--card-h5-size-28" id="tabs-card-map-28-h5" role="tablist" style="max-width: 375px;"><div class="tabs__list"><button type="button" class="tabs__item tabs__item--active"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button><button type="button" class="tabs__item"><span class="tabs__item-inner"><span class="tabs__label">Tabs</span></span></button></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12. Tabs Menu 三种类型（Figma 7719:54463） -->
+  <section class="section">
+    <h2 class="section-title">12. Tabs Menu 三种类型</h2>
+    <p class="section-desc">依据 Figma 7719:54463。① Divider ② Right Menu ③ Masking，整合于一卡。</p>
+    <div class="tabs-menu-types">
+      <div class="tabs-menu-types__row">
+        <span class="tabs-menu-types__label">① Divider</span>
+        <div class="tabs-menu">
+          <div class="tabs-menu__inner">
+            <div class="tabs-menu__left">
+              <div class="tabs tabs--menu tabs--no-divider" id="tabs-menu-base" role="tablist">
+                <div class="tabs__list">
+                  <button type="button" class="tabs__item tabs__item--active" role="tab" aria-selected="true"><span class="tabs__item-inner"><span class="tabs__label">Tabs Menu</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+                  <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs Menu</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+                  <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs Menu</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tabs__divider" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="tabs-menu-types__row">
+        <span class="tabs-menu-types__label">② Right Menu</span>
+        <div class="tabs-menu">
+          <div class="tabs-menu__inner">
+            <div class="tabs-menu__left">
+              <div class="tabs tabs--menu tabs--no-divider" id="tabs-menu-right" role="tablist">
+                <div class="tabs__list">
+                  <button type="button" class="tabs__item tabs__item--active" role="tab" aria-selected="true"><span class="tabs__item-inner"><span class="tabs__label">Tabs Menu</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+                  <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs Menu</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+                  <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs Menu</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+                </div>
+              </div>
+            </div>
+            <div class="tabs-menu__right">
+              <button type="button" class="tabs-menu__right-item"><span>Right Menu</span><img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" class="tabs-menu__right-arrow" width="14" height="14" /></button>
+              <button type="button" class="tabs-menu__right-item"><img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Settings.svg" alt="" class="tabs-menu__right-icon" width="20" height="20" /><span>Right Menu</span></button>
+            </div>
+          </div>
+          <div class="tabs__divider" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="tabs-menu-types__row">
+        <span class="tabs-menu-types__label">③ Masking</span>
+        <div class="tabs-menu tabs-menu--masking">
+          <div class="tabs-menu__inner">
+            <div class="tabs-menu__mask-wrap">
+              <div class="tabs-menu__left">
+                <div class="tabs tabs--menu tabs--no-divider" id="tabs-menu-masking" role="tablist">
+                  <div class="tabs__list">
+                    <button type="button" class="tabs__item tabs__item--active" role="tab" aria-selected="true"><span class="tabs__item-inner"><span class="tabs__label">Tabs Menu</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+                    <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs Menu</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+                    <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs Menu</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+                    <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs Menu</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+                    <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs Menu</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+                    <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs Menu</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+                    <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs Menu</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+                    <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs Menu</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+                    <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs Menu</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+                    <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs Menu</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+                    <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs Menu</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+                    <button type="button" class="tabs__item" role="tab" aria-selected="false"><span class="tabs__item-inner"><span class="tabs__label">Tabs Menu</span></span><span class="tabs__underline" aria-hidden="true"></span></button>
+                  </div>
+                </div>
+              </div>
+              <div class="tabs-menu__mask-right" aria-hidden="true">
+                <button type="button" class="tabs-menu__mask-chevron" aria-label="向右滚动"><img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_right.svg" alt="" width="16" height="16" /></button>
+              </div>
+            </div>
+            <div class="tabs-menu__right">
+              <button type="button" class="tabs-menu__right-item"><img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Settings.svg" alt="" class="tabs-menu__right-icon" width="20" height="20" /><span>Right Menu</span></button>
+              <button type="button" class="tabs-menu__right-item"><img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Settings.svg" alt="" class="tabs-menu__right-icon" width="20" height="20" /><span>Right Menu</span></button>
+            </div>
+          </div>
+          <div class="tabs__divider" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13. Tabs Menu 左侧变量（Figma 7777:38363） -->
+  <section class="section">
+    <h2 class="section-title">13. Tabs Menu 左侧变量</h2>
+    <p class="section-desc">Icon + Tab 选项及叠加变体：① Prefix Icon ② Badge Dot ③ Hot Icon ④ Badge New。依据 Figma 7777:38363。</p>
+    <div class="tabs-menu-left-variants">
+      <div class="tabs-menu-left-variants__row">
+        <span class="tabs-menu-left-variants__label">① Icon + Tab 选项</span>
+        <div class="tabs-menu">
+          <div class="tabs-menu__inner">
+            <div class="tabs-menu__left">
+              <div class="tabs tabs--menu tabs--no-divider" id="tabs-left-var-1" role="tablist">
+                <div class="tabs__list">
+                  <button type="button" class="tabs__item tabs__item--active tabs__item--prefix-icon" role="tab" aria-selected="true">
+                    <span class="tabs__item-inner tabs__item-inner--row">
+                      <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Settings.svg" alt="" class="tabs-menu__prefix-icon" width="20" height="20" />
+                      <span class="tabs__text-block">
+                        <span class="tabs__text-block-inner"><span class="tabs__label">Tabs Menu</span></span>
+                        <span class="tabs__underline" aria-hidden="true"></span>
+                      </span>
+                    </span>
+                  </button>
+                  <button type="button" class="tabs__item tabs__item--prefix-icon" role="tab" aria-selected="false">
+                    <span class="tabs__item-inner tabs__item-inner--row">
+                      <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Settings.svg" alt="" class="tabs-menu__prefix-icon" width="20" height="20" />
+                      <span class="tabs__text-block">
+                        <span class="tabs__text-block-inner"><span class="tabs__label">Tabs Menu</span></span>
+                        <span class="tabs__underline" aria-hidden="true"></span>
+                      </span>
+                    </span>
+                  </button>
+                  <button type="button" class="tabs__item tabs__item--prefix-icon" role="tab" aria-selected="false">
+                    <span class="tabs__item-inner tabs__item-inner--row">
+                      <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Settings.svg" alt="" class="tabs-menu__prefix-icon" width="20" height="20" />
+                      <span class="tabs__text-block">
+                        <span class="tabs__text-block-inner"><span class="tabs__label">Tabs Menu</span></span>
+                        <span class="tabs__underline" aria-hidden="true"></span>
+                      </span>
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tabs__divider" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="tabs-menu-left-variants__row">
+        <span class="tabs-menu-left-variants__label">② Icon + Tab 选项 + 徽标</span>
+        <div class="tabs-menu">
+          <div class="tabs-menu__inner">
+            <div class="tabs-menu__left">
+              <div class="tabs tabs--menu tabs--no-divider" id="tabs-left-var-2" role="tablist">
+                <div class="tabs__list">
+                  <button type="button" class="tabs__item tabs__item--active tabs__item--prefix-icon tabs__item--has-badge-dot" role="tab" aria-selected="true">
+                    <span class="tabs__item-inner tabs__item-inner--row">
+                      <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Settings.svg" alt="" class="tabs-menu__prefix-icon" width="20" height="20" />
+                      <span class="tabs__text-block">
+                        <span class="tabs__text-block-inner"><span class="tabs__label">Tabs Menu</span></span>
+                        <span class="tabs__underline" aria-hidden="true"></span>
+                      </span>
+                      <span class="tabs-menu__left-badge-wrap" aria-hidden="true"><span class="tabs-menu__left-badge-dot"></span></span>
+                    </span>
+                  </button>
+                  <button type="button" class="tabs__item tabs__item--prefix-icon" role="tab" aria-selected="false">
+                    <span class="tabs__item-inner tabs__item-inner--row">
+                      <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Settings.svg" alt="" class="tabs-menu__prefix-icon" width="20" height="20" />
+                      <span class="tabs__text-block">
+                        <span class="tabs__text-block-inner"><span class="tabs__label">Tabs Menu</span></span>
+                        <span class="tabs__underline" aria-hidden="true"></span>
+                      </span>
+                    </span>
+                  </button>
+                  <button type="button" class="tabs__item tabs__item--prefix-icon" role="tab" aria-selected="false">
+                    <span class="tabs__item-inner tabs__item-inner--row">
+                      <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Settings.svg" alt="" class="tabs-menu__prefix-icon" width="20" height="20" />
+                      <span class="tabs__text-block">
+                        <span class="tabs__text-block-inner"><span class="tabs__label">Tabs Menu</span></span>
+                        <span class="tabs__underline" aria-hidden="true"></span>
+                      </span>
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tabs__divider" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="tabs-menu-left-variants__row">
+        <span class="tabs-menu-left-variants__label">③ Icon + Tab 选项 + Hot Icon</span>
+        <div class="tabs-menu">
+          <div class="tabs-menu__inner">
+            <div class="tabs-menu__left">
+              <div class="tabs tabs--menu tabs--no-divider" id="tabs-left-var-3" role="tablist">
+                <div class="tabs__list">
+                  <button type="button" class="tabs__item tabs__item--active tabs__item--prefix-icon" role="tab" aria-selected="true">
+                    <span class="tabs__item-inner tabs__item-inner--row tabs__item-inner--has-hot">
+                      <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Settings.svg" alt="" class="tabs-menu__prefix-icon" width="20" height="20" />
+                      <span class="tabs__text-block">
+                        <span class="tabs__text-block-inner"><span class="tabs__label">Tabs Menu</span></span>
+                        <span class="tabs__underline" aria-hidden="true"></span>
+                      </span>
+                      <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_hot_fill.svg" alt="" class="tabs-menu__left-hot-icon" width="16" height="16" aria-hidden="true" />
+                    </span>
+                  </button>
+                  <button type="button" class="tabs__item tabs__item--prefix-icon" role="tab" aria-selected="false">
+                    <span class="tabs__item-inner tabs__item-inner--row">
+                      <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Settings.svg" alt="" class="tabs-menu__prefix-icon" width="20" height="20" />
+                      <span class="tabs__text-block">
+                        <span class="tabs__text-block-inner"><span class="tabs__label">Tabs Menu</span></span>
+                        <span class="tabs__underline" aria-hidden="true"></span>
+                      </span>
+                    </span>
+                  </button>
+                  <button type="button" class="tabs__item tabs__item--prefix-icon" role="tab" aria-selected="false">
+                    <span class="tabs__item-inner tabs__item-inner--row">
+                      <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Settings.svg" alt="" class="tabs-menu__prefix-icon" width="20" height="20" />
+                      <span class="tabs__text-block">
+                        <span class="tabs__text-block-inner"><span class="tabs__label">Tabs Menu</span></span>
+                        <span class="tabs__underline" aria-hidden="true"></span>
+                      </span>
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tabs__divider" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="tabs-menu-left-variants__row">
+        <span class="tabs-menu-left-variants__label">④ Icon + Tab 选项 + 小标签</span>
+        <div class="tabs-menu">
+          <div class="tabs-menu__inner">
+            <div class="tabs-menu__left">
+              <div class="tabs tabs--menu tabs--no-divider" id="tabs-left-var-4" role="tablist">
+                <div class="tabs__list">
+                  <button type="button" class="tabs__item tabs__item--active tabs__item--prefix-icon" role="tab" aria-selected="true">
+                    <span class="tabs__item-inner tabs__item-inner--row">
+                      <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Settings.svg" alt="" class="tabs-menu__prefix-icon" width="20" height="20" />
+                      <span class="tabs__text-block">
+                        <span class="tabs__text-block-inner"><span class="tabs__label">Tabs Menu</span></span>
+                        <span class="tabs__underline" aria-hidden="true"></span>
+                      </span>
+                      <span class="tabs-menu__left-badge-new-wrap"><span class="tabs-menu__left-badge-new">New</span></span>
+                    </span>
+                  </button>
+                  <button type="button" class="tabs__item tabs__item--prefix-icon" role="tab" aria-selected="false">
+                    <span class="tabs__item-inner tabs__item-inner--row">
+                      <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Settings.svg" alt="" class="tabs-menu__prefix-icon" width="20" height="20" />
+                      <span class="tabs__text-block">
+                        <span class="tabs__text-block-inner"><span class="tabs__label">Tabs Menu</span></span>
+                        <span class="tabs__underline" aria-hidden="true"></span>
+                      </span>
+                    </span>
+                  </button>
+                  <button type="button" class="tabs__item tabs__item--prefix-icon" role="tab" aria-selected="false">
+                    <span class="tabs__item-inner tabs__item-inner--row">
+                      <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Settings.svg" alt="" class="tabs-menu__prefix-icon" width="20" height="20" />
+                      <span class="tabs__text-block">
+                        <span class="tabs__text-block-inner"><span class="tabs__label">Tabs Menu</span></span>
+                        <span class="tabs__underline" aria-hidden="true"></span>
+                      </span>
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tabs__divider" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14. Tabs Menu 右侧变量（Figma 7719:54515） -->
+  <section class="section">
+    <h2 class="section-title">14. Tabs Menu 右侧变量</h2>
+    <p class="section-desc">Right Menu 项变体：① Icon + 文字按钮 ② Icon + 文字按钮 + 下拉箭头（箭头引用 Icon 组件，点击切换上下）。依据 Figma 7719:54515。</p>
+    <div class="tabs-menu-right-variants">
+      <div class="tabs-menu-right-variants__row">
+        <span class="tabs-menu-right-variants__label">① Icon + 文字按钮</span>
+        <div class="tabs-menu-right-variants__demo">
+          <button type="button" class="tabs-menu__right-item">
+            <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Settings.svg" alt="" class="tabs-menu__right-icon" width="20" height="20" />
+            <span>Right Menu</span>
+          </button>
+        </div>
+      </div>
+      <div class="tabs-menu-right-variants__row">
+        <span class="tabs-menu-right-variants__label">② Icon + 文字按钮 + 下拉箭头</span>
+        <div class="tabs-menu-right-variants__demo">
+          <button type="button" class="tabs-menu__right-item" id="right-var-arrow-btn" aria-expanded="false" aria-label="展开/收起">
+            <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Settings.svg" alt="" class="tabs-menu__right-icon" width="20" height="20" />
+            <span>Right Menu</span>
+            <span class="tabs-menu__right-item-arrow" id="right-var-arrow" aria-hidden="true">
+              <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_up_fill.svg" alt="" class="tabs-menu__right-arrow-icon tabs-menu__right-arrow-icon--up" width="14" height="14" />
+              <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" class="tabs-menu__right-arrow-icon tabs-menu__right-arrow-icon--down" width="14" height="14" />
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 规范速查 -->
+  <section class="section">
+    <h2 class="section-title">规范速查（Tabs.md §9）</h2>
+    <div class="spec-grid">
+      <div class="spec-card"><strong>字体</strong><span>Switzer, sans-serif</span></div>
+      <div class="spec-card"><strong>字号</strong><span>14px</span></div>
+      <div class="spec-card"><strong>字重</strong><span>500</span></div>
+      <div class="spec-card"><strong>行高</strong><span>1.3</span></div>
+      <div class="spec-card"><strong>选中字色</strong><span>#070808</span></div>
+      <div class="spec-card"><strong>未选字色</strong><span>#84888C</span></div>
+      <div class="spec-card"><strong>Tab 间距</strong><span>16px</span></div>
+      <div class="spec-card"><strong>默认行高</strong><span>40px</span></div>
+      <div class="spec-card"><strong>下划线</strong><span>3px × 16px</span></div>
+      <div class="spec-card"><strong>动效</strong><span>100ms ease-out</span></div>
+    </div>
+    <p class="section-desc" style="margin-top: 24px; margin-bottom: 8px;">Tabs Menu（§13）：16px 字号、600 字重、24px 间距、44px 行高；Right Menu 14px/500；Prefix Icon 20px、gap 6px。</p>
+  </section>
+
+  <script>
+    (function() {
+      var contentTexts = {
+        'tabs-default': ['概览', '详情', '设置'],
+        'tabs-no-divider': ['全部', '进行中', '已完成'],
+        'tabs-text': ['推荐', '最新', '热门'],
+        'tabs-disabled': ['可用', '禁用', '可用'],
+        'tabs-tag': ['Tabs（带 Tag）', 'Tabs', 'Tabs'],
+        'tabs-icon': ['Tabs（带 Icon）', 'Tabs', 'Tabs'],
+        'tabs-arrow': ['Tabs（带箭头）', 'Tabs', 'Tabs'],
+        'tabs-scroll': ['第一个', '第二个', '第三个', '第四个', '第五个', '第六个'],
+        'tabs-card': ['概览', '详情', '设置'],
+        'tabs-caps-40-web': ['Tabs', 'Tabs', 'Tabs'],
+        'tabs-caps-36-web': ['Tabs', 'Tabs', 'Tabs'],
+        'tabs-caps-32-web': ['Tabs', 'Tabs', 'Tabs'],
+        'tabs-caps-32-h5': ['Tabs', 'Tabs', 'Tabs', 'Tabs', 'Tabs', 'Tabs'],
+        'tabs-caps-28-web': ['Tabs', 'Tabs', 'Tabs'],
+        'tabs-caps-28-h5': ['Tabs', 'Tabs', 'Tabs', 'Tabs', 'Tabs', 'Tabs', 'Tabs'],
+        'tabs-card-map-56-web': ['Tabs', 'Tabs', 'Tabs'],
+        'tabs-card-map-56-h5': ['Tabs', 'Tabs', 'Tabs'],
+        'tabs-card-map-40-web': ['Tabs', 'Tabs', 'Tabs'],
+        'tabs-card-map-32-web': ['Tabs', 'Tabs', 'Tabs'],
+        'tabs-card-map-32-h5': ['Tabs', 'Tabs', 'Tabs'],
+        'tabs-card-map-28-web': ['Tabs', 'Tabs', 'Tabs'],
+        'tabs-card-map-28-h5': ['Tabs', 'Tabs', 'Tabs'],
+        'tabs-menu-base': ['Tabs Menu', 'Tabs Menu', 'Tabs Menu'],
+        'tabs-menu-right': ['Tabs Menu', 'Tabs Menu', 'Tabs Menu'],
+        'tabs-menu-masking': ['Tabs Menu', 'Tabs Menu', 'Tabs Menu', 'Tabs Menu', 'Tabs Menu', 'Tabs Menu', 'Tabs Menu', 'Tabs Menu', 'Tabs Menu', 'Tabs Menu', 'Tabs Menu'],
+        'tabs-left-var-1': ['Tabs Menu', 'Tabs Menu', 'Tabs Menu'],
+        'tabs-left-var-2': ['Tabs Menu', 'Tabs Menu', 'Tabs Menu'],
+        'tabs-left-var-3': ['Tabs Menu', 'Tabs Menu', 'Tabs Menu'],
+        'tabs-left-var-4': ['Tabs Menu', 'Tabs Menu', 'Tabs Menu']
+      };
+
+      function bindTabs(containerId, contentId) {
+        var container = document.getElementById(containerId);
+        var contentEl = contentId ? document.getElementById(contentId) : null;
+        var texts = contentTexts[containerId];
+        if (!container) return;
+
+        container.addEventListener('click', function(e) {
+          if (e.target.closest('.tabs__arrow')) return;
+          var item = e.target.closest('.tabs__item');
+          if (!item || item.classList.contains('tabs__item--disabled')) return;
+
+          var list = container.querySelector('.tabs__list');
+          var index = Array.prototype.indexOf.call(list.querySelectorAll('.tabs__item'), item);
+          list.querySelectorAll('.tabs__item').forEach(function(el, i) {
+            el.classList.toggle('tabs__item--active', i === index);
+            el.setAttribute('aria-selected', i === index);
+          });
+
+          /* Masking：选中最后一个时隐藏遮罩和箭头 */
+          var menuEl = container.closest('.tabs-menu--masking');
+          if (menuEl) {
+            var items = list.querySelectorAll('.tabs__item');
+            menuEl.classList.toggle('tabs-menu--last-selected', index === items.length - 1);
+          }
+
+          if (contentEl && texts && texts[index] !== undefined) {
+            if (contentId === 'content-arrow') {
+              var arrowText = document.getElementById('content-arrow-text');
+              if (arrowText) arrowText.textContent = texts[index];
+            } else {
+              contentEl.textContent = '当前选中：' + texts[index];
+            }
+          }
+
+          /* 横向滚动：点击 tab 后若相邻 tab 不可见，自动滚动露出 */
+          var scrollContainer = list;
+          if (container.closest('.tabs-menu--masking')) {
+            scrollContainer = container.closest('.tabs-menu__left');
+          }
+          if (container.classList.contains('tabs--scroll') || container.classList.contains('tabs--h5') || container.classList.contains('tabs--card-h5') || container.classList.contains('tabs--capsules-h5') || container.closest('.tabs-menu--masking')) {
+            var items = list.querySelectorAll('.tabs__item');
+            var nextItem = items[index + 1];
+            var prevItem = items[index - 1];
+            var listRect = scrollContainer.getBoundingClientRect();
+            var threshold = 2;
+
+            var nextNotVisible = nextItem && (function() {
+              var r = nextItem.getBoundingClientRect();
+              return r.left >= listRect.right - threshold;
+            })();
+            var prevNotVisible = prevItem && (function() {
+              var r = prevItem.getBoundingClientRect();
+              return r.right <= listRect.left + threshold;
+            })();
+
+            if (nextNotVisible) {
+              var targetScroll = nextItem.offsetLeft + nextItem.offsetWidth - scrollContainer.clientWidth;
+              scrollContainer.scrollTo({
+                left: Math.max(0, targetScroll),
+                behavior: 'smooth'
+              });
+            } else if (prevNotVisible) {
+              scrollContainer.scrollTo({
+                left: Math.max(0, prevItem.offsetLeft),
+                behavior: 'smooth'
+              });
+            }
+          }
+        });
+      }
+
+      ['tabs-default', 'tabs-no-divider', 'tabs-text', 'tabs-disabled', 'tabs-tag', 'tabs-icon', 'tabs-arrow', 'tabs-scroll', 'tabs-card', 'tabs-card-44', 'tabs-card-32', 'tabs-card-28', 'tabs-card-24', 'tabs-caps-40-web', 'tabs-caps-36-web', 'tabs-caps-32-web', 'tabs-caps-32-h5', 'tabs-caps-28-web', 'tabs-caps-28-h5', 'tabs-card-map-56-web', 'tabs-card-map-56-h5', 'tabs-card-map-40-web', 'tabs-card-map-32-web', 'tabs-card-map-32-h5', 'tabs-card-map-28-web', 'tabs-card-map-28-h5', 'tabs-menu-base', 'tabs-menu-right', 'tabs-menu-masking', 'tabs-left-var-1', 'tabs-left-var-2', 'tabs-left-var-3', 'tabs-left-var-4'].forEach(function(id) {
+        bindTabs(id, 'content-' + id.replace('tabs-', ''));
+      });
+
+      /* 右侧变量：带箭头按钮点击切换上下箭头 */
+      var rightVarArrowBtn = document.getElementById('right-var-arrow-btn');
+      var rightVarArrow = document.getElementById('right-var-arrow');
+      if (rightVarArrowBtn && rightVarArrow) {
+        rightVarArrowBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          rightVarArrow.classList.toggle('tabs-menu__right-item-arrow--up');
+          rightVarArrowBtn.setAttribute('aria-expanded', rightVarArrow.classList.contains('tabs-menu__right-item-arrow--up'));
+        });
+      }
+
+      /* Masking 类型：右箭头点击向右滚动 Tab 列表 */
+      document.querySelectorAll('.tabs-menu--masking .tabs-menu__mask-chevron').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var scrollContainer = btn.closest('.tabs-menu__mask-wrap').querySelector('.tabs-menu__left');
+          if (scrollContainer) {
+            var step = scrollContainer.clientWidth * 0.6;
+            scrollContainer.scrollTo({
+              left: Math.min(scrollContainer.scrollLeft + step, scrollContainer.scrollWidth - scrollContainer.clientWidth),
+              behavior: 'smooth'
+            });
+          }
+        });
+      });
+
+      var arrowBtn = document.getElementById('tabs-arrow-btn');
+      var arrowDropdown = document.getElementById('tabs-arrow-dropdown');
+      var arrowStateEl = document.getElementById('arrow-state');
+      if (arrowBtn && arrowDropdown && arrowStateEl) {
+        arrowBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var isOpen = arrowDropdown.classList.toggle('is-open');
+          arrowBtn.classList.toggle('is-open', isOpen);
+          arrowBtn.setAttribute('aria-expanded', isOpen);
+          arrowDropdown.setAttribute('aria-hidden', !isOpen);
+          arrowStateEl.textContent = isOpen ? '朝上（下拉已展开）' : '朝下';
+        });
+        arrowDropdown.querySelectorAll('.tabs__dropdown-item').forEach(function(opt) {
+          opt.addEventListener('click', function(e) {
+            e.stopPropagation();
+            arrowDropdown.querySelectorAll('.tabs__dropdown-item').forEach(function(o) {
+              o.classList.remove('tabs__dropdown-item--selected');
+              o.setAttribute('aria-selected', 'false');
+            });
+            opt.classList.add('tabs__dropdown-item--selected');
+            opt.setAttribute('aria-selected', 'true');
+            arrowDropdown.classList.remove('is-open');
+            arrowBtn.classList.remove('is-open');
+            arrowBtn.setAttribute('aria-expanded', 'false');
+            arrowDropdown.setAttribute('aria-hidden', 'true');
+            arrowStateEl.textContent = '朝下';
+          });
+        });
+        document.addEventListener('click', function(e) {
+          if (e.target.closest('.tabs__dropdown') || e.target.closest('#tabs-arrow-btn')) return;
+          if (arrowDropdown.classList.contains('is-open')) {
+            arrowDropdown.classList.remove('is-open');
+            arrowBtn.classList.remove('is-open');
+            arrowBtn.setAttribute('aria-expanded', 'false');
+            arrowDropdown.setAttribute('aria-hidden', 'true');
+            arrowStateEl.textContent = '朝下';
+          }
+        });
+      }
+
+      // 尺寸演示也做成可点击
+      ['tabs-56', 'tabs-48', 'tabs-44', 'tabs-40', 'tabs-28'].forEach(function(id) {
+        var container = document.getElementById(id);
+        if (!container) return;
+        container.addEventListener('click', function(e) {
+          var item = e.target.closest('.tabs__item');
+          if (!item) return;
+          var list = container.querySelector('.tabs__list');
+          list.querySelectorAll('.tabs__item').forEach(function(el) {
+            var active = el === item;
+            el.classList.toggle('tabs__item--active', active);
+            el.setAttribute('aria-selected', active);
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

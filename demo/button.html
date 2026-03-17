@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>按钮组件规范预览 - button.html</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      /* §1 默认样式 / §8 设计令牌 - Button_Web 134759:59585；颜色 Token 与 Guidelines/Color.md §1 文本、§3 线条、§5 功能色、§8 组件颜色 对齐，字体与 Guidelines/Font.md 对齐 */
+      --color-cmpt-button-primary: #303236;
+      --color-text-inverse-primary: #FFFFFF;
+      --color-text-always-white: #FFFFFF;
+      --color-text-always-black: #070808;
+      --color-bg-always-white: #FFFFFF;
+      --color-cmpt-button-soft: #F5F6F7;
+      --color-cmpt-button-soft-active: #DFE0E2;
+      --color-cmpt-button-soft-disable: #F5F6F7;
+      --color-text-text-primary: #070808;
+      --color-text-text-secondary: #84888C;
+      --color-text-text-disable: #C4C7CA;
+      --color-text-text-tertiary: #A0A3A7;
+      --color-bg-primary: #FFFFFF;
+      --color-line-border-strong: #DFE0E2;
+      --color-function-trade-buy: #2BC287;
+      --color-function-trade-buy-active: #20A174;
+      --color-function-trade-sell: #F74B60;
+      --color-function-trade-sell-active: #D6364E;
+      --color-text-text-brand: #0068FF;
+      --color-link-pressed: #004FD9;
+      --btn-radius: 99px;
+      --ease-out: cubic-bezier(0, 0, 0.2, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Switzer, -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI", sans-serif;
+      background: #f5f5f5;
+      color: #1a1a1a;
+      padding: 40px 24px 80px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      margin: 0 0 8px;
+    }
+
+    .subtitle {
+      color: #666;
+      font-size: 14px;
+      margin: 0 0 24px;
+    }
+
+    section {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .section-desc {
+      font-size: 12px;
+      color: #888;
+      margin: -8px 0 16px;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .row:last-child { margin-bottom: 0; }
+
+    .label {
+      font-size: 12px;
+      color: #666;
+      min-width: 72px;
+    }
+
+    /* Text Button：共用字体，间距 4px */
+    .text-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      font-family: inherit;
+      line-height: 1.3;
+      text-decoration: none;
+      background: transparent;
+      border: none;
+      padding: 0;
+      color: inherit;
+    }
+
+    .text-btn:focus-visible {
+      outline: 2px solid var(--color-link-pressed);
+      outline-offset: 2px;
+    }
+    /* §10.5 Focus 态：设计稿也可用下划线体现 */
+    .text-btn.text-btn--focus-underline:focus-visible {
+      outline: none;
+      text-decoration: underline;
+      text-decoration-color: var(--color-text-text-tertiary, #A0A3A7);
+    }
+
+    .text-btn--lg { font-size: 18px; font-weight: 500; }
+    .text-btn--md { font-size: 16px; font-weight: 500; }
+    .text-btn--sm { font-size: 14px; font-weight: 500; }
+    .text-btn--xs { font-size: 12px; font-weight: 500; }
+
+    .text-btn--black { color: var(--color-text-text-primary); }
+    .text-btn--gray  { color: var(--color-text-text-secondary); }
+    .text-btn--gray:hover,
+    .text-btn--gray.is-hover { color: var(--color-text-text-primary); }
+    .text-btn--blue  { color: var(--color-text-text-brand); }
+    .text-btn--blue:hover,
+    .text-btn--blue.is-hover { color: var(--color-link-pressed); }
+
+    .text-btn--underline-solid {
+      text-decoration-line: underline;
+      text-decoration-style: solid;
+      text-decoration-color: currentColor;
+    }
+
+    .text-btn--underline-dash {
+      text-decoration-line: underline;
+      text-decoration-style: dotted;
+      text-decoration-color: var(--color-text-text-tertiary);
+    }
+
+    .text-btn--semibold { font-weight: 600; }
+
+    .text-btn--disabled {
+      cursor: default;
+      color: #C4C7CA;
+      pointer-events: none;
+    }
+
+    .text-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .text-icon--lg  { width: 24px; height: 24px; }
+    .text-icon--md  { width: 20px; height: 20px; }
+    .text-icon--sm,
+    .text-icon--xs  { width: 16px; height: 16px; }
+
+    /* 基础按钮：规范 §1–§3 */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+      line-height: 1.3;
+      letter-spacing: 0;
+      box-sizing: border-box;
+      border-radius: var(--btn-radius);
+      background: var(--color-cmpt-button-primary);
+      color: var(--color-text-inverse-primary);
+      transition: background-color 100ms var(--ease-out), color 100ms var(--ease-out),
+                  filter 100ms var(--ease-out), transform 100ms var(--ease-out);
+      outline: none;
+      position: relative;
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--color-cmpt-button-primary);
+      outline-offset: 2px;
+    }
+
+    /* Primary：Hover/Pressed 仅文字 Text-Tertiary，无亮暗与内凹；icon 与文字同色 */
+    .btn--primary:hover { color: var(--color-text-text-tertiary, #A0A3A7); }
+    .btn--primary:active { color: var(--color-text-text-tertiary, #A0A3A7); }
+    .btn--primary:hover .icon-placeholder-img,
+    .btn--primary:active .icon-placeholder-img,
+    .btn--primary.is-hover .icon-placeholder-img,
+    .btn--primary.is-pressed .icon-placeholder-img { filter: brightness(0) invert(1) opacity(0.55) !important; }
+    .btn--primary:disabled {
+      background: var(--color-cmpt-button-soft-disable, #F5F6F7);
+      color: var(--color-text-text-disable, #C4C7CA);
+      filter: none;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    /* 禁用态 icon 与文字同色（--color-text-text-disable #C4C7CA），覆盖各区块的 invert */
+    .btn--primary:disabled .icon-placeholder-img { filter: brightness(3.9) saturate(0) !important; }
+
+    /* Secondary */
+    .btn--secondary {
+      background: var(--color-cmpt-button-soft);
+      color: var(--color-text-text-primary);
+    }
+    .btn--secondary:hover { background: var(--color-cmpt-button-soft-active); }
+    .btn--secondary:active { background: var(--color-cmpt-button-soft-active); }
+    .btn--secondary:disabled {
+      background: var(--color-cmpt-button-soft-disable);
+      color: var(--color-text-text-disable);
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .btn--secondary:disabled .icon-placeholder-img { filter: brightness(3.9) saturate(0) !important; }
+
+    /* White §5.3：Figma 使用 --color-bg-always-white / --color-text-always-black */
+    .btn--white {
+      background: var(--color-bg-primary, var(--color-bg-always-white, #FFFFFF));
+      color: var(--color-text-text-primary, var(--color-text-always-black, #070808));
+      border: 1px solid var(--color-line-border-strong, #DFE0E2);
+    }
+    .btn--white:hover { background: #F9F9F9; }
+    .btn--white:active { background: #EBECED; }
+    .btn--white:disabled {
+      background: var(--color-cmpt-button-soft-disable, #F5F6F7);
+      color: var(--color-text-text-disable, #C4C7CA);
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* Faded */
+    .btn--faded {
+      background: var(--color-cmpt-button-soft);
+      color: var(--color-text-text-secondary);
+    }
+    .btn--faded:hover { background: #EBECED; }
+    .btn--faded:active { background: var(--color-cmpt-button-soft-active); }
+    .btn--faded:disabled {
+      background: var(--color-cmpt-button-soft-disable);
+      color: var(--color-text-text-disable);
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* Green §5.5：文字 --color-text-inverse-primary / --color-text-always-white，Hover 略亮 */
+    .btn--green {
+      background: var(--color-function-trade-buy);
+      color: var(--color-text-inverse-primary, var(--color-text-always-white, #FFFFFF));
+    }
+    .btn--green:hover { background: var(--color-function-trade-buy-active); }
+    .btn--green:active { background: var(--color-function-trade-buy-active); }
+    .btn--green:disabled {
+      background: var(--color-cmpt-button-soft-disable, #F5F6F7);
+      color: var(--color-text-text-disable, #C4C7CA);
+      filter: none;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .btn--green:disabled .icon-placeholder-img { filter: brightness(3.9) saturate(0) !important; }
+
+    /* Red §5.6：文字 --color-text-inverse-primary / --color-text-always-white，Hover 略亮 */
+    .btn--red {
+      background: var(--color-function-trade-sell);
+      color: var(--color-text-inverse-primary, var(--color-text-always-white, #FFFFFF));
+    }
+    .btn--red:hover { background: var(--color-function-trade-sell-active); }
+    .btn--red:active { background: var(--color-function-trade-sell-active); }
+    .btn--red:disabled {
+      background: var(--color-cmpt-button-soft-disable, #F5F6F7);
+      color: var(--color-text-text-disable, #C4C7CA);
+      filter: none;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .btn--red:disabled .icon-placeholder-img { filter: brightness(3.9) saturate(0) !important; }
+
+    /* Loading：与同尺寸带字按钮左右间距一致（如 MD 为 20px），Spinner 在文档流中由 flex 居中 */
+    .btn--loading {
+      background: var(--color-cmpt-button-primary, #303236) !important;
+      color: transparent !important;
+      filter: none !important;
+      pointer-events: none;
+    }
+    .btn--red.btn--loading { background: var(--color-function-trade-sell, #F74B60) !important; }
+    .btn--green.btn--loading { background: var(--color-function-trade-buy, #2bc287) !important; }
+    .btn--secondary.btn--loading { background: var(--color-cmpt-button-soft, #F5F6F7) !important; }
+    .btn--secondary.btn--loading .btn__spinner { border-color: var(--color-text-text-tertiary, #A0A3A7); border-top-color: var(--color-cmpt-button-primary, #303236); }
+    .btn--loading .btn__spinner {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      border: 1.67px solid rgba(255, 255, 255, 0.2);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: btn-spin 0.7s linear infinite;
+    }
+    @keyframes btn-spin { to { transform: rotate(360deg); } }
+
+    /* 静态 Pressed 展示用（仅演示） */
+    .btn.is-pressed.btn--primary { color: var(--color-text-text-tertiary, #A0A3A7); }
+    .btn.is-pressed.btn--secondary { background: var(--color-cmpt-button-soft-active); }
+    .btn.is-pressed.btn--white { background: #EBECED; }
+    .btn.is-pressed.btn--faded { background: var(--color-cmpt-button-soft-active); }
+    .btn.is-pressed.btn--green { background: var(--color-function-trade-buy-active); /* 文字与 icon 与默认态一致，保持白色 */ }
+    .btn.is-pressed.btn--red { background: var(--color-function-trade-sell-active); }
+
+    /* 静态展示 Hover 态：仅 Primary 文字 Text-Tertiary；Green / Red 与默认态一致（白字）；White / Secondary 仅背景 */
+    .btn--primary.is-hover { color: var(--color-text-text-tertiary, #A0A3A7); }
+    .btn--white.is-hover { background: #F9F9F9; }
+    .btn--secondary.is-hover { background: var(--color-cmpt-button-soft-active); }
+    .btn--green.is-hover { background: var(--color-function-trade-buy-active); }
+    .btn--red.is-hover { background: var(--color-function-trade-sell-active); }
+
+    .btn .icon {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* §2.1 Web 七档尺寸 */
+    .btn--xxs {
+      height: 28px;
+      padding: 0 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .btn--xxs.btn--icon-only { width: 28px; padding: 0; }
+    .btn--xxs .icon { width: 12px; height: 12px; }
+
+    .btn--xs {
+      height: 32px;
+      padding: 0 12px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .btn--xs.btn--icon-only { width: 32px; padding: 0; }
+    .btn--xs .icon { width: 16px; height: 16px; }
+
+    .btn--sm {
+      height: 36px;
+      padding: 0 16px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .btn--sm.btn--icon-only { width: 36px; padding: 0; }
+    .btn--sm .icon { width: 18px; height: 18px; }
+
+    .btn--md {
+      height: 40px;
+      padding: 0 20px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .btn--md.btn--icon-only { width: 40px; padding: 0; }
+    .btn--md .icon { width: 18px; height: 18px; }
+
+    .btn--lg {
+      height: 44px;
+      padding: 0 24px;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .btn--lg.btn--icon-only { width: 44px; padding: 0; }
+    .btn--lg .icon { width: 20px; height: 20px; }
+
+    .btn--xl {
+      height: 48px;
+      padding: 0 24px;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .btn--xl.btn--icon-only { width: 48px; padding: 0; }
+    .btn--xl .icon { width: 20px; height: 20px; }
+
+    .btn--xxl {
+      height: 56px;
+      padding: 0 32px;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .btn--xxl.btn--icon-only { width: 56px; padding: 0; }
+    .btn--xxl .icon { width: 22px; height: 22px; }
+
+    /* H5 24px 档 §2.2 */
+    .btn--h5-24 {
+      height: 24px;
+      padding: 0 8px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .btn--h5-24.btn--icon-only { width: 24px; padding: 0; }
+    .btn--h5-24 .icon { width: 12px; height: 12px; }
+
+    /* 图标占位（Guidelines/Icon.md：占位展示，替换为真实 Icon 时按字阶尺寸） */
+    .icon-placeholder {
+      width: 1em;
+      height: 1em;
+      border: 1.5px dashed currentColor;
+      border-radius: 2px;
+      box-sizing: border-box;
+    }
+    /* 按钮内 Icon 展示栏：Figma 7454:72914，Icon 20px、与文字 gap 6px */
+    .section-btn-icon-demo .btn { gap: 6px; }
+    .section-btn-icon-demo .btn--md .icon { width: 20px; height: 20px; }
+    .section-btn-icon-demo .btn--md.btn--icon-only .icon { width: 20px; height: 20px; }
+    /* 按钮内使用 Iconplaceholder.svg（Guidelines/icons/Basic Product Icons），深色按钮上反色为白 */
+    .section-btn-icon-demo .btn--primary .icon-placeholder-img,
+    .section-btn-icon-demo .btn--green .icon-placeholder-img,
+    .section-btn-icon-demo .btn--red .icon-placeholder-img { filter: brightness(0) invert(1); }
+    .section-btn-icon-demo .icon-placeholder-img { display: block; width: 20px; height: 20px; }
+
+    /* 按钮组合（Figma 7454:73039）：首焦组合 gap 16px、弹窗组合 gap 12px 两钮等分 */
+    .btn-combo { display: flex; align-items: center; flex-wrap: wrap; }
+    .btn-combo--focus { gap: 16px; }
+    .btn-combo--dialog { gap: 12px; max-width: 360px; }
+    .btn-combo--dialog .btn { flex: 1; min-width: 0; }
+
+    /* 颜色模式（Figma 7454:73055）：暗黑背景容器 + 五种类型暗黑样式覆盖 */
+    .color-mode-section { display: flex; flex-wrap: wrap; gap: 0; align-items: stretch; margin-bottom: 16px; }
+    .color-mode-col { flex: 1; min-width: 280px; padding: 48px 40px; display: flex; flex-direction: column; align-items: center; gap: 48px; border-radius: 24px; border: 1px solid #ccc; }
+    .color-mode-col + .color-mode-col { margin-left: 0; border-left-width: 0; border-radius: 0 24px 24px 0; }
+    .color-mode-col:first-child { border-radius: 24px 0 0 24px; }
+    .color-mode-col--dark { background: var(--color-bg-tertiary, #18191b); border-color: var(--color-line-border-subtle, #1f2023); }
+    .color-mode-col--dark .color-mode-col__title { color: var(--color-text-inverse-primary, #fff); }
+    .color-mode-col__title { font-size: 16px; font-weight: 500; margin: 0; }
+    /* 暗黑模式下五种按钮类型：用明确色值避免继承浅色主题变量。Primary→白底黑字，Secondary→深灰底白字，White→白底黑字 */
+    .color-mode-col--dark .btn--primary { background: #ffffff !important; color: #070808 !important; }
+    .color-mode-col--dark .btn--primary:hover { color: #A0A3A7 !important; }
+    .color-mode-col--dark .btn--primary:active { color: #A0A3A7 !important; }
+    .color-mode-col--dark .btn--secondary { background: #303236 !important; color: #ffffff !important; }
+    .color-mode-col--dark .btn--secondary:hover { background: #3d4045 !important; color: #ffffff !important; }
+    .color-mode-col--dark .btn--secondary:active { background: #484b50 !important; color: #ffffff !important; }
+    .color-mode-col--dark .btn--white { background: #ffffff !important; color: #070808 !important; border-color: #3a3b3e !important; }
+    .color-mode-col--dark .btn--green,
+    .color-mode-col--dark .btn--red { /* 绿/红在暗黑下保持原色 */ }
+
+    /* 按钮样式汇总（Figma 134759:47832）：4 类型 × 4 变体 × 5 状态 */
+    .btn-summary__type { margin-top: 32px; margin-bottom: 12px; font-size: 18px; font-weight: 600; }
+    .btn-summary__type:first-child { margin-top: 0; }
+    .btn-summary-table { border-collapse: separate; border-spacing: 8px 12px; margin-bottom: 24px; }
+    .btn-summary-table th { font-size: 12px; font-weight: 500; color: #666; text-align: left; padding: 0 4px; vertical-align: middle; }
+    .btn-summary-table td { padding: 0; vertical-align: middle; }
+    .btn-summary .icon-placeholder-img { display: block; width: 18px; height: 18px; }
+    .btn-summary .btn--primary .icon-placeholder-img,
+    .btn-summary .btn--green .icon-placeholder-img,
+    .btn-summary .btn--red .icon-placeholder-img { filter: brightness(0) invert(1); }
+
+    /* §11 Footer Button 底部按钮 - 容器 16px padding、页面 48px / Popup 40px */
+    .footer-btn-wrap {
+      max-width: 375px;
+      padding: 16px;
+      background: var(--color-bg-primary, #fff);
+      border-radius: 12px;
+      border: 1px solid var(--color-line-border-strong, #DFE0E2);
+    }
+    .footer-btn-wrap .btn { width: 100%; }
+    .footer-btn-wrap.footer-btn-wrap--popup .btn--md { height: 40px; padding: 0 20px; font-size: 14px; }
+    .footer-btn-wrap.footer-btn-wrap--two .btn { flex: 1; min-width: 0; }
+    .footer-btn-wrap.footer-btn-wrap--two { display: flex; gap: 12px; }
+
+    /* 12. Web-H5 对应关系（Figma 7216:21658）— 仅本模块使用，不影响前述规则 */
+    .section-web-h5-correspondence { margin-top: 48px; }
+    .section-web-h5-correspondence .web-h5-table-wrap { border: 1px solid var(--color-line-gutter-gutter, #dfe0e2); border-radius: 24px; overflow: hidden; background: #fff; max-width: 100%; }
+    .section-web-h5-correspondence .web-h5-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    .section-web-h5-correspondence .web-h5-table thead { background: var(--color-bg-tertiary, #f2f3f4); }
+    .section-web-h5-correspondence .web-h5-table th { padding: 16px 24px; font-size: 18px; font-weight: 600; color: var(--color-text-text-primary, #070808); text-align: center; border: 1px solid var(--color-line-gutter-gutter, #dfe0e2); }
+    .section-web-h5-correspondence .web-h5-table th:first-child { width: 200px; }
+    .section-web-h5-correspondence .web-h5-table td { padding: 20px 24px; font-size: 16px; font-weight: 600; color: var(--color-text-text-primary); text-align: center; border: 1px solid var(--color-line-gutter-gutter, #dfe0e2); vertical-align: middle; }
+    .section-web-h5-correspondence .web-h5-table tbody tr { min-height: 88px; }
+    .section-web-h5-correspondence .web-h5-table td .btn { flex-shrink: 0; }
+    .section-web-h5-correspondence .web-h5-table .cell-buttons { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
+    .section-web-h5-correspondence .web-h5-table .cell-buttons--col { flex-direction: column; gap: 12px; }
+    .section-web-h5-correspondence .web-h5-table .cell-long .btn { min-width: 160px; }
+    .section-web-h5-correspondence .web-h5-footer-row td { border-bottom: 2px solid var(--color-line-gutter-gutter, #dfe0e2); }
+
+    /* 13. 按钮极端原则（Figma 7200:21155）— 仅本模块使用 */
+    .section-extreme-principles { margin-top: 48px; }
+    .section-extreme-principles .extreme-heading { font-size: 32px; font-weight: 800; line-height: 1.2; color: var(--color-text-text-primary, #070808); margin: 0 0 24px 0; }
+    .section-extreme-principles .extreme-rules { margin: 0 0 24px 0; padding-left: 1.5em; font-size: 18px; font-weight: 600; color: var(--color-text-text-primary); line-height: 1.5; }
+    .section-extreme-principles .extreme-rules li { margin-bottom: 0.5em; }
+    .section-extreme-principles .extreme-box { background: #f9f9f9; border: 1px solid #ccc; border-radius: 24px; padding: 24px 32px 32px; margin-top: 24px; }
+    .section-extreme-principles .extreme-box .extreme-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .section-extreme-principles .extreme-box .extreme-table th { text-align: left; padding: 12px 16px; font-weight: 600; color: var(--color-text-text-primary); border-bottom: 1px solid var(--color-line-gutter-gutter, #dfe0e2); }
+    .section-extreme-principles .extreme-box .extreme-table td { padding: 12px 16px; border-bottom: 1px solid var(--color-line-gutter-gutter, #dfe0e2); vertical-align: middle; }
+    .section-extreme-principles .extreme-box .extreme-table .size-col { width: 72px; font-weight: 500; }
+    .section-extreme-principles .extreme-box .btn-wrap { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .section-extreme-principles .extreme-box .btn--smaller { font-size: 14px !important; }
+    .section-extreme-principles .extreme-box .btn--smaller.btn--xxl { font-size: 16px !important; }
+    .section-extreme-principles .extreme-box .btn--smaller.btn--xs { font-size: 12px !important; }
+    .section-extreme-principles .extreme-box .btn-two-lines { gap: 0; line-height: 1.3; text-align: center; }
+    .section-extreme-principles .extreme-box .btn-two-lines .btn-text-wrap { display: block; text-align: center; line-height: 1.3; }
+    .section-extreme-principles .extreme-box .btn-truncate { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .section-extreme-principles .extreme-box .btn-truncate.btn-two-lines { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .section-extreme-principles .extreme-box .cell-na { color: var(--color-text-text-tertiary, #A0A3A7); font-size: 14px; }
+    .section-extreme-principles .btn--primary img.icon { filter: brightness(0) invert(1); }
+
+    /* 14. 底部操作按钮 默认样式（Figma 7454:79160）— 375px 宽容器 */
+    .section-footer-default { margin-top: 48px; }
+    .section-footer-default .footer-default-title { font-size: 20px; font-weight: 500; color: var(--color-text-text-primary, #070808); margin: 0 0 12px 0; }
+    .section-footer-default .footer-default-divider { height: 1px; background: var(--color-line-gutter-gutter, #dfe0e2); margin: 0 0 24px 0; }
+    .section-footer-default .footer-default-preview { width: 375px; max-width: 100%; margin: 0 auto; padding: 40px 0; background: var(--color-bg-primary, #fff); box-sizing: border-box; }
+    .section-footer-default .footer-default-preview .footer-btn-wrap { width: 100%; box-sizing: border-box; border: none; border-radius: 0; }
+    .section-footer-default .footer-default-caption { margin-top: 24px; }
+    .section-footer-default .footer-default-caption .caption-title { font-size: 16px; font-weight: 500; color: var(--color-text-text-primary); margin: 0 0 4px 0; }
+    .section-footer-default .footer-default-caption .caption-desc { font-size: 14px; color: var(--color-text-text-primary); line-height: 1.8; margin: 0; }
+
+    /* 14. 底部按钮类型（Figma 7454:79176）— 均在 375px 宽容器内 */
+    .section-footer-types { margin-top: 48px; }
+    .section-footer-types .footer-types-title { font-size: 20px; font-weight: 500; color: var(--color-text-text-primary, #070808); margin: 0 0 12px 0; }
+    .section-footer-types .footer-types-divider { height: 1px; background: var(--color-line-gutter-gutter, #dfe0e2); margin: 0 0 24px 0; }
+    .section-footer-types .footer-type-item { margin-bottom: 32px; }
+    .section-footer-types .footer-type-item:last-child { margin-bottom: 0; }
+    .section-footer-types .footer-type-label { font-size: 14px; font-weight: 500; color: var(--color-text-text-primary); margin-bottom: 8px; }
+    .section-footer-types .footer-type-preview { width: 375px; max-width: 100%; padding: 40px 0; background: var(--color-bg-primary, #fff); box-sizing: border-box; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap { width: 100%; box-sizing: border-box; border: none; border-radius: 0; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--horizontal { display: flex; gap: 12px; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--horizontal .btn { flex: 1; min-width: 0; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--long { display: flex; gap: 12px; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--long .btn:first-child { width: 96px; flex: none; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--long .btn:last-child { flex: 1; min-width: 0; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--long-icon { display: flex; gap: 12px; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--long-icon .btn--icon-only { width: 48px; flex: none; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--long-icon .btn:last-child { flex: 1; min-width: 0; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--vertical { display: flex; flex-direction: column; gap: 12px; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--vertical .btn { width: 100%; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--vertical-2 { display: flex; flex-direction: column; gap: 12px; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--vertical-2 .footer-btn-row { display: flex; gap: 12px; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--vertical-2 .footer-btn-row .btn { flex: 1; min-width: 0; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--vertical-text { display: flex; flex-direction: column; gap: 16px; align-items: center; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--vertical-text .btn { width: 100%; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--vertical-text .footer-text-link { font-size: 14px; font-weight: 500; color: var(--color-text-text-primary); text-decoration: underline; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--vertical-text-desc { display: flex; flex-direction: column; gap: 16px; align-items: center; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--vertical-text-desc .btn { width: 100%; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--vertical-text-desc .footer-desc { font-size: 14px; color: var(--color-text-text-secondary, #84888C); margin: 0; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--vertical-text-desc .footer-text-link { font-size: 14px; font-weight: 500; color: var(--color-text-text-primary); text-decoration: underline; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--vertical-text-desc .footer-desc-row { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+
+    /* 14. 底部按钮变量：带 Agreement / 带分割线（Figma 7454:79251）— 375px 宽容器；协议勾选引用 Checkbox 组件库 Guidelines/Checkbox.md、checkbox.html */
+    .section-footer-types .footer-type-preview .footer-btn-wrap--agreement { display: flex; flex-direction: column; gap: 16px; align-items: stretch; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--agreement .footer-agreement-row { display: flex; align-items: center; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--divider { border-top: 0.5px solid var(--color-line-divider-divider, #f2f3f4); padding-top: 16px; display: flex; flex-direction: column; align-items: stretch; }
+
+    /* Checkbox 组件（引用 Guidelines/Checkbox.md · 与 checkbox.html 一致，切图 Guidelines/Slicing/Checkbox） */
+    .checkbox { display: inline-flex; align-items: flex-start; gap: 8px; cursor: pointer; font-family: inherit; line-height: 1.3; letter-spacing: 0; color: var(--color-text-text-primary, #070808); user-select: none; }
+    .checkbox__input { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+    .checkbox__box { flex-shrink: 0; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; margin-top: 2px; transition: opacity 100ms var(--ease-out, cubic-bezier(0, 0, 0.2, 1)); }
+    .checkbox__box img { display: block; width: 100%; height: 100%; vertical-align: middle; }
+    .checkbox__input:focus-visible + .checkbox__box { outline: 2px solid var(--color-cmpt-button-primary, #303236); outline-offset: 2px; }
+    .checkbox__label { font-size: 14px; font-weight: 400; line-height: 1.3; }
+    .section-footer-types .footer-type-preview .footer-btn-wrap--divider .btn { width: 100%; }
+
+    /* Tab 分类：常规按钮 | 文字按钮 | 底部操作按钮 */
+    .page-header-sticky { position: sticky; top: 0; z-index: 10; background: #f5f5f5; margin: -40px -24px 0 -24px; padding: 40px 24px 24px 24px; }
+    .btn-tabs { display: flex; gap: 0; margin-bottom: 0; border-bottom: 1px solid #e0e0e0; padding: 0 4px 0 0; }
+    .btn-tab { font-family: inherit; font-size: 14px; font-weight: 500; color: #666; background: none; border: none; padding: 12px 20px; cursor: pointer; position: relative; margin-bottom: -1px; border-radius: 8px 8px 0 0; }
+    .btn-tab:hover { color: #333; }
+    .btn-tab.is-active { color: var(--color-cmpt-button-primary, #303236); }
+    .btn-tab.is-active::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--color-cmpt-button-primary, #303236); border-radius: 1px 1px 0 0; }
+    body[data-tab="regular"] section.card-text, body[data-tab="regular"] section.card-footer { display: none; }
+    body[data-tab="text"] section.card-regular, body[data-tab="text"] section.card-footer { display: none; }
+    body[data-tab="footer"] section.card-regular, body[data-tab="footer"] section.card-text { display: none; }
+  </style>
+</head>
+<body data-tab="regular">
+  <header class="page-header-sticky">
+    <h1>按钮组件规范演示</h1>
+    <p class="subtitle">依据 <a href="../Guidelines/Button.md">Guidelines/Button.md</a> · 字体 <a href="../Guidelines/Font.md">Font.md</a> · 颜色 <a href="../Guidelines/Color.md">Color.md</a> · Figma Button_Web (134759:59585) · ButtonV5-web · 类型 | 状态 | 尺寸 | 组合 · 含 Text Button</p>
+    <div class="btn-tabs" role="tablist" aria-label="按钮分类">
+      <button type="button" class="btn-tab is-active" role="tab" aria-selected="true" data-tab="regular">常规按钮</button>
+      <button type="button" class="btn-tab" role="tab" aria-selected="false" data-tab="text">文字按钮</button>
+      <button type="button" class="btn-tab" role="tab" aria-selected="false" data-tab="footer">底部操作按钮</button>
+    </div>
+  </header>
+
+  <!-- 0. 默认样式（单一规范源）§1 · 卡片 1 -->
+  <section class="card-regular">
+    <h2 class="section-title">0. 默认样式（单一规范源）</h2>
+    <p class="section-desc">§1：Primary-Black、Default、Medium 40px 高、圆角 99px、背景/文字变量、14px 500、水平 padding 20px、inline-flex 居中</p>
+    <div class="row">
+      <button type="button" class="btn btn--primary btn--md">Primary Default Medium</button>
+    </div>
+  </section>
+
+  <!-- 1. 类型 Type：6 种按钮类型 · 卡片 2 -->
+  <section class="card-regular">
+    <h2 class="section-title">1. 类型 (Type)</h2>
+    <p class="section-desc">类型 = 按钮色彩/样式变体。设计稿变体：Type | State | Size | Icons。Primary-Black、Secondary-Gray、White、Green、Red</p>
+    <div class="row">
+      <span class="label">1</span>
+      <button type="button" class="btn btn--primary btn--md">Primary-Black</button>
+    </div>
+    <div class="row">
+      <span class="label">2</span>
+      <button type="button" class="btn btn--secondary btn--md">Secondary-Gray</button>
+    </div>
+    <div class="row">
+      <span class="label">3</span>
+      <button type="button" class="btn btn--white btn--md">White</button>
+    </div>
+    <p class="section-desc" style="margin-top: -8px;">※ White：实际无灰色描边，为**灰色背景上的白底按钮**；本页描边仅用于在浅色背景上示意轮廓。</p>
+    <div class="row">
+      <span class="label">4</span>
+      <button type="button" class="btn btn--green btn--md">Green</button>
+    </div>
+    <div class="row">
+      <span class="label">5</span>
+      <button type="button" class="btn btn--red btn--md">Red</button>
+    </div>
+  </section>
+
+  <!-- 2. 状态 State：Default / Hover / Pressed / Disable / Loading §6.2 -->
+  <section class="card-regular">
+    <h2 class="section-title">2. 状态 (State)</h2>
+    <p class="section-desc">§6.2 五态：Default、Hover（文字 Text-Tertiary）、Pressed（文字 Text-Tertiary）、Disabled（浅灰底+浅灰字）、Loading（无文案+Spinner）。</p>
+    <div class="row">
+      <span class="label">1 Default</span>
+      <button type="button" class="btn btn--primary btn--md">Default</button>
+    </div>
+    <div class="row">
+      <span class="label">2 Hover</span>
+      <button type="button" class="btn btn--primary btn--md is-hover" title="悬停态示意">Hover</button>
+    </div>
+    <div class="row">
+      <span class="label">3 Pressed</span>
+      <button type="button" class="btn btn--primary btn--md is-pressed" tabindex="-1">Pressed</button>
+    </div>
+    <div class="row">
+      <span class="label">4 Disable</span>
+      <button type="button" class="btn btn--primary btn--md" disabled>Disable</button>
+    </div>
+    <div class="row">
+      <span class="label">5 Loading</span>
+      <button type="button" class="btn btn--primary btn--md btn--loading" disabled aria-busy="true" aria-label="加载中">
+        <span class="btn__spinner" aria-hidden="true"></span>
+      </button>
+    </div>
+  </section>
+
+  <!-- 3. Web 七档尺寸 -->
+  <section class="card-regular">
+    <h2 class="section-title">3. Web 端七档尺寸（Primary）</h2>
+    <p class="section-desc">XXSmall 28px → … → XXLarge 56px</p>
+    <div class="row">
+      <span class="label">XXS</span>
+      <button type="button" class="btn btn--primary btn--xxs">Button</button>
+    </div>
+    <div class="row">
+      <span class="label">XS</span>
+      <button type="button" class="btn btn--primary btn--xs">Button</button>
+    </div>
+    <div class="row">
+      <span class="label">SM</span>
+      <button type="button" class="btn btn--primary btn--sm">Button</button>
+    </div>
+    <div class="row">
+      <span class="label">MD</span>
+      <button type="button" class="btn btn--primary btn--md">Button</button>
+    </div>
+    <div class="row">
+      <span class="label">LG</span>
+      <button type="button" class="btn btn--primary btn--lg">Button</button>
+    </div>
+    <div class="row">
+      <span class="label">XL</span>
+      <button type="button" class="btn btn--primary btn--xl">Button</button>
+    </div>
+    <div class="row">
+      <span class="label">XXL</span>
+      <button type="button" class="btn btn--primary btn--xxl">Button</button>
+    </div>
+  </section>
+
+  <!-- 4. 按钮内 Icon 展示（Figma 7454:72914 · Icon.md 规范 · Icon placeholder 占位） -->
+  <section class="section-btn-icon-demo card-regular">
+    <h2 class="section-title">4. 按钮内 Icon 展示</h2>
+    <p class="section-desc">Figma <a href="https://www.figma.com/design/yyvB1Mer7aG8cJx9JVTVZL/?node-id=7454-72914" target="_blank" rel="noopener">node 7454:72914</a> · 图标尺寸与间距遵循 <strong>Guidelines/Icon.md</strong>（Medium 40px 档对应 Icon 20×20；与文字间隙 6px）。图标使用 <strong>Icon placeholder</strong> 占位，上线替换为真实 Icon。</p>
+    <div class="row">
+      <span class="label">1</span>
+      <button type="button" class="btn btn--primary btn--md">
+        <img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="20" height="20" class="icon icon-placeholder-img" aria-hidden="true" />
+        Button
+      </button>
+    </div>
+    <div class="row">
+      <span class="label">2</span>
+      <button type="button" class="btn btn--primary btn--md">
+        Button
+        <img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="20" height="20" class="icon icon-placeholder-img" aria-hidden="true" />
+      </button>
+    </div>
+    <div class="row">
+      <span class="label">3</span>
+      <button type="button" class="btn btn--primary btn--md btn--icon-only" aria-label="操作">
+        <img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="20" height="20" class="icon icon-placeholder-img" aria-hidden="true" />
+      </button>
+    </div>
+  </section>
+
+  <!-- 5. 按钮组合（Figma 7454:73039）· 首焦 / 弹窗 -->
+  <section class="card-regular">
+    <h2 class="section-title">5. 按钮组合</h2>
+    <p class="section-desc">Figma <a href="https://www.figma.com/design/yyvB1Mer7aG8cJx9JVTVZL/?node-id=7454-73039" target="_blank" rel="noopener">node 7454:73039</a> · 应用在首焦中的按钮组合、弹窗按钮组合</p>
+    <div class="row">
+      <span class="label">首焦</span>
+      <div class="btn-combo btn-combo--focus">
+        <button type="button" class="btn btn--primary btn--md">Button</button>
+        <button type="button" class="btn btn--secondary btn--md btn--icon-only" aria-label="操作"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="20" height="20" class="icon icon-placeholder-img" aria-hidden="true" /></button>
+      </div>
+    </div>
+    <div class="row">
+      <span class="label">弹窗</span>
+      <div class="btn-combo btn-combo--dialog">
+        <button type="button" class="btn btn--secondary btn--md">Cancel</button>
+        <button type="button" class="btn btn--primary btn--md">Confirm</button>
+      </div>
+      </div>
+    <p class="section-desc" style="margin-top:8px;"><strong>首焦：</strong>Primary Black + Secondary Gray（可带仅图标按钮），间距 16px。<strong>弹窗：</strong>Secondary Gray + Primary（取消 + 确定），间距 12px，两钮等分。</p>
+  </section>
+
+  <!-- 6. 颜色模式（五种类型暗黑样式）Figma 7454:73055 -->
+  <section class="card-regular">
+    <h2 class="section-title">6. 颜色模式（五种类型暗黑样式）</h2>
+    <p class="section-desc">Figma <a href="https://www.figma.com/design/yyvB1Mer7aG8cJx9JVTVZL/?node-id=7454-73055" target="_blank" rel="noopener">node 7454:73055</a> · 五种按钮类型在浅色与暗黑模式下的对应样式。暗黑下 Primary→白底黑字，Secondary→深灰底白字，White→白底黑字，Green/Red 保持原色。</p>
+    <div class="color-mode-section">
+      <div class="color-mode-col">
+        <h3 class="color-mode-col__title">浅色模式</h3>
+        <button type="button" class="btn btn--primary btn--md">Button</button>
+        <button type="button" class="btn btn--secondary btn--md">Button</button>
+        <button type="button" class="btn btn--white btn--md">Button</button>
+        <button type="button" class="btn btn--green btn--md">Button</button>
+        <button type="button" class="btn btn--red btn--md">Button</button>
+    </div>
+      <div class="color-mode-col color-mode-col--dark">
+        <h3 class="color-mode-col__title">暗黑模式</h3>
+        <button type="button" class="btn btn--primary btn--md">Button</button>
+        <button type="button" class="btn btn--secondary btn--md">Button</button>
+        <button type="button" class="btn btn--white btn--md">Button</button>
+        <button type="button" class="btn btn--green btn--md">Button</button>
+        <button type="button" class="btn btn--red btn--md">Button</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. 按钮样式汇总（Figma 134759:47832） -->
+  <section class="btn-summary card-regular">
+    <h2 class="section-title">7. 按钮样式汇总</h2>
+    <p class="section-desc">Figma <a href="https://www.figma.com/design/yyvB1Mer7aG8cJx9JVTVZL/?node-id=134759-47832" target="_blank" rel="noopener">node 134759:47832</a> · 一级 / 二级 / 绿色 / 红色按钮的常规、icon+文字、文字+icon、纯 icon 四种样式，及默认、Hover、按下、禁用、加载五态。</p>
+
+    <h3 class="btn-summary__type">一级按钮（Primary）</h3>
+    <table class="btn-summary-table">
+      <thead><tr><th></th><th>默认</th><th>Hover</th><th>按下</th><th>禁用</th><th>加载</th></tr></thead>
+      <tbody>
+        <tr>
+          <th style="font-size:12px;font-weight:500;color:#666;text-align:left;padding-right:8px;">常规</th>
+          <td><button type="button" class="btn btn--primary btn--md">Button</button></td>
+          <td><button type="button" class="btn btn--primary btn--md is-hover" title="Hover">Button</button></td>
+          <td><button type="button" class="btn btn--primary btn--md is-pressed" tabindex="-1">Button</button></td>
+          <td><button type="button" class="btn btn--primary btn--md" disabled>Button</button></td>
+          <td><button type="button" class="btn btn--primary btn--md btn--loading" disabled aria-busy="true" aria-label="加载中"><span class="btn__spinner" aria-hidden="true"></span></button></td>
+        </tr>
+        <tr>
+          <th style="font-size:12px;font-weight:500;color:#666;text-align:left;padding-right:8px;">icon+文字</th>
+          <td><button type="button" class="btn btn--primary btn--md"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" />Button</button></td>
+          <td><button type="button" class="btn btn--primary btn--md is-hover"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" />Button</button></td>
+          <td><button type="button" class="btn btn--primary btn--md is-pressed"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" />Button</button></td>
+          <td><button type="button" class="btn btn--primary btn--md" disabled><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" />Button</button></td>
+          <td><button type="button" class="btn btn--primary btn--md btn--loading" disabled aria-busy="true" aria-label="加载中"><span class="btn__spinner" aria-hidden="true"></span></button></td>
+        </tr>
+        <tr>
+          <th style="font-size:12px;font-weight:500;color:#666;text-align:left;padding-right:8px;">文字+icon</th>
+          <td><button type="button" class="btn btn--primary btn--md">Button<img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--primary btn--md is-hover">Button<img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--primary btn--md is-pressed">Button<img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--primary btn--md" disabled>Button<img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--primary btn--md btn--loading" disabled aria-busy="true" aria-label="加载中"><span class="btn__spinner" aria-hidden="true"></span></button></td>
+        </tr>
+        <tr>
+          <th style="font-size:12px;font-weight:500;color:#666;text-align:left;padding-right:8px;">纯 icon</th>
+          <td><button type="button" class="btn btn--primary btn--md btn--icon-only" aria-label="操作"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--primary btn--md btn--icon-only is-hover" aria-label="操作"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--primary btn--md btn--icon-only is-pressed" aria-label="操作"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--primary btn--md btn--icon-only" disabled aria-label="操作"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--primary btn--md btn--icon-only btn--loading" disabled aria-busy="true" aria-label="加载中"><span class="btn__spinner" aria-hidden="true"></span></button></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="btn-summary__type">二级按钮（Secondary）</h3>
+    <table class="btn-summary-table">
+      <thead><tr><th></th><th>默认</th><th>Hover</th><th>按下</th><th>禁用</th><th>加载</th></tr></thead>
+      <tbody>
+        <tr>
+          <th style="font-size:12px;font-weight:500;color:#666;text-align:left;padding-right:8px;">常规</th>
+          <td><button type="button" class="btn btn--secondary btn--md">Button</button></td>
+          <td><button type="button" class="btn btn--secondary btn--md is-hover" title="Hover">Button</button></td>
+          <td><button type="button" class="btn btn--secondary btn--md is-pressed" tabindex="-1">Button</button></td>
+          <td><button type="button" class="btn btn--secondary btn--md" disabled>Button</button></td>
+          <td><button type="button" class="btn btn--secondary btn--md btn--loading" disabled aria-busy="true" aria-label="加载中"><span class="btn__spinner" aria-hidden="true"></span></button></td>
+        </tr>
+        <tr>
+          <th style="font-size:12px;font-weight:500;color:#666;text-align:left;padding-right:8px;">icon+文字</th>
+          <td><button type="button" class="btn btn--secondary btn--md"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" />Button</button></td>
+          <td><button type="button" class="btn btn--secondary btn--md is-hover"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" />Button</button></td>
+          <td><button type="button" class="btn btn--secondary btn--md is-pressed"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" />Button</button></td>
+          <td><button type="button" class="btn btn--secondary btn--md" disabled><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" />Button</button></td>
+          <td><button type="button" class="btn btn--secondary btn--md btn--loading" disabled aria-busy="true" aria-label="加载中"><span class="btn__spinner" aria-hidden="true"></span></button></td>
+        </tr>
+        <tr>
+          <th style="font-size:12px;font-weight:500;color:#666;text-align:left;padding-right:8px;">文字+icon</th>
+          <td><button type="button" class="btn btn--secondary btn--md">Button<img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--secondary btn--md is-hover">Button<img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--secondary btn--md is-pressed">Button<img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--secondary btn--md" disabled>Button<img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--secondary btn--md btn--loading" disabled aria-busy="true" aria-label="加载中"><span class="btn__spinner" aria-hidden="true"></span></button></td>
+        </tr>
+        <tr>
+          <th style="font-size:12px;font-weight:500;color:#666;text-align:left;padding-right:8px;">纯 icon</th>
+          <td><button type="button" class="btn btn--secondary btn--md btn--icon-only" aria-label="操作"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--secondary btn--md btn--icon-only is-hover" aria-label="操作"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--secondary btn--md btn--icon-only is-pressed" aria-label="操作"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--secondary btn--md btn--icon-only" disabled aria-label="操作"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--secondary btn--md btn--icon-only btn--loading" disabled aria-busy="true" aria-label="加载中"><span class="btn__spinner" aria-hidden="true"></span></button></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="btn-summary__type">绿色按钮（Green）</h3>
+    <table class="btn-summary-table">
+      <thead><tr><th></th><th>默认</th><th>Hover</th><th>按下</th><th>禁用</th><th>加载</th></tr></thead>
+      <tbody>
+        <tr>
+          <th style="font-size:12px;font-weight:500;color:#666;text-align:left;padding-right:8px;">常规</th>
+          <td><button type="button" class="btn btn--green btn--md">Button</button></td>
+          <td><button type="button" class="btn btn--green btn--md is-hover" title="Hover">Button</button></td>
+          <td><button type="button" class="btn btn--green btn--md is-pressed" tabindex="-1">Button</button></td>
+          <td><button type="button" class="btn btn--green btn--md" disabled>Button</button></td>
+          <td><button type="button" class="btn btn--green btn--md btn--loading" disabled aria-busy="true" aria-label="加载中"><span class="btn__spinner" aria-hidden="true"></span></button></td>
+        </tr>
+        <tr>
+          <th style="font-size:12px;font-weight:500;color:#666;text-align:left;padding-right:8px;">icon+文字</th>
+          <td><button type="button" class="btn btn--green btn--md"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" />Button</button></td>
+          <td><button type="button" class="btn btn--green btn--md is-hover"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" />Button</button></td>
+          <td><button type="button" class="btn btn--green btn--md is-pressed"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" />Button</button></td>
+          <td><button type="button" class="btn btn--green btn--md" disabled><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" />Button</button></td>
+          <td><button type="button" class="btn btn--green btn--md btn--loading" disabled aria-busy="true" aria-label="加载中"><span class="btn__spinner" aria-hidden="true"></span></button></td>
+        </tr>
+        <tr>
+          <th style="font-size:12px;font-weight:500;color:#666;text-align:left;padding-right:8px;">文字+icon</th>
+          <td><button type="button" class="btn btn--green btn--md">Button<img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--green btn--md is-hover">Button<img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--green btn--md is-pressed">Button<img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--green btn--md" disabled>Button<img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--green btn--md btn--loading" disabled aria-busy="true" aria-label="加载中"><span class="btn__spinner" aria-hidden="true"></span></button></td>
+        </tr>
+        <tr>
+          <th style="font-size:12px;font-weight:500;color:#666;text-align:left;padding-right:8px;">纯 icon</th>
+          <td><button type="button" class="btn btn--green btn--md btn--icon-only" aria-label="操作"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--green btn--md btn--icon-only is-hover" aria-label="操作"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--green btn--md btn--icon-only is-pressed" aria-label="操作"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--green btn--md btn--icon-only" disabled aria-label="操作"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--green btn--md btn--icon-only btn--loading" disabled aria-busy="true" aria-label="加载中"><span class="btn__spinner" aria-hidden="true"></span></button></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="btn-summary__type">红色按钮（Red）</h3>
+    <table class="btn-summary-table">
+      <thead><tr><th></th><th>默认</th><th>Hover</th><th>按下</th><th>禁用</th><th>加载</th></tr></thead>
+      <tbody>
+        <tr>
+          <th style="font-size:12px;font-weight:500;color:#666;text-align:left;padding-right:8px;">常规</th>
+          <td><button type="button" class="btn btn--red btn--md">Button</button></td>
+          <td><button type="button" class="btn btn--red btn--md is-hover" title="Hover">Button</button></td>
+          <td><button type="button" class="btn btn--red btn--md is-pressed" tabindex="-1">Button</button></td>
+          <td><button type="button" class="btn btn--red btn--md" disabled>Button</button></td>
+          <td><button type="button" class="btn btn--red btn--md btn--loading" disabled aria-busy="true" aria-label="加载中"><span class="btn__spinner" aria-hidden="true"></span></button></td>
+        </tr>
+        <tr>
+          <th style="font-size:12px;font-weight:500;color:#666;text-align:left;padding-right:8px;">icon+文字</th>
+          <td><button type="button" class="btn btn--red btn--md"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" />Button</button></td>
+          <td><button type="button" class="btn btn--red btn--md is-hover"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" />Button</button></td>
+          <td><button type="button" class="btn btn--red btn--md is-pressed"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" />Button</button></td>
+          <td><button type="button" class="btn btn--red btn--md" disabled><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" />Button</button></td>
+          <td><button type="button" class="btn btn--red btn--md btn--loading" disabled aria-busy="true" aria-label="加载中"><span class="btn__spinner" aria-hidden="true"></span></button></td>
+        </tr>
+        <tr>
+          <th style="font-size:12px;font-weight:500;color:#666;text-align:left;padding-right:8px;">文字+icon</th>
+          <td><button type="button" class="btn btn--red btn--md">Button<img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--red btn--md is-hover">Button<img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--red btn--md is-pressed">Button<img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--red btn--md" disabled>Button<img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--red btn--md btn--loading" disabled aria-busy="true" aria-label="加载中"><span class="btn__spinner" aria-hidden="true"></span></button></td>
+        </tr>
+        <tr>
+          <th style="font-size:12px;font-weight:500;color:#666;text-align:left;padding-right:8px;">纯 icon</th>
+          <td><button type="button" class="btn btn--red btn--md btn--icon-only" aria-label="操作"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--red btn--md btn--icon-only is-hover" aria-label="操作"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--red btn--md btn--icon-only is-pressed" aria-label="操作"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--red btn--md btn--icon-only" disabled aria-label="操作"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="18" height="18" class="icon icon-placeholder-img" aria-hidden="true" /></button></td>
+          <td><button type="button" class="btn btn--red btn--md btn--icon-only btn--loading" disabled aria-busy="true" aria-label="加载中"><span class="btn__spinner" aria-hidden="true"></span></button></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 8. Text Button 文本按钮 · Figma 134759:59584 Button Text_V5 · 卡片 9 -->
+  <section class="card-text">
+    <h2 class="section-title">8. Text Button - 默认样式（§10.1）</h2>
+    <p class="section-desc">Figma 134759:59584 · Black_Normal_Large-18px 字重 500（Medium）· 无背景无边框 · gap 4px · 示例「Lg-Button Text link」</p>
+    <div class="row">
+      <button type="button" class="text-btn text-btn--lg text-btn--black">Lg-Button Text link</button>
+    </div>
+  </section>
+
+  <section class="card-text">
+    <h2 class="section-title">9. Text Button - 尺寸（Font-Size §10.3）</h2>
+    <p class="section-desc">Large_18px、Medium_16px、Small_14px、XSmall_12px · 字重均为 500（Medium）· 设计令牌 Subtitle/S5、Body/B3/B7/B11</p>
+    <div class="row">
+      <span class="label">Large 18</span>
+      <button type="button" class="text-btn text-btn--lg text-btn--black">Lg-Button Text link</button>
+    </div>
+    <div class="row">
+      <span class="label">Medium 16</span>
+      <button type="button" class="text-btn text-btn--md text-btn--black">Md-Button Text link</button>
+    </div>
+    <div class="row">
+      <span class="label">Small 14</span>
+      <button type="button" class="text-btn text-btn--sm text-btn--black">Sm-Button Text link</button>
+    </div>
+    <div class="row">
+      <span class="label">XSmall 12</span>
+      <button type="button" class="text-btn text-btn--xs text-btn--black">Xs-Button Text link</button>
+    </div>
+  </section>
+
+  <section class="card-text">
+    <h2 class="section-title">10. Text Button - 类型（Type-color §10.4）</h2>
+    <p class="section-desc">Black / Gray / Blue · 主文字、次要文字、链接色；Gray Hover→主色，Blue Hover→link-pressed</p>
+    <div class="row">
+      <span class="label">Black</span>
+      <button type="button" class="text-btn text-btn--md text-btn--black">Button Text</button>
+    </div>
+    <div class="row">
+      <span class="label">Gray</span>
+      <button type="button" class="text-btn text-btn--md text-btn--gray">Button Text</button>
+    </div>
+    <div class="row">
+      <span class="label">Blue</span>
+      <button type="button" class="text-btn text-btn--md text-btn--blue">Button Text</button>
+      <span class="label" style="min-width:auto;color:#999;">Hover → link-pressed</span>
+    </div>
+  </section>
+
+  <!-- 11. 文字按钮变体汇总（Figma 7454:73363） -->
+  <section class="card-text">
+    <h2 class="section-title">11. 文字按钮变体汇总</h2>
+    <p class="section-desc">Figma <a href="https://www.figma.com/design/yyvB1Mer7aG8cJx9JVTVZL/?node-id=7454-73363" target="_blank" rel="noopener">node 7454:73363</a> · 七种变体：icon+文字、文字+icon、文字 600 字重、实线下划线、虚线下划线、文字+箭头、文字+提示 icon。提示 icon 见 <strong>Guidelines/Icon.md</strong>（如 CEX_circlefilled_info）；箭头使用 CEX_chevron_right。</p>
+    <div class="row">
+      <span class="label">1 icon+文字</span>
+      <button type="button" class="text-btn text-btn--lg text-btn--black">
+        <img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="20" height="20" class="text-icon" style="width:20px;height:20px;display:block;" aria-hidden="true" />
+        <span>Button Text</span>
+      </button>
+    </div>
+    <div class="row">
+      <span class="label">2 文字+icon</span>
+      <button type="button" class="text-btn text-btn--lg text-btn--black">
+        <span>Button Text</span>
+        <img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="20" height="20" class="text-icon" style="width:20px;height:20px;display:block;" aria-hidden="true" />
+      </button>
+    </div>
+    <div class="row">
+      <span class="label">3 文字 600 字重</span>
+      <button type="button" class="text-btn text-btn--lg text-btn--black text-btn--semibold">Button Text</button>
+    </div>
+    <div class="row">
+      <span class="label">4 实线下划线</span>
+      <button type="button" class="text-btn text-btn--lg text-btn--black text-btn--underline-solid">Button Text</button>
+    </div>
+    <div class="row">
+      <span class="label">5 虚线下划线</span>
+      <button type="button" class="text-btn text-btn--lg text-btn--black text-btn--underline-dash">Button Text</button>
+    </div>
+    <div class="row">
+      <span class="label">6 文字+箭头</span>
+      <button type="button" class="text-btn text-btn--lg text-btn--black">
+        <span>Button Text</span>
+        <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_right.svg" alt="" width="20" height="20" class="text-icon" style="width:20px;height:20px;display:block;" aria-hidden="true" />
+      </button>
+    </div>
+    <div class="row">
+      <span class="label">7 文字+提示 icon</span>
+      <button type="button" class="text-btn text-btn--lg text-btn--black">
+        <span>Button Text</span>
+        <svg class="text-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:20px;height:20px;display:block;flex-shrink:0;" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM13.4043 9.69101H13.5101C13.322 10.61 13.0595 11.4974 12.7978 12.3818C12.3983 13.7319 12.0009 15.075 11.8736 16.513C11.9041 16.5435 11.917 16.5565 11.9326 16.562C11.9441 16.566 11.957 16.566 11.9795 16.566C12.4457 16.7527 12.7838 16.2445 13.0693 15.8154C13.2687 15.5159 13.4423 15.2549 13.616 15.296C14.0922 15.402 13.2995 16.248 13.1936 16.354C12.7713 16.883 11.9795 17.835 11.0289 17.835C10.342 17.835 9.65499 17.414 9.76085 16.301C9.83003 15.5736 10.1248 14.645 10.4091 13.7494C10.5598 13.2747 10.7076 12.8093 10.8172 12.388C10.841 12.2978 10.8656 12.2088 10.8897 12.1216C11.1341 11.2379 11.328 10.537 10.0784 10.537V10.272C10.5536 10.087 11.1476 10.0343 11.7416 9.98152C12.3356 9.92877 12.9295 9.87603 13.4043 9.69101ZM12.4421 6.39617C12.6332 6.26827 12.8579 6.2 13.0878 6.2C13.3952 6.20261 13.6893 6.32609 13.9067 6.54381C14.1241 6.76154 14.2474 7.0561 14.25 7.364C14.25 7.59422 14.1818 7.81927 14.0541 8.01069C13.9264 8.20211 13.7449 8.3513 13.5325 8.4394C13.3202 8.5275 13.0865 8.55055 12.861 8.50564C12.6356 8.46073 12.4285 8.34987 12.266 8.18708C12.1034 8.02429 11.9927 7.81688 11.9479 7.59109C11.903 7.36529 11.926 7.13125 12.014 6.91856C12.102 6.70586 12.2509 6.52407 12.4421 6.39617Z" fill="#A0A3A7"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- 12. Web-H5 对应关系（Figma 7216:21658）· 卡片 13 -->
+  <section class="section-web-h5-correspondence card-regular">
+    <h2 class="section-title">12. Web-H5 对应关系</h2>
+    <p class="section-desc">Figma <a href="https://www.figma.com/design/yyvB1Mer7aG8cJx9JVTVZL/?node-id=7216-21658" target="_blank" rel="noopener">node 7216:21658</a> · 高度与 Web/H5 按钮对应关系。</p>
+    <div class="web-h5-table-wrap">
+      <table class="web-h5-table">
+        <thead>
+          <tr>
+            <th>高度/H</th>
+            <th>Web</th>
+            <th>H5</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>28应24</td>
+            <td><button type="button" class="btn btn--primary btn--xxs">Button</button></td>
+            <td><button type="button" class="btn btn--primary btn--h5-24">Button</button></td>
+          </tr>
+          <tr>
+            <td>32</td>
+            <td><button type="button" class="btn btn--primary btn--xs">Button</button></td>
+            <td><button type="button" class="btn btn--primary btn--xs">Button</button></td>
+          </tr>
+          <tr>
+            <td>36</td>
+            <td><button type="button" class="btn btn--primary btn--sm">Button</button></td>
+            <td><button type="button" class="btn btn--primary btn--sm">Button</button></td>
+          </tr>
+          <tr>
+            <td>40</td>
+            <td><button type="button" class="btn btn--primary btn--md">Button</button></td>
+            <td><button type="button" class="btn btn--primary btn--md">Button</button></td>
+          </tr>
+          <tr>
+            <td>44</td>
+            <td><button type="button" class="btn btn--primary btn--lg">Button</button></td>
+            <td><button type="button" class="btn btn--primary btn--lg">Button</button></td>
+          </tr>
+          <tr>
+            <td>48</td>
+            <td><button type="button" class="btn btn--primary btn--xl">Button</button></td>
+            <td><button type="button" class="btn btn--primary btn--xl">Button</button></td>
+          </tr>
+          <tr>
+            <td>56(单)/48</td>
+            <td><button type="button" class="btn btn--primary btn--xxl">Button</button></td>
+            <td><button type="button" class="btn btn--primary btn--xl">Button</button></td>
+          </tr>
+          <tr>
+            <td>56(多)应44</td>
+            <td>
+              <div class="cell-buttons">
+                <button type="button" class="btn btn--primary btn--xxl">Button</button>
+                <button type="button" class="btn btn--secondary btn--xxl btn--icon-only" aria-label="图标按钮">
+                  <img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="24" height="24" class="icon icon-placeholder-img" aria-hidden="true" />
+                </button>
+              </div>
+            </td>
+            <td>
+              <div class="cell-buttons">
+                <button type="button" class="btn btn--primary btn--lg">Button</button>
+                <button type="button" class="btn btn--secondary btn--lg btn--icon-only" aria-label="图标按钮">
+                  <img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="20" height="20" class="icon icon-placeholder-img" aria-hidden="true" />
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>长按钮</td>
+            <td>
+              <div class="cell-buttons cell-long">
+                <button type="button" class="btn btn--primary btn--xxl">Button Placeholder</button>
+                <button type="button" class="btn btn--secondary btn--xxl">Button Placeholder</button>
+    </div>
+            </td>
+            <td>
+              <div class="cell-buttons cell-buttons--col" style="max-width:375px;width:100%;margin:0 auto;">
+                <button type="button" class="btn btn--primary btn--xl" style="width:100%;">Button Placeholder</button>
+                <button type="button" class="btn btn--secondary btn--xl" style="width:100%;">Button Placeholder</button>
+    </div>
+            </td>
+          </tr>
+          <tr class="web-h5-footer-row">
+            <td colspan="3"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 13. 按钮极端原则（Figma 7200:21155）· 卡片 14 -->
+  <section class="section-extreme-principles card-regular">
+    <h2 class="section-title">13. 按钮极端原则</h2>
+    <p class="section-desc">Figma <a href="https://www.figma.com/design/yyvB1Mer7aG8cJx9JVTVZL/?node-id=7200-21155" target="_blank" rel="noopener">node 7200:21155</a> · 文案过长与兜底逻辑、按尺寸与策略的展示规则。</p>
+    <h3 class="extreme-heading">极端原则</h3>
+    <ol class="extreme-rules">
+      <li>Btn文案过长：首选缩小1个字阶；横向并排按钮文案过长更换按钮布局；再超出优化文案。</li>
+      <li>兜底逻辑：文本截断，展示[...]，hover 展示气泡显示全部。</li>
+    </ol>
+    <div class="extreme-box">
+      <table class="extreme-table">
+        <thead>
+          <tr>
+            <th class="size-col">尺寸</th>
+            <th>默认</th>
+            <th>策略1：缩小字阶（首选缩小 1 个字阶，最小 14px/12px）</th>
+            <th>策略2：提行（最多 2 行，依据业务线设计稿）</th>
+            <th>策略3：省略（超出展示区域省略，依据业务线设计稿）</th>
+            <th>策略4：icon 代替文字（依据业务线设计稿）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="size-col">56px</td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--xxl">长文案按钮示例</button></div></td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--xxl btn--smaller">长文案按钮示例</button></div></td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--xxl btn-two-lines"><span class="btn-text-wrap">长文案按钮<br>示例</span></button></div></td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--xxl btn-two-lines" title="长文案按钮示例全文"><span class="btn-text-wrap">长文案按钮示<br>例…</span></button></div></td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--xxl"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="icon" width="24" height="24" style="width:24px;height:24px;display:block;" aria-hidden="true" /><span>长文案示例</span></button></div></td>
+          </tr>
+          <tr>
+            <td class="size-col">48px</td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--xl">长文案按钮示例</button></div></td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--xl btn--smaller">长文案按钮示例</button></div></td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--xl btn-two-lines"><span class="btn-text-wrap">长文案按钮<br>示例</span></button></div></td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--xl btn-two-lines" title="长文案按钮示例全文"><span class="btn-text-wrap">长文案按钮<br>示例…</span></button></div></td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--xl"><img src="../Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="icon" width="20" height="20" style="width:20px;height:20px;display:block;" aria-hidden="true" /><span>长文案示例</span></button></div></td>
+          </tr>
+          <tr>
+            <td class="size-col">44px</td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--lg">长文案按钮示例</button></div></td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--lg btn--smaller">长文案按钮示例</button></div></td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--lg btn-two-lines"><span class="btn-text-wrap">长文案按钮<br>示例</span></button></div></td>
+          <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--lg btn-two-lines" title="长文案按钮示例全文"><span class="btn-text-wrap">长文案按钮<br>示例…</span></button></div></td>
+          <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--lg"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="icon" width="20" height="20" style="width:20px;height:20px;display:block;" aria-hidden="true" /><span>长文案示例</span></button></div></td>
+          </tr>
+          <tr>
+            <td class="size-col">40px</td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--md">长文案按钮示例</button></div></td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--md btn--smaller">长文案按钮示例</button></div></td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--md btn-two-lines"><span class="btn-text-wrap">长文案<br>示例</span></button></div></td>
+          <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--md btn-two-lines" title="长文案按钮示例全文"><span class="btn-text-wrap">长文案<br>示例…</span></button></div></td>
+          <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--md"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="icon" width="18" height="18" style="width:18px;height:18px;display:block;" aria-hidden="true" /><span>长文案</span></button></div></td>
+          </tr>
+          <tr>
+            <td class="size-col">36px</td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--sm">长文案示例</button></div></td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--sm btn--smaller">长文案示例</button></div></td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--sm btn-two-lines"><span class="btn-text-wrap">长文案<br>示例</span></button></div></td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--sm btn-two-lines" title="长文案按钮示例全文"><span class="btn-text-wrap">长文案<br>示例…</span></button></div></td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--sm"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="icon" width="16" height="16" style="width:16px;height:16px;display:block;" aria-hidden="true" /><span>长文案</span></button></div></td>
+          </tr>
+          <tr>
+            <td class="size-col">32px</td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--xs">长文案示例</button></div></td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--xs btn--smaller">长文案示例</button></div></td>
+            <td class="cell-na">无（仅全文单行或仅图标）</td>
+            <td class="cell-na">无（仅全文单行或仅图标）</td>
+            <td><div class="btn-wrap"><button type="button" class="btn btn--primary btn--xs"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="icon" width="16" height="16" style="width:16px;height:16px;display:block;" aria-hidden="true" /><span>长文案</span></button></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 14. 底部操作按钮（Figma 7454:79160）· 卡片 15 -->
+  <section class="section-footer-default section-footer-types card-footer">
+    <h2 class="section-title">14. 底部操作按钮（默认样式与类型）</h2>
+    <p class="section-desc">Figma <a href="https://www.figma.com/design/yyvB1Mer7aG8cJx9JVTVZL/?node-id=7454-79160" target="_blank" rel="noopener">node 7454:79160</a> · 常用于 H5 页面底部或内容区下方，底部操作按钮的默认样式；按钮置于 <strong>375px 宽</strong>的容器内，容器内边距 16px，按钮 48px 高、全宽。</p>
+    <h3 class="footer-default-title">默认样式</h3>
+    <div class="footer-default-divider"></div>
+    <div class="footer-default-preview">
+      <div class="footer-btn-wrap">
+        <button type="button" class="btn btn--primary btn--xl">Button</button>
+      </div>
+    </div>
+    <div class="footer-default-caption">
+      <p class="caption-title">Default</p>
+      <p class="caption-desc">Default Btn</p>
+    </div>
+
+    <h3 class="footer-types-title" style="margin-top:32px;">类型</h3>
+    <div class="footer-types-divider"></div>
+    <p class="section-desc" style="margin-bottom:16px;">Figma <a href="https://www.figma.com/design/yyvB1Mer7aG8cJx9JVTVZL/?node-id=7454-79176" target="_blank" rel="noopener">node 7454:79176</a> · 以下均在 375px 宽容器内，容器内边距 16px，按钮 48px 高。</p>
+
+    <div class="footer-type-item">
+      <p class="footer-type-label">1. Default Btn</p>
+      <div class="footer-type-preview">
+        <div class="footer-btn-wrap"><button type="button" class="btn btn--primary btn--xl">Button</button></div>
+      </div>
+    </div>
+    <div class="footer-type-item">
+      <p class="footer-type-label">2. Horizontal Btn</p>
+      <div class="footer-type-preview">
+        <div class="footer-btn-wrap footer-btn-wrap--horizontal">
+          <button type="button" class="btn btn--secondary btn--xl">Button</button>
+          <button type="button" class="btn btn--primary btn--xl">Button</button>
+        </div>
+      </div>
+    </div>
+    <div class="footer-type-item">
+      <p class="footer-type-label">3. Long Btn</p>
+      <div class="footer-type-preview">
+        <div class="footer-btn-wrap footer-btn-wrap--long">
+          <button type="button" class="btn btn--secondary btn--xl">Button</button>
+          <button type="button" class="btn btn--primary btn--xl">Button</button>
+        </div>
+      </div>
+    </div>
+    <div class="footer-type-item">
+      <p class="footer-type-label">4. Long Btn+icon</p>
+      <div class="footer-type-preview">
+        <div class="footer-btn-wrap footer-btn-wrap--long-icon">
+          <button type="button" class="btn btn--secondary btn--xl btn--icon-only" aria-label="图标"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" width="20" height="20" class="icon icon-placeholder-img" aria-hidden="true" /></button>
+          <button type="button" class="btn btn--primary btn--xl">Button</button>
+        </div>
+      </div>
+    </div>
+    <div class="footer-type-item">
+      <p class="footer-type-label">5. Vertical Btn</p>
+      <div class="footer-type-preview">
+        <div class="footer-btn-wrap footer-btn-wrap--vertical">
+          <button type="button" class="btn btn--primary btn--xl">Button</button>
+          <button type="button" class="btn btn--secondary btn--xl">Button</button>
+        </div>
+      </div>
+    </div>
+    <div class="footer-type-item">
+      <p class="footer-type-label">6. Vertical Btn+Text</p>
+      <div class="footer-type-preview">
+        <div class="footer-btn-wrap footer-btn-wrap--vertical-text">
+          <button type="button" class="btn btn--primary btn--xl">Button</button>
+          <button type="button" class="btn btn--secondary btn--xl">Button</button>
+          <a href="#" class="text-btn text-btn--sm text-btn--black text-btn--underline-solid footer-text-link">Button Text</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-type-item">
+      <p class="footer-type-label">7. Vertical Text</p>
+      <div class="footer-type-preview">
+        <div class="footer-btn-wrap footer-btn-wrap--vertical-text">
+          <button type="button" class="btn btn--primary btn--xl">Button</button>
+          <a href="#" class="text-btn text-btn--sm text-btn--black text-btn--underline-solid footer-text-link">Button Text</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-type-item">
+      <p class="footer-type-label">8. Vertical Text+Desc</p>
+      <div class="footer-type-preview">
+        <div class="footer-btn-wrap footer-btn-wrap--vertical-text-desc">
+          <button type="button" class="btn btn--primary btn--xl">Button</button>
+          <div class="footer-desc-row">
+            <p class="footer-desc">Description</p>
+            <a href="#" class="text-btn text-btn--sm text-btn--black text-btn--underline-solid footer-text-link">Button Text</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-type-item">
+      <p class="footer-type-label">9. Vertical Btn 2</p>
+      <div class="footer-type-preview">
+        <div class="footer-btn-wrap footer-btn-wrap--vertical-2">
+          <button type="button" class="btn btn--primary btn--xl">Button</button>
+          <div class="footer-btn-row">
+            <button type="button" class="btn btn--secondary btn--xl">Button</button>
+            <button type="button" class="btn btn--secondary btn--xl">Button</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="footer-types-title" style="margin-top:40px;">变量</h3>
+    <div class="footer-types-divider"></div>
+    <p class="section-desc" style="margin-bottom:16px;">Figma <a href="https://www.figma.com/design/yyvB1Mer7aG8cJx9JVTVZL/?node-id=7454-79251" target="_blank" rel="noopener">node 7454:79251</a> · 带 Agreement（协议勾选 + 主按钮）、带分割线（Footer 上部 0.5px 分割线 + 主按钮），均在 375px 宽容器内。协议勾选引用 <strong>../Guidelines/Checkbox.md</strong> 与 <a href="checkbox.html">checkbox.html</a> 组件库（切图 <code>../Guidelines/Slicing/Checkbox</code>）。</p>
+
+    <div class="footer-type-item">
+      <p class="footer-type-label">1. Agreement</p>
+      <div class="footer-type-preview">
+        <div class="footer-btn-wrap footer-btn-wrap--agreement">
+          <div class="footer-agreement-row">
+            <label class="checkbox" id="footer-agreement-label-wrap">
+              <input type="checkbox" class="checkbox__input" id="footer-agreement-demo" checked aria-describedby="footer-agreement-label" />
+              <span class="checkbox__box" aria-hidden="true"><img src="" alt="" /></span>
+              <span class="checkbox__label" id="footer-agreement-label">Label</span>
+            </label>
+          </div>
+          <button type="button" class="btn btn--primary btn--xl">Button</button>
+        </div>
+      </div>
+    </div>
+    <div class="footer-type-item">
+      <p class="footer-type-label">2. Divider</p>
+      <div class="footer-type-preview">
+        <div class="footer-btn-wrap footer-btn-wrap--divider">
+          <button type="button" class="btn btn--primary btn--xl">Button</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p style="font-size: 12px; color: #999; margin-top: 32px;">规范来源：<a href="../Guidelines/Button.md">Button.md</a> · <a href="../Guidelines/Font.md">Font.md</a> · <a href="../Guidelines/Color.md">Color.md</a>（颜色预览 <a href="Color.html">Color.html</a>）· Figma Button_Web (134759:59585) · 底部按钮变量 (7454:79251) · Button Guidelines-H5 (134759:59583) · Web-H5 对应 (7216:21658) · 极端原则 (7200:21155) · Text Button (134759:59584) · Footer Button (134759:59586) · 底部操作按钮默认 (7454:79160) · 底部按钮类型 (7454:79176)</p>
+  <script>
+    (function() {
+      var body = document.body;
+      var tabs = document.querySelectorAll('.btn-tab');
+      tabs.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var t = this.getAttribute('data-tab');
+          body.setAttribute('data-tab', t);
+          tabs.forEach(function(b) { b.classList.remove('is-active'); b.setAttribute('aria-selected', 'false'); });
+          this.classList.add('is-active'); this.setAttribute('aria-selected', 'true');
+        });
+      });
+
+      /* Checkbox 组件切图：与 checkbox.html 一致，引用 Guidelines/Slicing/Checkbox */
+      (function() {
+        var SLICE_BASE = 'Guidelines/Slicing/Checkbox/';
+        function getAssetName(label) {
+          var input = label.querySelector('.checkbox__input');
+          if (!input) return 'Checkbox16-Inactive.svg';
+          var isSmall = label.classList.contains('checkbox--small');
+          var size = isSmall ? 12 : 16;
+          var active = input.checked;
+          var disabled = input.disabled || label.classList.contains('checkbox--disabled');
+          var hover = label.classList.contains('is-hover');
+          var state = disabled ? (active ? 'Active-Disable' : 'Inactive-Disable') : (hover ? (active ? 'Active-Hover' : 'Inactive-Hover') : (active ? 'Active' : 'Inactive'));
+          return 'Checkbox' + size + '-' + state + '.svg';
+        }
+        function updateCheckboxImg(label) {
+          var box = label.querySelector('.checkbox__box');
+          var img = box && box.querySelector('img');
+          if (img) img.src = SLICE_BASE + getAssetName(label);
+        }
+        document.querySelectorAll('.footer-btn-wrap--agreement label.checkbox').forEach(function(label) {
+          var box = label.querySelector('.checkbox__box');
+          var input = label.querySelector('.checkbox__input');
+          if (!box || !input) return;
+          if (!box.querySelector('img')) { var img = document.createElement('img'); img.alt = ''; box.appendChild(img); }
+          updateCheckboxImg(label);
+          input.addEventListener('change', function() { updateCheckboxImg(label); });
+          label.addEventListener('mouseenter', function() { label.classList.add('is-hover'); updateCheckboxImg(label); });
+          label.addEventListener('mouseleave', function() { label.classList.remove('is-hover'); updateCheckboxImg(label); });
+        });
+      })();
+    })();
+  </script>
+</body>
+</html>

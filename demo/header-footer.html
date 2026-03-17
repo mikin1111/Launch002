@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Header / Footer 规范预览 · Guidelines</title>
+  <style>
+    /* 颜色 Token 与 Color.md 对齐（Light），字体与 Font.md 字阶一致 */
+    :root {
+      /* 对齐 Color.md 中的 Token 名称和值（Light） */
+      --bg-primary: #FFFFFF;
+      --bg-secondary: #FAFAFA;
+      --color-cmpt-header-bg-50: rgba(255, 255, 255, 0.5);
+      --color-cmpt-button-primary: #303236;
+      --text-on-fill: #FFFFFF;
+      --text-primary: #070808;
+      --text-secondary: #84888C;
+      --icon-secondary: #484B51;
+      --icon-tertiary: #a0a3a7;
+      --text-tertiary: #A0A3A7;
+      --line-border-subtle: #F2F3F4;
+      --line-short-divider: #C4C7CA;
+      --bg-tertiary: #F2F3F4;
+      --color-cmpt-input: #f5f6f7;
+      --color-cmpt-component-active: #303236;
+      --color-cmpt-component-hover: #f5f6f7;
+      --color-layer-1: #ffffff;
+      --line-divider-strong: #F2F3F4;
+      /* Font.md：Switzer 400/500/600，行高 1.3 */
+      --font-main: Switzer, -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI", sans-serif;
+      --select-transition: 100ms ease-out;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: var(--font-main);
+      background: #e8eaef;
+      color: var(--text-primary);
+      padding: 0 0 80px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page-header {
+      background: #fff;
+      padding: 24px 24px 20px;
+      border-bottom: 1px solid var(--line-border-subtle);
+      margin-bottom: 24px;
+    }
+    .page-header h1 { margin: 0 0 8px; font-size: 24px; font-weight: 600; }
+    .page-header p { margin: 0; font-size: 14px; color: var(--text-secondary); }
+    .page-header a { color: #0068ff; text-decoration: none; }
+    .page-header a:hover { text-decoration: underline; }
+
+    .section-block {
+      background: #fff;
+      border-radius: 12px;
+      margin: 0 24px 32px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .section-label {
+      padding: 12px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: #f8f9fa;
+      border-bottom: 1px solid var(--line-border-subtle);
+    }
+
+    /* ---------- Header 通用 ---------- */
+    .header-bar {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      background: var(--bg-primary);
+    }
+    .header-bar.h5 { width: 375px; padding: 0 16px; margin: 0 auto; }
+    .header-bar.h5 .header-logo { height: 20px; width: auto; }
+    .header-left { display: flex; align-items: center; gap: 20px; }
+    .header-right { display: flex; align-items: center; gap: 16px; }
+    .header-logo { height: 24px; width: auto; display: block; }
+    .nav-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.3;
+      color: var(--text-primary);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .nav-item:hover { opacity: 0.85; }
+    /* 导航下拉箭头：颜色组件 Icon/Icon-Tertiary（#A0A3A7，见 Color.md） */
+    .nav-item .arrow,
+    .header-drop-trigger .arrow {
+      width: 16px;
+      height: 16px;
+      filter: brightness(0) saturate(100%) invert(63%);
+    }
+    .rewards-hub { display: inline-flex; align-items: center; gap: 2px; }
+    .rewards-hub img { width: 24px; height: 24px; }
+    .rewards-hub span { font-size: 14px; font-weight: 500; }
+
+    /* 文字链接 Log In */
+    .link-login {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .link-login:hover { text-decoration: underline; }
+
+    /* 按钮 XXSmall：28px 高，12px 水平 padding，12px 字号，99px 圆角 */
+    .btn-xxsmall {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 28px;
+      padding: 0 12px;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.3;
+      color: var(--text-on-fill);
+      background: var(--color-cmpt-button-primary);
+      border: none;
+      border-radius: 99px;
+      cursor: pointer;
+      font-family: var(--font-main);
+    }
+    .btn-xxsmall:hover { opacity: 0.9; }
+
+    /* 小竖线 1px × 16px #C4C7CA */
+    .divider-vertical {
+      width: 1px;
+      height: 16px;
+      background: var(--line-short-divider);
+      flex-shrink: 0;
+    }
+
+    /* Header 右侧功能图标：颜色组件 Icon/Icon-Secondary #484B51（见 Color.md） */
+    .header-icon {
+      width: 24px;
+      height: 24px;
+      display: block;
+      cursor: pointer;
+      filter: brightness(0) saturate(100%) invert(28%);
+    }
+    .header-icon:hover { opacity: 0.8; }
+
+    /* 下拉触发器 Assets / Order */
+    .header-drop-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+    .header-drop-trigger .arrow { width: 16px; height: 16px; }
+
+    .header-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    /* ---------- Footer Web ---------- */
+    .footer-web {
+      background: var(--bg-secondary);
+      padding-top: 80px;
+    }
+    .footer-web-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .footer-web-left {
+      width: 232px;
+      flex-shrink: 0;
+    }
+    .footer-web-title {
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--text-primary);
+      margin: 0 0 16px;
+    }
+    .footer-qr-box {
+      width: 132px;
+      height: 132px;
+      background: var(--bg-primary);
+      border-radius: 8px;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    .footer-qr-box img { width: 116px; height: 116px; object-fit: contain; }
+    .footer-qr-caption {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-tertiary);
+      margin: 0 0 24px;
+    }
+    .footer-community-title { margin: 0 0 16px; }
+    .footer-social-row {
+      display: flex;
+      gap: 32px;
+      margin-bottom: 24px;
+    }
+    /* 社媒图标：颜色组件 Icon/Icon-Secondary #484B51（见 Color.md） */
+    .footer-social-row .icon {
+      width: 24px;
+      height: 24px;
+      display: block;
+      cursor: pointer;
+      filter: brightness(0) saturate(100%) invert(28%);
+    }
+    .footer-social-row .icon:hover { opacity: 0.8; }
+    /* 语言/货币：引用 Select 下拉框组件样式（见 select.html / Guidelines/Select.md） */
+    .footer-web .select-wrap {
+      position: relative;
+      display: inline-flex;
+      flex-direction: column;
+      gap: 4px;
+      width: 168px;
+    }
+    .footer-web .select-trigger {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 32px;
+      padding: 0 8px;
+      background: var(--color-cmpt-input);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: var(--font-main);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.3;
+      color: var(--text-primary);
+      transition: background var(--select-transition);
+      min-width: 0;
+    }
+    .footer-web .select-trigger:hover { background: #eef0f2; }
+    .footer-web .select-trigger .select-text {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      text-align: left;
+    }
+    .footer-web .select-trigger .select-suffix {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+    }
+    .footer-web .select-trigger .select-suffix img {
+      width: 16px;
+      height: 16px;
+      display: block;
+    }
+    .footer-web .select-trigger .select-arrow-down,
+    .footer-web .select-trigger .select-arrow-up { width: 16px; height: 16px; display: block; }
+    .footer-web .select-trigger.is-open .select-arrow-down { display: none; }
+    .footer-web .select-trigger.is-open .select-arrow-up { display: block; }
+    .footer-web .select-trigger:not(.is-open) .select-arrow-up { display: none; }
+    /* 下拉面板（引用 Select 组件 Select Menu） */
+    .footer-web .select-menu {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      min-width: 100%;
+      background: var(--color-layer-1);
+      border: 1px solid var(--line-divider-strong);
+      border-radius: 8px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+      z-index: 100;
+      overflow: hidden;
+      display: none;
+    }
+    .footer-web .select-menu.is-open { display: block; }
+    .footer-web .select-menu__list {
+      max-height: 240px;
+      overflow-y: auto;
+      padding: 8px;
+    }
+    .footer-web .select-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.3;
+      color: var(--text-primary);
+      transition: background var(--select-transition);
+    }
+    .footer-web .select-option:hover {
+      background: var(--color-cmpt-component-hover);
+    }
+    .footer-col {
+      flex: 1;
+      min-width: 180px;
+    }
+    .footer-col-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0 0 16px;
+    }
+    .footer-col-links {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .footer-col-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      line-height: 1.3;
+    }
+    .footer-col-links a:hover { color: var(--text-primary); }
+    .footer-col.footer-col-services .footer-col-links { gap: 20px; }
+    .footer-col.footer-col-learn .footer-col-links { gap: 20px; }
+    .footer-learn-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      line-height: 1.3;
+    }
+    .footer-learn-item:hover { color: var(--text-primary); }
+    /* Footer Learn 项箭头：颜色组件 Icon/Icon-Tertiary（#A0A3A7，见 Color.md） */
+    .footer-learn-item .arrow {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      filter: brightness(0) saturate(100%) invert(63%);
+    }
+    .footer-bottom {
+      margin-top: 40px;
+      border-top: 1px solid var(--line-border-subtle);
+      padding: 26px 24px;
+      text-align: center;
+    }
+    .footer-copyright {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      margin: 0;
+    }
+
+    /* ---------- Footer H5 ---------- */
+    .footer-h5 {
+      background: var(--bg-secondary);
+      padding: 40px 16px 24px;
+      max-width: 375px;
+      margin: 0 auto;
+    }
+    .footer-h5 .logo-wrap { margin-bottom: 32px; }
+    .footer-h5 .logo-wrap img { height: 20px; width: auto; }
+    .footer-h5-collapse {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+    .footer-h5-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+    /* H5 Footer 折叠箭头：颜色组件 Icon/Icon-Tertiary（#A0A3A7，见 Color.md） */
+    .footer-h5-row .chevron {
+      width: 20px;
+      height: 20px;
+      filter: brightness(0) saturate(100%) invert(63%);
+    }
+    .footer-h5-social {
+      display: flex;
+      flex-wrap: wrap;
+      column-gap: 40px;
+      row-gap: 24px;
+      margin-bottom: 24px;
+    }
+    .footer-h5-social .icon {
+      width: 24px;
+      height: 24px;
+      display: block;
+      filter: brightness(0) saturate(100%) invert(28%);
+    }
+    .footer-h5-social .icon:hover { opacity: 0.8; }
+    .footer-h5-selects {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    /* H5 Footer 语言/货币：引用 Select 组件规范（Small/48px 档） */
+    .footer-h5-selects .select-wrap {
+      position: relative;
+      flex: 1;
+      display: inline-flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .footer-h5-selects .select-trigger {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 48px;
+      padding: 0 12px;
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-main);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.3;
+      color: var(--text-primary);
+      transition: background var(--select-transition);
+      min-width: 0;
+      text-align: left;
+    }
+    .footer-h5-selects .select-trigger:hover { background: #eef0f2; }
+    .footer-h5-selects .select-text {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .footer-h5-selects .select-suffix {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+    }
+    .footer-h5-selects .select-suffix img {
+      width: 16px;
+      height: 16px;
+      display: block;
+    }
+    .footer-h5-selects .select-menu {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      min-width: 100%;
+      background: var(--color-layer-1);
+      border-radius: 8px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+      border: 1px solid var(--line-divider-strong);
+      z-index: 100;
+      overflow: hidden;
+      display: none;
+    }
+    .footer-h5-selects .select-menu.is-open { display: block; }
+    .footer-h5-selects .select-menu__list {
+      max-height: 240px;
+      overflow-y: auto;
+      padding: 8px;
+    }
+    .footer-h5-selects .select-option {
+      display: flex;
+      align-items: center;
+      padding: 10px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.3;
+      color: var(--text-primary);
+      transition: background var(--select-transition);
+    }
+    .footer-h5-selects .select-option:hover {
+      background: var(--color-cmpt-component-hover);
+    }
+    .footer-h5-copyright {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-tertiary);
+      text-align: center;
+      line-height: 1.3;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <h1>Header / Footer 规范预览</h1>
+    <p>依据 <a href="../Guidelines/Header%26Footer.md">Header&amp;Footer.md</a>，切图引用 <code>Guidelines/Slicing/Header</code>，图标/按钮/分割线按规范实现；<strong>字体</strong>见 <a href="../Guidelines/Font.md">Font.md</a> / <a href="../font.html">font.html</a>，<strong>颜色</strong>见 <a href="../Guidelines/Color.md">Color.md</a> / <a href="../Color.html">Color.html</a>。</p>
+  </header>
+
+  <!-- 1. Web Header 未登录 -->
+  <section class="section-block">
+    <div class="section-label">1. Web Header · 未登录（Default）</div>
+    <div class="header-bar">
+      <div class="header-left">
+        <img class="header-logo" src="../Guidelines/Slicing/Header/Logo.svg" alt="Logo" />
+        <a href="#" class="nav-item">Buy Crypto <img class="arrow" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" /></a>
+        <a href="#" class="nav-item">Markets</a>
+        <a href="#" class="nav-item">Trade <img class="arrow" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" /></a>
+        <a href="#" class="nav-item">Futures <img class="arrow" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" /></a>
+        <a href="#" class="nav-item">Earn <img class="arrow" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" /></a>
+        <a href="#" class="nav-item">Community <img class="arrow" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" /></a>
+        <a href="#" class="nav-item">Web3</a>
+        <a href="#" class="nav-item">More <img class="arrow" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" /></a>
+        <span class="rewards-hub">
+          <img src="../Guidelines/Slicing/Header/gift_box.svg" alt="" />
+          <span>Rewards Hub</span>
+        </span>
+      </div>
+      <div class="header-right">
+        <a href="#" class="link-login">Log In</a>
+        <button type="button" class="btn-xxsmall">Sign Up</button>
+        <span class="divider-vertical"></span>
+        <img class="header-icon" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Search.svg" alt="Search" />
+        <img class="header-icon" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Download.svg" alt="Download" />
+        <img class="header-icon" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Language.svg" alt="Language" />
+        <img class="header-icon" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Darkmode.svg" alt="Dark mode" />
+        <img class="header-icon" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Settings.svg" alt="Settings" />
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Web Header 登录 -->
+  <section class="section-block">
+    <div class="section-label">2. Web Header · 登录（Log in）</div>
+    <div class="header-bar">
+      <div class="header-left">
+        <img class="header-logo" src="../Guidelines/Slicing/Header/Logo.svg" alt="Logo" />
+        <a href="#" class="nav-item">Buy Crypto <img class="arrow" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" /></a>
+        <a href="#" class="nav-item">Markets</a>
+        <a href="#" class="nav-item">Trade <img class="arrow" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" /></a>
+        <a href="#" class="nav-item">Futures <img class="arrow" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" /></a>
+        <a href="#" class="nav-item">Earn <img class="arrow" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" /></a>
+        <a href="#" class="nav-item">Community <img class="arrow" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" /></a>
+        <a href="#" class="nav-item">Web3</a>
+        <a href="#" class="nav-item">More <img class="arrow" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" /></a>
+        <span class="rewards-hub">
+          <img src="../Guidelines/Slicing/Header/gift_box.svg" alt="" />
+          <span>Rewards Hub</span>
+        </span>
+      </div>
+      <div class="header-right">
+        <button type="button" class="btn-xxsmall">Deposit</button>
+        <span class="header-drop-trigger">Assets <img class="arrow" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" /></span>
+        <span class="header-drop-trigger">Order <img class="arrow" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" /></span>
+        <img class="header-avatar" src="../Guidelines/Slicing/Header/Avatar.svg" alt="Avatar" />
+        <span class="divider-vertical"></span>
+        <img class="header-icon" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Search.svg" alt="Search" />
+        <img class="header-icon" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Download.svg" alt="Download" />
+        <img class="header-icon" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Notification.svg" alt="Notification" />
+        <img class="header-icon" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Language.svg" alt="Language" />
+        <img class="header-icon" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Darkmode.svg" alt="Dark mode" />
+        <img class="header-icon" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Settings.svg" alt="Settings" />
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. H5 Header 未登录 -->
+  <section class="section-block">
+    <div class="section-label">3. H5 Header · 未登录（Default）</div>
+    <div class="header-bar h5">
+      <img class="header-logo" src="../Guidelines/Slicing/Header/Logo.svg" alt="Logo" />
+      <div class="header-right">
+        <button type="button" class="btn-xxsmall">Log In</button>
+        <span class="divider-vertical"></span>
+        <img class="header-icon" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Search.svg" alt="Search" />
+        <img class="header-icon" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Download.svg" alt="Download" />
+        <img class="header-icon" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Grid.svg" alt="Menu" />
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. H5 Header 登录 -->
+  <section class="section-block">
+    <div class="section-label">4. H5 Header · 登录（Log in）</div>
+    <div class="header-bar h5">
+      <img class="header-logo" src="../Guidelines/Slicing/Header/Logo.svg" alt="Logo" />
+      <div class="header-right">
+        <img class="header-avatar" src="../Guidelines/Slicing/Header/Avatar.svg" alt="Avatar" />
+        <span class="divider-vertical"></span>
+        <img class="header-icon" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Search.svg" alt="Search" />
+        <img class="header-icon" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Download.svg" alt="Download" />
+        <img class="header-icon" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_Grid.svg" alt="Menu" />
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Web Footer（Figma 7863:16947 1:1 还原） -->
+  <section class="section-block">
+    <div class="section-label">5. Web Footer</div>
+    <div class="footer-web">
+      <div class="footer-web-inner">
+        <div class="footer-web-left">
+          <h2 class="footer-web-title">Trade Crypto Anywhere Anytime</h2>
+          <div class="footer-qr-box">
+            <img src="../Guidelines/Slicing/Header/QR%20Code.svg" alt="QR Code" />
+          </div>
+          <p class="footer-qr-caption">Scan to download Gate app</p>
+          <h2 class="footer-web-title footer-community-title">Community</h2>
+          <div class="footer-social-row">
+            <img class="icon" src="../Guidelines/icons/Social%20Media%20Icons/CEX_Email.svg" alt="Email" />
+            <img class="icon" src="../Guidelines/icons/Social%20Media%20Icons/CEX_Facebook.svg" alt="Facebook" />
+            <img class="icon" src="../Guidelines/icons/Social%20Media%20Icons/CEX_Twitter.svg" alt="Twitter" />
+            <img class="icon" src="../Guidelines/icons/Social%20Media%20Icons/CEX_Telegram.svg" alt="Telegram" />
+          </div>
+          <div class="footer-social-row">
+            <img class="icon" src="../Guidelines/icons/Social%20Media%20Icons/CEX_Discord.svg" alt="Discord" />
+            <img class="icon" src="../Guidelines/icons/Social%20Media%20Icons/CEX_Instagram.svg" alt="Instagram" />
+            <img class="icon" src="../Guidelines/icons/Social%20Media%20Icons/CEX_Youtube.svg" alt="Youtube" />
+            <img class="icon" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_More_Horizontal.svg" alt="More" />
+          </div>
+          <div class="select-wrap" role="combobox" aria-haspopup="listbox" aria-expanded="false">
+            <button type="button" class="select-trigger" data-select aria-label="语言与货币">
+              <span class="select-text" data-value>English/USD</span>
+              <span class="select-suffix">
+                <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="16" height="16" aria-hidden="true" />
+                <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="16" height="16" aria-hidden="true" style="display:none" />
+              </span>
+            </button>
+            <div class="select-menu" data-menu>
+              <div class="select-menu__list" data-list>
+                <div class="select-option is-active" data-opt="English/USD"><span class="option-text">English/USD</span></div>
+                <div class="select-option" data-opt="中文/CNY"><span class="option-text">中文/CNY</span></div>
+                <div class="select-option" data-opt="日本語/JPY"><span class="option-text">日本語/JPY</span></div>
+                <div class="select-option" data-opt="한국어/KRW"><span class="option-text">한국어/KRW</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h2 class="footer-col-title">About</h2>
+          <div class="footer-col-links">
+            <a href="#">About Us</a>
+            <a href="#">Careers</a>
+            <a href="#">Partners</a>
+            <a href="#">User Agreement</a>
+            <a href="#">Risk Warning</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Cookie Policy</a>
+            <a href="#">Fees</a>
+            <a href="#">Media Kit</a>
+            <a href="#">100% Proof of Reserves</a>
+            <a href="#">License</a>
+            <a href="#">Security</a>
+            <a href="#">GT User Privileges</a>
+            <a href="#">Gate Chain</a>
+            <a href="#">Calendar</a>
+            <a href="#">Law Enforcement</a>
+            <a href="#">Summits</a>
+            <a href="#">Gate Ventures</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h2 class="footer-col-title">Products</h2>
+          <div class="footer-col-links">
+            <a href="#">Buy Crypto</a>
+            <a href="#">Sell Crypto</a>
+            <a href="#">Spot Trading</a>
+            <a href="#">Futures Trading</a>
+            <a href="#">Leveraged Tokens</a>
+            <a href="#">Leveraged ETPs</a>
+            <a href="#">NFT</a>
+            <a href="#">Gate Pay</a>
+            <a href="#">Gate Life</a>
+            <a href="#">Gift Card</a>
+            <a href="#">Gate OTC</a>
+            <a href="#">Gate Charity</a>
+            <a href="#">Gate Card</a>
+            <a href="#">Gate Shop</a>
+          </div>
+        </div>
+        <div class="footer-col footer-col-services">
+          <h2 class="footer-col-title">Services</h2>
+          <div class="footer-col-links">
+            <a href="#">VIP Benefits</a>
+            <a href="#">User Feedback</a>
+            <a href="#">Announcement</a>
+            <a href="#">Fees</a>
+            <a href="#">Help Center</a>
+            <a href="#">Submit a Request</a>
+            <a href="#">Listing</a>
+            <a href="#">Smart Contract Security</a>
+            <a href="#">Developers</a>
+            <a href="#">Verification Search</a>
+            <a href="#">P2P Merchant Application</a>
+            <a href="#">P2P Blue V Application</a>
+            <a href="#">Affiliate Program</a>
+          </div>
+        </div>
+        <div class="footer-col footer-col-learn">
+          <h2 class="footer-col-title">Learn</h2>
+          <div class="footer-col-links">
+            <a href="#">Gate Learn</a>
+            <a href="#">Crypto Courses</a>
+            <a href="#">Crypto Glossary</a>
+            <a href="#">Cryptocurrency Prices</a>
+            <a href="#">Big Data</a>
+            <a href="#">Bitcoin Halving</a>
+            <a href="#" class="footer-learn-item">Crypto Prices <img class="arrow" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" /></a>
+            <a href="#" class="footer-learn-item">How to Buy Crypto <img class="arrow" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" /></a>
+            <a href="#" class="footer-learn-item">Crypto Price Prediction <img class="arrow" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" /></a>
+            <a href="#" class="footer-learn-item">Crypto to Fiat Converter <img class="arrow" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" /></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copyright">Gate © 2013-2025.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. H5 Footer -->
+  <section class="section-block">
+    <div class="section-label">6. H5 Footer</div>
+    <div class="footer-h5">
+      <div class="logo-wrap">
+        <img src="../Guidelines/Slicing/Header/Logo.svg" alt="Logo" />
+      </div>
+      <div class="footer-h5-collapse">
+        <div class="footer-h5-row">About <img class="chevron" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" /></div>
+        <div class="footer-h5-row">Products <img class="chevron" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" /></div>
+        <div class="footer-h5-row">Services <img class="chevron" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" /></div>
+        <div class="footer-h5-row">Learn <img class="chevron" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" /></div>
+      </div>
+      <div class="footer-h5-social">
+        <img class="icon" src="../Guidelines/icons/Social%20Media%20Icons/CEX_Email.svg" alt="Email" />
+        <img class="icon" src="../Guidelines/icons/Social%20Media%20Icons/CEX_Facebook.svg" alt="Facebook" />
+        <img class="icon" src="../Guidelines/icons/Social%20Media%20Icons/CEX_Twitter.svg" alt="Twitter" />
+        <img class="icon" src="../Guidelines/icons/Social%20Media%20Icons/CEX_Telegram.svg" alt="Telegram" />
+        <img class="icon" src="../Guidelines/icons/Social%20Media%20Icons/CEX_Discord.svg" alt="Discord" />
+        <img class="icon" src="../Guidelines/icons/Social%20Media%20Icons/CEX_Instagram.svg" alt="Instagram" />
+        <img class="icon" src="../Guidelines/icons/Social%20Media%20Icons/CEX_Youtube.svg" alt="Youtube" />
+        <img class="icon" src="../Guidelines/icons/Basic%20Product%20Icons/CEX_More_Horizontal.svg" alt="More" />
+      </div>
+      <div class="footer-h5-selects">
+        <div class="select-wrap" role="combobox" aria-haspopup="listbox" aria-expanded="false">
+          <button type="button" class="select-trigger" data-select aria-label="语言">
+            <span class="select-text" data-value>English</span>
+            <span class="select-suffix">
+              <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="16" height="16" aria-hidden="true" />
+              <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="16" height="16" aria-hidden="true" style="display:none" />
+            </span>
+          </button>
+          <div class="select-menu" data-menu>
+            <div class="select-menu__list" data-list>
+              <div class="select-option is-active" data-opt="English"><span class="option-text">English</span></div>
+              <div class="select-option" data-opt="日本語"><span class="option-text">日本語</span></div>
+              <div class="select-option" data-opt="한국어"><span class="option-text">한국어</span></div>
+              <div class="select-option" data-opt="Deutsch"><span class="option-text">Deutsch</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="select-wrap" role="combobox" aria-haspopup="listbox" aria-expanded="false">
+          <button type="button" class="select-trigger" data-select aria-label="货币">
+            <span class="select-text" data-value>USD</span>
+            <span class="select-suffix">
+              <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="16" height="16" aria-hidden="true" />
+              <img src="../Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="16" height="16" aria-hidden="true" style="display:none" />
+            </span>
+          </button>
+          <div class="select-menu" data-menu>
+            <div class="select-menu__list" data-list>
+              <div class="select-option is-active" data-opt="USD"><span class="option-text">USD</span></div>
+              <div class="select-option" data-opt="EUR"><span class="option-text">EUR</span></div>
+              <div class="select-option" data-opt="JPY"><span class="option-text">JPY</span></div>
+              <div class="select-option" data-opt="CNY"><span class="option-text">CNY</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="footer-h5-copyright">Copyright © 2013-2025.<br />All Right Reserved.</p>
+    </div>
+  </section>
+
+  <script>
+    /* Footer 语言/货币：交互引用 Select 组件（与 select.html 一致） */
+    function syncFooterSelectArrows() {
+      document.querySelectorAll('.footer-web .select-trigger[data-select], .footer-h5-selects .select-trigger[data-select]').forEach(function(trigger) {
+        var suffix = trigger.querySelector('.select-suffix');
+        var arrowDown = suffix && suffix.querySelector('.select-arrow-down');
+        var arrowUp = suffix && suffix.querySelector('.select-arrow-up');
+        if (arrowDown && arrowUp) {
+          var isOpen = trigger.classList.contains('is-open');
+          arrowDown.style.display = isOpen ? 'none' : '';
+          arrowUp.style.display = isOpen ? '' : 'none';
+        }
+      });
+    }
+    document.querySelectorAll('.footer-web .select-trigger[data-select], .footer-h5-selects .select-trigger[data-select]').forEach(function(trigger) {
+      var wrap = trigger.closest('.select-wrap');
+      var menu = wrap && wrap.querySelector('[data-menu]');
+      var valueEl = wrap && wrap.querySelector('[data-value]');
+      var options = wrap && wrap.querySelectorAll('.select-option[data-opt]');
+      if (!wrap || !menu) return;
+      menu.addEventListener('click', function(e) { e.stopPropagation(); });
+      trigger.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var isOpen = menu.classList.contains('is-open');
+        document.querySelectorAll('.footer-web .select-menu.is-open, .footer-h5-selects .select-menu.is-open').forEach(function(m) { m.classList.remove('is-open'); });
+        document.querySelectorAll('.footer-web .select-trigger.is-open, .footer-h5-selects .select-trigger.is-open').forEach(function(t) { t.classList.remove('is-open'); });
+        if (!isOpen) {
+          menu.classList.add('is-open');
+          trigger.classList.add('is-open');
+          wrap.setAttribute('aria-expanded', 'true');
+        } else {
+          wrap.setAttribute('aria-expanded', 'false');
+        }
+        syncFooterSelectArrows();
+      });
+      options && options.forEach(function(opt) {
+        opt.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var val = opt.getAttribute('data-opt');
+          if (valueEl) valueEl.textContent = val;
+          options.forEach(function(o) { o.classList.remove('is-active'); });
+          opt.classList.add('is-active');
+          menu.classList.remove('is-open');
+          trigger.classList.remove('is-open');
+          wrap.setAttribute('aria-expanded', 'false');
+          syncFooterSelectArrows();
+        });
+      });
+    });
+    document.addEventListener('click', function() {
+      document.querySelectorAll('.footer-web .select-menu.is-open, .footer-h5-selects .select-menu.is-open').forEach(function(m) { m.classList.remove('is-open'); });
+      document.querySelectorAll('.footer-web .select-trigger.is-open, .footer-h5-selects .select-trigger.is-open').forEach(function(t) { t.classList.remove('is-open'); });
+      document.querySelectorAll('.footer-web .select-wrap[aria-expanded="true"], .footer-h5-selects .select-wrap[aria-expanded="true"]').forEach(function(w) { w.setAttribute('aria-expanded', 'false'); });
+      syncFooterSelectArrows();
+    });
+    syncFooterSelectArrows();
+  </script>
+</body>
+</html>

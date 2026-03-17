@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <title>Color V5.1 预览 - Gate APP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* 来自 Guidelines/Color.md 的 Token 定义（Light / Dark） */
+    :root {
+      /* Text */
+      --text-primary: #070808;
+      --text-secondary: #84888C;
+      --text-tertiary: #A0A3A7;
+      --text-tips: #C4C7CA;
+      --text-disabled: #C4C7CA;
+      --text-error: #F7594B;
+      --text-warning: #FF9447;
+      --text-success: #2BC235;
+      --text-brand: #0068FF;
+      --text-always-white: #FFFFFF;
+      --text-inverse-primary: #FFFFFF;
+      --text-brand-blue: #0068FF;
+      --text-always-black: #070808;
+
+      /* Background */
+      --bg-primary: #FFFFFF;
+      --bg-secondary: #FAFAFA;
+      --bg-tertiary: #F2F3F4;
+      --bg-quaternary: #DFE0E2;
+      --bg-divider: #CECECE;
+      --bg-inverse-primary: #070808;
+      --bg-inverse-secondary: rgba(24, 25, 27, 1);
+      --bg-inverse-tertiary: #1F2023;
+      --bg-always-white: #FFFFFF;
+      --bg-always-black: #070808;
+      --bg-mask: rgba(0, 0, 0, 0.2);
+      --bg-brand: #387CF2;
+      --bg-pressed: #1F2023;
+
+      /* Line */
+      --line-gutter: #DFE0E2;
+      --line-border-subtle: #F2F3F4;
+      --line-border-strong: #DFE0E2;
+      --line-divider: #F2F3F4;
+      --line-short-divider: #C4C7CA;
+
+      /* Link */
+      --link-default: #0068FF;
+      --link-pressed: #004FD9;
+      --link-disabled: #7ABDFF;
+
+      /* Function */
+      --func-green: #2BC287;
+      --func-green-light: #EAF9EB;
+      --func-red: #F74B60;
+      --func-red-light: #FEEEED;
+      --func-orange: #F7594B;
+      --func-yellow: #FEBE00;
+
+      /* Icon */
+      --icon-primary: #303236;
+      --icon-secondary: #484B51;
+      --icon-tertiary: #84888C;
+      --icon-tips: #A0A3A7;
+
+      /* Layer */
+      --layer-1: #FFFFFF;
+      --layer-2: #F2F3F4;
+      --layer-3: #FFFFFF;
+      --layer-4: #F2F3F4;
+      --layer-active: #FFFFFF;
+
+      /* Cmpt */
+      --cmpt-button-primary: #303236;
+      --cmpt-button-soft: #F5F6F7;
+      --cmpt-button-soft-hover: #F2F3F4;
+      --cmpt-button-soft-active: #DFE0E2;
+      --cmpt-button-soft-disable: #F5F6F7;
+      --cmpt-input: #F5F6F7;
+      --cmpt-input-disabled: #F5F6F7;
+      --cmpt-component-active: #303236;
+      --cmpt-component-hover: #F5F6F7;
+      --cmpt-tooltip-toast: #303236;
+      --cmpt-bluefunct-bg: #EBF6FF;
+      --cmpt-redfunct-bg: #FEEEED;
+      --cmpt-orange-bg: #FFF4E3;
+      --cmpt-greenfunct-bg: #EAF9EB;
+      --cmpt-tag-gray: #F5F6F7;
+      --cmpt-btn-white-dis-bg: #303236;
+      --cmpt-btn-white-dis-txt: #84888C;
+      --cmpt-btn-white-pressed-txt: #A0A3A7;
+      --cmpt-checkbox-dis-active: #DFE0E2;
+      --cmpt-checkbox-dis-inactive: #F2F3F4;
+      --cmpt-switch-inactive-dis: #FAFAFA;
+      --cmpt-switch-disable: #DFE0E2;
+      --cmpt-switch-disable-bg: #A0A3A7;
+      --cmpt-slider-inactive-line: #DFE0E2;
+      --cmpt-share-footer-bg: #F2F3F4;
+      --cmpt-notification: #FFFFFF;
+      --cmpt-select-bg: #FFFFFF;
+
+      /* Function (20) */
+      --function-trade-buy: #2BC287;
+      --function-trade-buy-active: #20A174;
+      --function-trade-buy-disabled: #ADEDCE;
+      --function-trade-buy-soft: #EAF9EB;
+      --function-trade-sell: #F74B60;
+      --function-trade-sell-active: #D6364E;
+      --function-trade-sell-disabled: #FF9EA3;
+      --function-trade-sell-soft: #FEEEED;
+      --function-success: #2BC235;
+      --function-success-active: #229B2A;
+      --function-success-disabled: #AAE7AE;
+      --function-success-soft: #EAF9EB;
+      --function-brand: #0068FF;
+      --function-brand-active: #004FD9;
+      --function-brand-disabled: #7ABDFF;
+      --function-hot: #F7594B;
+      --function-star: #FEBE00;
+      --function-tag-primary: #A7F757;
+      --function-vip-bg: #FFD98C;
+      --function-vip-text: #070808;
+    }
+
+    [data-theme='dark'] {
+      /* Text */
+      --text-primary: #FFFFFF;
+      --text-secondary: #A0A3A7;
+      --text-tertiary: #84888C;
+      --text-tips: #484B51;
+      --text-disabled: #484B51;
+      --text-error: #F7594B;
+      --text-warning: #FFAE6B;
+      --text-success: #2BC235;
+      --text-brand: #247CFF;
+      --text-always-white: #FFFFFF;
+      --text-inverse-primary: #070808;
+      --text-brand-blue: #FFFFFF;
+      --text-always-black: #070808;
+
+      /* Background */
+      --bg-primary: #070808;
+      --bg-secondary: rgba(19, 21, 22, 1);
+      --bg-tertiary: #18191B;
+      --bg-quaternary: #484B51;
+      --bg-divider: #3D3D3D;
+      --bg-inverse-primary: #FFFFFF;
+      --bg-inverse-secondary: #FAFAFA;
+      --bg-inverse-tertiary: #F2F3F4;
+      --bg-always-white: #FFFFFF;
+      --bg-always-black: #070808;
+      --bg-mask: rgba(0, 0, 0, 0.7);
+      --bg-brand: #FFFFFF;
+      --bg-pressed: #DFE0E2;
+
+      /* Line */
+      --line-gutter: #1F2023;
+      --line-border-subtle: #1F2023;
+      --line-border-strong: #484B51;
+      --line-divider: #1F2023;
+      --line-short-divider: #484B51;
+
+      /* Link */
+      --link-default: #247CFF;
+      --link-pressed: #004FD9;
+      --link-disabled: #002A8C;
+
+      /* Function */
+      --func-green: #2BC287;
+      --func-green-light: #092117;
+      --func-red: #F74B60;
+      --func-red-light: #341C1D;
+      --func-orange: #F7594B;
+      --func-yellow: #FEBE00;
+
+      /* Icon */
+      --icon-primary: #FFFFFF;
+      --icon-secondary: #C4C7CA;
+      --icon-tertiary: #A0A3A7;
+      --icon-tips: #84888C;
+
+      /* Layer */
+      --layer-1: #131516;
+      --layer-2: #1F2023;
+      --layer-3: #1F2023;
+      --layer-4: #303236;
+      --layer-active: #484B51;
+
+      /* Cmpt */
+      --cmpt-button-primary: #FFFFFF;
+      --cmpt-button-soft: #303236;
+      --cmpt-button-soft-hover: #484B51;
+      --cmpt-button-soft-active: #484B51;
+      --cmpt-button-soft-disable: #1F2023;
+      --cmpt-input: #1F2023;
+      --cmpt-input-disabled: #18191B;
+      --cmpt-component-active: #FFFFFF;
+      --cmpt-component-hover: #1F2023;
+      --cmpt-tooltip-toast: #303236;
+      --cmpt-bluefunct-bg: #232840;
+      --cmpt-redfunct-bg: #2F0C08;
+      --cmpt-orange-bg: #331405;
+      --cmpt-greenfunct-bg: #072108;
+      --cmpt-tag-gray: #1F2023;
+      --cmpt-btn-white-dis-bg: #18191B;
+      --cmpt-btn-white-dis-txt: #84888C;
+      --cmpt-btn-white-pressed-txt: #A0A3A7;
+      --cmpt-checkbox-dis-active: #484B51;
+      --cmpt-checkbox-dis-inactive: #18191B;
+      --cmpt-switch-inactive-dis: #84888C;
+      --cmpt-switch-disable: #1F2023;
+      --cmpt-switch-disable-bg: #484B51;
+      --cmpt-slider-inactive-line: #303236;
+      --cmpt-share-footer-bg: #F2F3F4;
+      --cmpt-notification: #1F2023;
+      --cmpt-select-bg: #303236;
+
+      /* Function (20) */
+      --function-trade-buy: #2BC287;
+      --function-trade-buy-active: #20A174;
+      --function-trade-buy-disabled: #127A59;
+      --function-trade-buy-soft: #092117;
+      --function-trade-sell: #F74B60;
+      --function-trade-sell-active: #D6364E;
+      --function-trade-sell-disabled: #8A152E;
+      --function-trade-sell-soft: #341C1D;
+      --function-success: #2BC235;
+      --function-success-active: #55CE5D;
+      --function-success-disabled: #1A7420;
+      --function-success-soft: #072108;
+      --function-brand: #0068FF;
+      --function-brand-active: #004FD9;
+      --function-brand-disabled: #232840;
+      --function-hot: #F7594B;
+      --function-star: #FEBE00;
+      --function-tag-primary: #A7F757;
+      --function-vip-bg: #FFD98C;
+      --function-vip-text: #070808;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "PingFang SC",
+        "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px 32px;
+    }
+
+    .container {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header-main {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px;
+      border-radius: 999px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--line-border-subtle);
+    }
+
+    .theme-toggle button {
+      border: none;
+      background: transparent;
+      padding: 6px 14px;
+      font-size: 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      color: var(--text-secondary);
+    }
+
+    .theme-toggle button.is-active {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 900px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    section {
+      background: var(--bg-primary);
+      border-radius: 12px;
+      border: 1px solid var(--line-border-subtle);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: baseline;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .section-sub {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line-border-subtle);
+      color: var(--text-tips);
+      white-space: nowrap;
+    }
+
+    .color-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .color-table thead {
+      background: var(--bg-secondary);
+    }
+
+    .color-table th,
+    .color-table td {
+      padding: 6px 8px;
+      text-align: left;
+      border-bottom: 1px solid var(--line-divider);
+      vertical-align: middle;
+    }
+
+    .color-table th {
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .color-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .swatch {
+      width: 32px;
+      height: 20px;
+      border-radius: 999px;
+      border: 1px solid var(--line-border-subtle);
+    }
+
+    .swatch-mask {
+      position: relative;
+      overflow: hidden;
+      background-image:
+        linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 50%, #ccc 50%, #ccc 75%, transparent 75%, transparent);
+      background-size: 8px 8px;
+    }
+
+    .swatch-mask-inner {
+      position: absolute;
+      inset: 0;
+    }
+
+    .note {
+      font-size: 11px;
+      color: var(--text-tips);
+      margin-top: 4px;
+    }
+
+    footer {
+      font-size: 11px;
+      color: var(--text-tips);
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="container">
+      <header>
+        <div class="header-main">
+          <div class="title">Color V5.1 预览</div>
+          <div class="subtitle">来源：Guidelines/Color.md · 按 Text / Background / Line / Link / Function 分类展示</div>
+        </div>
+        <div class="theme-toggle" id="themeToggle">
+          <button type="button" data-theme-value="light" class="is-active">Light</button>
+          <button type="button" data-theme-value="dark">Dark</button>
+        </div>
+      </header>
+
+      <main>
+        <!-- Background -->
+        <section>
+          <div class="section-header">
+            <div>
+              <div class="section-title">Background Color</div>
+              <div class="section-sub">页面层级背景 / 反色背景 / Mask</div>
+            </div>
+            <span class="tag">Bg-*</span>
+          </div>
+          <table class="color-table">
+            <thead>
+              <tr>
+                <th>示例</th>
+                <th>Token</th>
+                <th>CSS 变量</th>
+                <th>说明</th>
+                <th>色值（Light / Dark）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="swatch" style="background: var(--bg-primary);"></div></td>
+                <td>Bg-Primary</td>
+                <td><code>--bg-primary</code></td>
+                <td>主背景</td>
+                <td>#FFFFFF / #070808</td>
+              </tr>
+              <tr>
+                <td><div class="swatch" style="background: var(--bg-secondary);"></div></td>
+                <td>Bg-Secondary</td>
+                <td><code>--bg-secondary</code></td>
+                <td>二级背景</td>
+                <td>#FAFAFA / #131516</td>
+              </tr>
+              <tr>
+                <td><div class="swatch" style="background: var(--bg-tertiary);"></div></td>
+                <td>Bg-Tertiary</td>
+                <td><code>--bg-tertiary</code></td>
+                <td>三级背景</td>
+                <td>#F2F3F4 / #18191B</td>
+              </tr>
+              <tr>
+                <td><div class="swatch" style="background: var(--bg-quaternary);"></div></td>
+                <td>Bg-Quaternary</td>
+                <td><code>--bg-quaternary</code></td>
+                <td>四级背景 / 区块填充</td>
+                <td>#DFE0E2 / #484B51</td>
+              </tr>
+              <tr>
+                <td><div class="swatch" style="background: var(--bg-inverse-primary);"></div></td>
+                <td>Bg-Inverse-primary</td>
+                <td><code>--bg-inverse-primary</code></td>
+                <td>反向一级背景</td>
+                <td>#070808 / #FFFFFF</td>
+              </tr>
+              <tr>
+                <td><div class="swatch" style="background: var(--bg-inverse-secondary);"></div></td>
+                <td>Bg-Inverse-secondary</td>
+                <td><code>--bg-inverse-secondary</code></td>
+                <td>反向二级背景</td>
+                <td>#18191B / #FAFAFA</td>
+              </tr>
+              <tr>
+                <td><div class="swatch" style="background: var(--bg-inverse-tertiary);"></div></td>
+                <td>Bg-Inverse-tertiary</td>
+                <td><code>--bg-inverse-tertiary</code></td>
+                <td>反向三级背景</td>
+                <td>#1F2023 / #F2F3F4</td>
+              </tr>
+              <tr>
+                <td><div class="swatch" style="background: var(--bg-always-white);"></div></td>
+                <td>Bg-Always-white</td>
+                <td><code>--bg-always-white</code></td>
+                <td>永远白底</td>
+                <td>#FFFFFF / #FFFFFF</td>
+              </tr>
+              <tr>
+                <td><div class="swatch" style="background: var(--bg-always-black);"></div></td>
+                <td>Bg-Always-black</td>
+                <td><code>--bg-always-black</code></td>
+                <td>永远黑底</td>
+                <td>#070808 / #070808</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="swatch swatch-mask">
+                    <div class="swatch-mask-inner" style="background: var(--bg-mask);"></div>
+                  </div>
+                </td>
+                <td>Bg-Mask</td>
+                <td><code>--bg-mask</code></td>
+                <td>蒙版 / 弹窗遮罩（rgba(0,0,0,0.5)）</td>
+                <td>rgba(0,0,0,0.2) / rgba(0,0,0,0.7)</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="note">切换右上角 Light / Dark，可看到同一 Token 在不同主题下的实际效果。</div>
+        </section>
+
+        <!-- Text Color -->
+        <section>
+          <div class="section-header">
+            <div>
+              <div class="section-title">Text Color</div>
+              <div class="section-sub">文案层级 / 状态色</div>
+            </div>
+            <span class="tag">Text-*</span>
+          </div>
+          <table class="color-table">
+            <thead>
+              <tr>
+                <th>示例</th>
+                <th>Token</th>
+                <th>CSS 变量</th>
+                <th>说明</th>
+                <th>色值（Light / Dark）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="color: var(--text-primary);">Aa</td>
+                <td>Text-Primary</td>
+                <td><code>--text-primary</code></td>
+                <td>主文案</td>
+                <td>#070808 / #FFFFFF</td>
+              </tr>
+              <tr>
+                <td style="color: var(--text-secondary);">Aa</td>
+                <td>Text-Secondary</td>
+                <td><code>--text-secondary</code></td>
+                <td>二级文案</td>
+                <td>#84888C / #A0A3A7</td>
+              </tr>
+              <tr>
+                <td style="color: var(--text-tertiary);">Aa</td>
+                <td>Text-Tertiary</td>
+                <td><code>--text-tertiary</code></td>
+                <td>正文弱文案</td>
+                <td>#A0A3A7 / #84888C</td>
+              </tr>
+              <tr>
+                <td style="color: var(--text-tips);">Aa</td>
+                <td>Text-Tips</td>
+                <td><code>--text-tips</code></td>
+                <td>提示 / 占位</td>
+                <td>#C4C7CA / #484B51</td>
+              </tr>
+              <tr>
+                <td style="color: var(--text-disabled);">Aa</td>
+                <td>Text-Disabled</td>
+                <td><code>--text-disabled</code></td>
+                <td>禁用文案</td>
+                <td>#C4C7CA / #484B51</td>
+              </tr>
+              <tr>
+                <td style="color: var(--text-error);">Aa</td>
+                <td>Text-Error</td>
+                <td><code>--text-error</code></td>
+                <td>错误提示</td>
+                <td>#F7594B / #F7594B</td>
+              </tr>
+              <tr>
+                <td style="color: var(--text-warning);">Aa</td>
+                <td>Text-Warning</td>
+                <td><code>--text-warning</code></td>
+                <td>警示提示</td>
+                <td>#FF9447 / #FFAE6B</td>
+              </tr>
+              <tr>
+                <td style="color: var(--text-success);">Aa</td>
+                <td>Text-Success</td>
+                <td><code>--text-success</code></td>
+                <td>成功提示</td>
+                <td>#2BC235 / #2BC235</td>
+              </tr>
+              <tr>
+                <td style="color: var(--text-brand);">Aa</td>
+                <td>Text-Brand</td>
+                <td><code>--text-brand</code></td>
+                <td>文字品牌色</td>
+                <td>#0068FF / #247CFF</td>
+              </tr>
+              <tr>
+                <td style="color: var(--text-always-white); background: #84888C;">Aa</td>
+                <td>Always-white</td>
+                <td><code>--text-always-white</code></td>
+                <td>白文字</td>
+                <td>#FFFFFF / #FFFFFF</td>
+              </tr>
+              <tr>
+                <td style="color: var(--text-inverse-primary); background: var(--bg-inverse-primary);">Aa</td>
+                <td>Inverse-primary</td>
+                <td><code>--text-inverse-primary</code></td>
+                <td>反白 / 反黑文字色</td>
+                <td>#FFFFFF / #070808</td>
+              </tr>
+              <tr>
+                <td style="color: var(--text-brand-blue);">Aa</td>
+                <td>Text-Brand blue</td>
+                <td><code>--text-brand-blue</code></td>
+                <td>文字品牌色 / 白文字</td>
+                <td>#0068FF / #FFFFFF</td>
+              </tr>
+              <tr>
+                <td style="color: var(--text-always-black);">Aa</td>
+                <td>Always-black</td>
+                <td><code>--text-always-black</code></td>
+                <td>黑文字</td>
+                <td>#070808 / #070808</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Link Color -->
+        <section>
+          <div class="section-header">
+            <div>
+              <div class="section-title">Link Color</div>
+              <div class="section-sub">链接默认 / 悬停 / 按压 / 禁用</div>
+            </div>
+            <span class="tag">Link-*</span>
+          </div>
+          <table class="color-table">
+            <thead>
+              <tr>
+                <th>示例</th>
+                <th>Token</th>
+                <th>CSS 变量</th>
+                <th>说明</th>
+                <th>色值（Light / Dark）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="color: var(--link-default); text-decoration: none;">Link</td>
+                <td>Link-default</td>
+                <td><code>--link-default</code></td>
+                <td>默认链接</td>
+                <td>#0068FF / #247CFF</td>
+              </tr>
+              <tr>
+                <td style="color: var(--link-pressed); text-decoration: none;">Link</td>
+                <td>Link-pressed</td>
+                <td><code>--link-pressed</code></td>
+                <td>按压态</td>
+                <td>#004FD9 / #004FD9</td>
+              </tr>
+              <tr>
+                <td style="color: var(--link-disabled); text-decoration: none;">Link</td>
+                <td>Link-disabled</td>
+                <td><code>--link-disabled</code></td>
+                <td>禁用态</td>
+                <td>#7ABDFF / #002A8C</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Line -->
+        <section>
+          <div class="section-header">
+            <div>
+              <div class="section-title">Line Color</div>
+              <div class="section-sub">边框 / 分割线</div>
+            </div>
+            <span class="tag">Line-*</span>
+          </div>
+          <table class="color-table">
+            <thead>
+              <tr>
+                <th>示例</th>
+                <th>Token</th>
+                <th>CSS 变量</th>
+                <th>说明</th>
+                <th>色值（Light / Dark）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div style="width: 36px; height: 12px; border-top: 1px solid var(--line-gutter);"></div>
+                </td>
+                <td>Line-Gutter</td>
+                <td><code>--line-gutter</code></td>
+                <td>分割块 / 栅格线</td>
+                <td>#DFE0E2 / #1F2023</td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="width: 36px; height: 12px; border-top: 1px solid var(--line-border-subtle);"></div>
+                </td>
+                <td>Line-Border-Subtle</td>
+                <td><code>--line-border-subtle</code></td>
+                <td>轻量边框</td>
+                <td>#F2F3F4 / #1F2023</td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="width: 36px; height: 12px; border-top: 1px solid var(--line-border-strong);"></div>
+                </td>
+                <td>Line-Border-Strong</td>
+                <td><code>--line-border-strong</code></td>
+                <td>强调边框 / 输入框</td>
+                <td>#DFE0E2 / #484B51</td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="width: 36px; height: 12px; border-top: 0.5px solid var(--line-divider);"></div>
+                </td>
+                <td>Line-Divider</td>
+                <td><code>--line-divider</code></td>
+                <td>分割线 0.5px</td>
+                <td>#F2F3F4 / #1F2023</td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="width: 1px; height: 14px; background: var(--line-short-divider);"></div>
+                </td>
+                <td>Line-Short Divider</td>
+                <td><code>--line-short-divider</code></td>
+                <td>短竖线 / 装饰分割</td>
+                <td>#C4C7CA / #484B51</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Function -->
+        <section>
+          <div class="section-header">
+            <div>
+              <div class="section-title">Function Color</div>
+              <div class="section-sub">交易买卖 / 热门 / 收藏</div>
+            </div>
+            <span class="tag">Func-*</span>
+          </div>
+          <table class="color-table">
+            <thead>
+              <tr>
+                <th>示例</th>
+                <th>Token</th>
+                <th>CSS 变量</th>
+                <th>说明</th>
+                <th>色值（Light / Dark）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="swatch" style="background: var(--func-green);"></div>
+                </td>
+                <td>Trade-buy</td>
+                <td><code>--func-green</code></td>
+                <td>买入主色</td>
+                <td>#2BC287 / #2BC287</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="swatch" style="background: var(--func-green-light);"></div>
+                </td>
+                <td>Trade-buy-soft</td>
+                <td><code>--func-green-light</code></td>
+                <td>买入浅底色</td>
+                <td>#EAF9EB / #092117</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="swatch" style="background: var(--func-red);"></div>
+                </td>
+                <td>Trade-sell</td>
+                <td><code>--func-red</code></td>
+                <td>卖出主色</td>
+                <td>#F74B60 / #F74B60</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="swatch" style="background: var(--func-red-light);"></div>
+                </td>
+                <td>Trade-sell-soft</td>
+                <td><code>--func-red-light</code></td>
+                <td>卖出浅底色</td>
+                <td>#FEEEED / #341C1D</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="swatch" style="background: var(--func-orange);"></div>
+                </td>
+                <td>Hot</td>
+                <td><code>--func-orange</code></td>
+                <td>热门标签</td>
+                <td>#F7594B / #F7594B</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="swatch" style="background: var(--func-yellow);"></div>
+                </td>
+                <td>Star</td>
+                <td><code>--func-yellow</code></td>
+                <td>收藏 / 星标</td>
+                <td>#FEBE00 / #FEBE00</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Icon Color -->
+        <section>
+          <div class="section-header">
+            <div>
+              <div class="section-title">Icon Color</div>
+              <div class="section-sub">主图标 / 次级 / 提示 / 禁用</div>
+            </div>
+            <span class="tag">Icon-*</span>
+          </div>
+          <table class="color-table">
+            <thead>
+              <tr>
+                <th>示例</th>
+                <th>Token</th>
+                <th>CSS 变量</th>
+                <th>说明</th>
+                <th>色值（Light / Dark）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="swatch" style="background: var(--icon-primary);"></div>
+                </td>
+                <td>Icon-Primary</td>
+                <td><code>--icon-primary</code></td>
+                <td>主图标</td>
+                <td>#303236 / #FFFFFF</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="swatch" style="background: var(--icon-secondary);"></div>
+                </td>
+                <td>Icon-Secondary</td>
+                <td><code>--icon-secondary</code></td>
+                <td>次级图标</td>
+                <td>#484B51 / #C4C7CA</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="swatch" style="background: var(--icon-tertiary);"></div>
+                </td>
+                <td>Icon-Tertiary</td>
+                <td><code>--icon-tertiary</code></td>
+                <td>提示 / 弱图标</td>
+                <td>#84888C / #A0A3A7</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="swatch" style="background: var(--icon-tips);"></div>
+                </td>
+                <td>Icon-Tips</td>
+                <td><code>--icon-tips</code></td>
+                <td>提示图标</td>
+                <td>#A0A3A7 / #84888C</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Layer Color -->
+        <section>
+          <div class="section-header">
+            <div>
+              <div class="section-title">Layer Color</div>
+              <div class="section-sub">一级～五级 / 选中激活（Figma node 134937:13848）</div>
+            </div>
+            <span class="tag">Layer-*</span>
+          </div>
+          <table class="color-table">
+            <thead>
+              <tr>
+                <th>示例</th>
+                <th>Token</th>
+                <th>CSS 变量</th>
+                <th>说明</th>
+                <th>色值（Light / Dark）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="swatch" style="background: var(--layer-1);"></div>
+                </td>
+                <td>Layer-1</td>
+                <td><code>--layer-1</code></td>
+                <td>一级颜色</td>
+                <td>#FFFFFF / #131516</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="swatch" style="background: var(--layer-2);"></div>
+                </td>
+                <td>Layer-2</td>
+                <td><code>--layer-2</code></td>
+                <td>二级颜色</td>
+                <td>#F2F3F4 / #1F2023</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="swatch" style="background: var(--layer-3);"></div>
+                </td>
+                <td>Layer-3</td>
+                <td><code>--layer-3</code></td>
+                <td>三级颜色</td>
+                <td>#FFFFFF / #1F2023</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="swatch" style="background: var(--layer-4);"></div>
+                </td>
+                <td>Layer-4</td>
+                <td><code>--layer-4</code></td>
+                <td>四级颜色</td>
+                <td>#F2F3F4 / #303236</td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="swatch" style="background: var(--layer-active);"></div>
+                </td>
+                <td>Layer-Active</td>
+                <td><code>--layer-active</code></td>
+                <td>五级颜色 / 选中激活</td>
+                <td>#FFFFFF / #484B51</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Function Color (20) -->
+        <section>
+          <div class="section-header">
+            <div>
+              <div class="section-title">Function Color</div>
+              <div class="section-sub">功能色 20 组（Figma node 134939:15433）</div>
+            </div>
+            <span class="tag">Function-*</span>
+          </div>
+          <table class="color-table">
+            <thead>
+              <tr>
+                <th>示例</th>
+                <th>Token</th>
+                <th>CSS 变量</th>
+                <th>说明</th>
+                <th>色值（Light / Dark）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><div class="swatch" style="background: var(--function-trade-buy);"></div></td><td>Trade-buy</td><td><code>--function-trade-buy</code></td><td>买入主色</td><td>#2BC287 / #2BC287</td></tr>
+              <tr><td><div class="swatch" style="background: var(--function-trade-buy-active);"></div></td><td>Trade-buy-active</td><td><code>--function-trade-buy-active</code></td><td>买入按压态</td><td>#20A174 / #20A174</td></tr>
+              <tr><td><div class="swatch" style="background: var(--function-trade-buy-disabled);"></div></td><td>Trade-buy-disabled</td><td><code>--function-trade-buy-disabled</code></td><td>买入禁用</td><td>#ADEDCE / #127A59</td></tr>
+              <tr><td><div class="swatch" style="background: var(--function-trade-buy-soft);"></div></td><td>Trade-buy-soft</td><td><code>--function-trade-buy-soft</code></td><td>买入浅底</td><td>#EAF9EB / #092117</td></tr>
+              <tr><td><div class="swatch" style="background: var(--function-trade-sell);"></div></td><td>Trade-sell</td><td><code>--function-trade-sell</code></td><td>卖出主色</td><td>#F74B60 / #F74B60</td></tr>
+              <tr><td><div class="swatch" style="background: var(--function-trade-sell-active);"></div></td><td>Trade-sell-active</td><td><code>--function-trade-sell-active</code></td><td>卖出按压态</td><td>#D6364E / #D6364E</td></tr>
+              <tr><td><div class="swatch" style="background: var(--function-trade-sell-disabled);"></div></td><td>Trade-sell-disabled</td><td><code>--function-trade-sell-disabled</code></td><td>卖出禁用</td><td>#FF9EA3 / #8A152E</td></tr>
+              <tr><td><div class="swatch" style="background: var(--function-trade-sell-soft);"></div></td><td>Trade-sell-soft</td><td><code>--function-trade-sell-soft</code></td><td>卖出浅底</td><td>#FEEEED / #341C1D</td></tr>
+              <tr><td><div class="swatch" style="background: var(--function-success);"></div></td><td>Success</td><td><code>--function-success</code></td><td>成功主色</td><td>#2BC235 / #2BC235</td></tr>
+              <tr><td><div class="swatch" style="background: var(--function-success-active);"></div></td><td>Success-active</td><td><code>--function-success-active</code></td><td>成功按压态</td><td>#229B2A / #55CE5D</td></tr>
+              <tr><td><div class="swatch" style="background: var(--function-success-disabled);"></div></td><td>Success-disabled</td><td><code>--function-success-disabled</code></td><td>成功禁用</td><td>#AAE7AE / #1A7420</td></tr>
+              <tr><td><div class="swatch" style="background: var(--function-success-soft);"></div></td><td>Success-soft</td><td><code>--function-success-soft</code></td><td>成功浅底</td><td>#EAF9EB / #072108</td></tr>
+              <tr><td><div class="swatch" style="background: var(--function-brand);"></div></td><td>Brand</td><td><code>--function-brand</code></td><td>品牌主色</td><td>#0068FF / #0068FF</td></tr>
+              <tr><td><div class="swatch" style="background: var(--function-brand-active);"></div></td><td>Brand-active</td><td><code>--function-brand-active</code></td><td>品牌按压态</td><td>#004FD9 / #004FD9</td></tr>
+              <tr><td><div class="swatch" style="background: var(--function-brand-disabled);"></div></td><td>Brand-disabled</td><td><code>--function-brand-disabled</code></td><td>品牌禁用</td><td>#7ABDFF / #232840</td></tr>
+              <tr><td><div class="swatch" style="background: var(--function-hot);"></div></td><td>Hot</td><td><code>--function-hot</code></td><td>热门/火</td><td>#F7594B / #F7594B</td></tr>
+              <tr><td><div class="swatch" style="background: var(--function-star);"></div></td><td>Star</td><td><code>--function-star</code></td><td>收藏/星标</td><td>#FEBE00 / #FEBE00</td></tr>
+              <tr><td><div class="swatch" style="background: var(--function-tag-primary);"></div></td><td>Tag-primary</td><td><code>--function-tag-primary</code></td><td>标签主色</td><td>#A7F757 / #A7F757</td></tr>
+              <tr><td><div class="swatch" style="background: var(--function-vip-bg);"></div></td><td>VIP-bg</td><td><code>--function-vip-bg</code></td><td>VIP 背景</td><td>#FFD98C / #FFD98C</td></tr>
+              <tr><td><div class="swatch" style="background: var(--function-vip-text);"></div></td><td>VIP-text</td><td><code>--function-vip-text</code></td><td>VIP 文案</td><td>#070808 / #070808</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Cmpt Color -->
+        <section>
+          <div class="section-header">
+            <div>
+              <div class="section-title">Cmpt Color</div>
+              <div class="section-sub">组件色（Figma node 134937:13976）</div>
+            </div>
+            <span class="tag">Cmpt-*</span>
+          </div>
+          <table class="color-table">
+            <thead>
+              <tr>
+                <th>示例</th>
+                <th>Token</th>
+                <th>CSS 变量</th>
+                <th>说明</th>
+                <th>色值（Light / Dark）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><div class="swatch" style="background: var(--cmpt-button-primary);"></div></td><td>Button-primary</td><td><code>--cmpt-button-primary</code></td><td>按钮主色</td><td>#303236 / #FFFFFF</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-button-soft);"></div></td><td>Button-soft</td><td><code>--cmpt-button-soft</code></td><td>按钮浅色</td><td>#F5F6F7 / #303236</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-button-soft-hover);"></div></td><td>Button-soft-hover</td><td><code>--cmpt-button-soft-hover</code></td><td>按钮浅色悬停</td><td>#F2F3F4 / #484B51</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-button-soft-active);"></div></td><td>Button-soft-active</td><td><code>--cmpt-button-soft-active</code></td><td>按钮浅色按压</td><td>#DFE0E2 / #484B51</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-button-soft-disable);"></div></td><td>Button-soft-disable</td><td><code>--cmpt-button-soft-disable</code></td><td>按钮浅色禁用</td><td>#F5F6F7 / #1F2023</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-input);"></div></td><td>Input</td><td><code>--cmpt-input</code></td><td>输入框底色</td><td>#F5F6F7 / #1F2023</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-input-disabled);"></div></td><td>Input-disabled</td><td><code>--cmpt-input-disabled</code></td><td>输入框禁用</td><td>#F5F6F7 / #18191B</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-component-active);"></div></td><td>Component-active</td><td><code>--cmpt-component-active</code></td><td>组件激活态</td><td>#303236 / #FFFFFF</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-component-hover);"></div></td><td>Component-hover</td><td><code>--cmpt-component-hover</code></td><td>组件悬停态</td><td>#F5F6F7 / #1F2023</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-tooltip-toast);"></div></td><td>Tooltip-toast</td><td><code>--cmpt-tooltip-toast</code></td><td>提示/Toast 背景</td><td>#303236 / #303236</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-bluefunct-bg);"></div></td><td>Bluefunct-bg</td><td><code>--cmpt-bluefunct-bg</code></td><td>蓝色功能背景</td><td>#EBF6FF / #232840</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-redfunct-bg);"></div></td><td>Redfunct-bg</td><td><code>--cmpt-redfunct-bg</code></td><td>红色功能背景</td><td>#FEEEED / #2F0C08</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-orange-bg);"></div></td><td>Orange-bg</td><td><code>--cmpt-orange-bg</code></td><td>橙色背景</td><td>#FFF4E3 / #331405</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-greenfunct-bg);"></div></td><td>Greenfunct-bg</td><td><code>--cmpt-greenfunct-bg</code></td><td>绿色功能背景</td><td>#EAF9EB / #072108</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-tag-gray);"></div></td><td>Tag-gray</td><td><code>--cmpt-tag-gray</code></td><td>灰色标签</td><td>#F5F6F7 / #1F2023</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-btn-white-dis-bg);"></div></td><td>Btn-white-dis-bg</td><td><code>--cmpt-btn-white-dis-bg</code></td><td>白按钮禁用背景</td><td>#303236 / #18191B</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-btn-white-dis-txt);"></div></td><td>Btn-white-dis-txt</td><td><code>--cmpt-btn-white-dis-txt</code></td><td>白按钮禁用文案</td><td>#84888C / #84888C</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-btn-white-pressed-txt);"></div></td><td>Btn-white-pressed-txt</td><td><code>--cmpt-btn-white-pressed-txt</code></td><td>白按钮按压文案</td><td>#A0A3A7 / #A0A3A7</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-checkbox-dis-active);"></div></td><td>Checkbox-dis-active</td><td><code>--cmpt-checkbox-dis-active</code></td><td>复选框禁用选中</td><td>#DFE0E2 / #484B51</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-checkbox-dis-inactive);"></div></td><td>Checkbox-dis-inactive</td><td><code>--cmpt-checkbox-dis-inactive</code></td><td>复选框禁用未选</td><td>#F2F3F4 / #18191B</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-switch-inactive-dis);"></div></td><td>Switch-inactive-dis</td><td><code>--cmpt-switch-inactive-dis</code></td><td>开关未选禁用</td><td>#FAFAFA / #84888C</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-switch-disable);"></div></td><td>Switch-disable</td><td><code>--cmpt-switch-disable</code></td><td>开关禁用</td><td>#DFE0E2 / #1F2023</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-switch-disable-bg);"></div></td><td>Switch-disable-bg</td><td><code>--cmpt-switch-disable-bg</code></td><td>开关禁用背景</td><td>#A0A3A7 / #484B51</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-slider-inactive-line);"></div></td><td>Slider-inactive-line</td><td><code>--cmpt-slider-inactive-line</code></td><td>滑块未激活轨道</td><td>#DFE0E2 / #303236</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-share-footer-bg);"></div></td><td>Share-footer-bg</td><td><code>--cmpt-share-footer-bg</code></td><td>分享页脚背景</td><td>#F2F3F4 / #F2F3F4</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-notification);"></div></td><td>Notification</td><td><code>--cmpt-notification</code></td><td>通知背景</td><td>#FFFFFF / #1F2023</td></tr>
+              <tr><td><div class="swatch" style="background: var(--cmpt-select-bg);"></div></td><td>Select-bg</td><td><code>--cmpt-select-bg</code></td><td>选择框背景</td><td>#FFFFFF / #303236</td></tr>
+            </tbody>
+          </table>
+        </section>
+      </main>
+
+      <footer>
+        <span>规范来源：Guidelines/Color.md · Color V5.1</span>
+        <span>页面全屏展示，可直接对照设计稿核对每个 Token 的实际效果。</span>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var toggle = document.getElementById('themeToggle');
+      if (!toggle) return;
+
+      var buttons = toggle.querySelectorAll('button[data-theme-value]');
+
+      function setTheme(value) {
+        root.setAttribute('data-theme', value);
+        buttons.forEach(function (btn) {
+          btn.classList.toggle('is-active', btn.getAttribute('data-theme-value') === value);
+        });
+      }
+
+      buttons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var value = btn.getAttribute('data-theme-value');
+          setTheme(value);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
+

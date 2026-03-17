@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>字阶规范预览 · Font Guidelines</title>
+  <style>
+    /* 字体使用方式：英文引用 Font 文件夹 Switzer，中文引用 Font 文件夹苹方，其他语言系统字体；字重仅 400/500/600/700 */
+    @font-face {
+      font-family: 'Switzer';
+      src: url('Font/Switzer-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Switzer';
+      src: url('Font/Switzer-Medium.woff2') format('woff2');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Switzer';
+      src: url('Font/Switzer-SemiBold.woff2') format('woff2');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Switzer';
+      src: url('Font/Switzer-Bold.woff2') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'PingFang SC';
+      src: url('Font/PingFangSC-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'PingFang SC';
+      src: url('Font/PingFangSC-Medium.woff2') format('woff2');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'PingFang SC';
+      src: url('Font/PingFangSC-Semibold.woff2') format('woff2');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'PingFang SC';
+      src: url('Font/PingFangSC-Bold.woff2') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* 颜色 Token 与 Font 规范一致，引用 Guidelines/Color.md */
+    :root {
+      --text-primary: #070808;
+      --text-secondary: #84888C;
+      --text-tertiary: #A0A3A7;
+      --text-tips: #C4C7CA;
+      --text-disabled: #C4C7CA;
+      --text-brand: #387CF2;
+      --bg-primary: #FFFFFF;
+      --bg-secondary: #F2F2F2;
+      --bg-tertiary: #F2F3F4;
+      --line-border-subtle: #F2F3F4;
+      --font-en: 'Switzer', sans-serif;
+      --font-cn: 'PingFang SC', sans-serif;
+      --font-other: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    [data-theme='dark'] {
+      --text-primary: #FFFFFF;
+      --text-secondary: #A0A3A7;
+      --text-tertiary: #84888C;
+      --text-tips: #484B51;
+      --text-disabled: #484B51;
+      --text-brand: #387CF2;
+      --bg-primary: #000000;
+      --bg-secondary: rgba(19, 21, 22, 1);
+      --bg-tertiary: #212121;
+      --line-border-subtle: #1F2023;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 48px 24px 80px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-family: var(--font-cn);
+    }
+
+    .page-title {
+      font-family: var(--font-en);
+      font-weight: 600;
+      font-size: 56px;
+      line-height: 1.2;
+      letter-spacing: 0;
+      margin: 0 0 8px;
+    }
+    .page-meta {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 48px;
+    }
+    .section {
+      background: var(--bg-primary);
+      border-radius: 16px;
+      padding: 32px 40px;
+      margin-bottom: 24px;
+      border: 1px solid var(--line-border-subtle);
+    }
+    .section-title {
+      font-family: var(--font-en);
+      font-weight: 600;
+      font-size: 24px;
+      line-height: 1.3;
+      margin: 0 0 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line-border-subtle);
+    }
+    .sample {
+      display: flex;
+      align-items: baseline;
+      gap: 24px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .sample:last-child { margin-bottom: 0; }
+    .label {
+      flex: 0 0 200px;
+      font-family: var(--font-cn);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      line-height: 1.3;
+    }
+    .text-en { font-family: var(--font-en); }
+    .text-cn { font-family: var(--font-cn); }
+
+    /* Display */
+    .d1 { font-weight: 600; font-size: 80px; line-height: 1.1; letter-spacing: 0; }
+    .d2 { font-weight: 600; font-size: 56px; line-height: 1.2; letter-spacing: 0; }
+
+    /* Heading H1～H5：600 字重，130% 行高 */
+    .h1 { font-weight: 600; font-size: 48px; line-height: 1.3; letter-spacing: 0; }
+    .h2 { font-weight: 600; font-size: 40px; line-height: 1.3; letter-spacing: 0; }
+    .h3 { font-weight: 600; font-size: 32px; line-height: 1.3; letter-spacing: 0; }
+    .h4 { font-weight: 600; font-size: 28px; line-height: 1.3; letter-spacing: 0; }
+    .h5 { font-weight: 600; font-size: 24px; line-height: 1.3; letter-spacing: 0; }
+
+    /* Subtitle */
+    .s1 { font-weight: 500; font-size: 24px; line-height: 1.3; letter-spacing: 0; }
+    .s2 { font-weight: 500; font-size: 24px; line-height: 1.3; letter-spacing: 0; }
+    .s3 { font-weight: 600; font-size: 20px; line-height: 1.3; letter-spacing: 0; }
+    .s4 { font-weight: 500; font-size: 20px; line-height: 1.3; letter-spacing: 0; }
+    .s5 { font-weight: 600; font-size: 18px; line-height: 1.3; letter-spacing: 0; }
+    .s6 { font-weight: 500; font-size: 18px; line-height: 1.3; letter-spacing: 0; }
+    .s7 { font-weight: 600; font-size: 16px; line-height: 1.3; letter-spacing: 0; }
+
+    /* Body */
+    .b1 { font-weight: 400; font-size: 20px; line-height: 1.3; letter-spacing: 0; }
+    .b2 { font-weight: 400; font-size: 18px; line-height: 1.3; letter-spacing: 0; }
+    .b3 { font-weight: 500; font-size: 16px; line-height: 1.3; letter-spacing: 0; }
+    .b4 { font-weight: 500; font-size: 16px; line-height: 1.3; letter-spacing: 0; }
+    .b5 { font-weight: 400; font-size: 16px; line-height: 1.3; letter-spacing: 0; }
+    .b6 { font-weight: 600; font-size: 14px; line-height: 1.3; letter-spacing: 0; }
+    .b7 { font-weight: 500; font-size: 14px; line-height: 1.3; letter-spacing: 0; }
+    .b8 { font-weight: 400; font-size: 14px; line-height: 1.3; letter-spacing: 0; }
+    .b9 { font-weight: 600; font-size: 12px; line-height: 1.3; letter-spacing: 0; }
+    .b10 { font-weight: 600; font-size: 12px; line-height: 1.3; letter-spacing: 0; }
+    .b11 { font-weight: 500; font-size: 12px; line-height: 1.3; letter-spacing: 0; }
+    .b12 { font-weight: 500; font-size: 12px; line-height: 1.3; letter-spacing: 0; }
+    .b13 { font-weight: 400; font-size: 12px; line-height: 1.3; letter-spacing: 0; }
+    .b14 { font-weight: 400; font-size: 12px; line-height: 1.3; letter-spacing: 0; }
+
+    /* BodyMulti */
+    .bm1 { font-weight: 400; font-size: 16px; line-height: 1.5; letter-spacing: 0; }
+    .bm2 { font-weight: 400; font-size: 14px; line-height: 1.5; letter-spacing: 0; }
+    .bm3 { font-weight: 400; font-size: 12px; line-height: 1.5; letter-spacing: 0; }
+    .bm4 { font-weight: 500; font-size: 14px; line-height: 1.3; letter-spacing: 0; }
+
+    /* Paragraph line heights (long-form) */
+    .p16 { font-size: 16px; line-height: 1.5; font-weight: 400; }
+    .p14 { font-size: 14px; line-height: 1.7; font-weight: 400; }
+    .p12 { font-size: 12px; line-height: 1.8; font-weight: 400; }
+
+    .paragraph-block {
+      max-width: 480px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 class="page-title text-en d2">Font Guidelines</h1>
+    <p class="page-meta">字阶规范预览 · 英文 Font/Switzer、中文 Font/苹方、其他语言系统字体 · 字重 400/500/600/700</p>
+  </header>
+
+  <section class="section">
+    <h2 class="section-title">Display 展示型标题</h2>
+    <div class="sample">
+      <span class="label">D1 · 600 80px 110%</span>
+      <span class="d1 text-en">Gateway to Crypto</span>
+    </div>
+    <div class="sample">
+      <span class="label">D1 · 中文</span>
+      <span class="d1 text-cn">首焦大标题</span>
+    </div>
+    <div class="sample">
+      <span class="label">D2 · 600 56px 120%</span>
+      <span class="d2 text-en">Display Secondary</span>
+    </div>
+    <div class="sample">
+      <span class="label">D2 · 中文</span>
+      <span class="d2 text-cn">次级展示标题</span>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Heading 标题（H1～H5）</h2>
+    <div class="sample"><span class="label">H1 · 600 48px 130%</span><span class="h1 text-en">Heading One</span></div>
+    <div class="sample"><span class="label">H2 · 600 40px 130%</span><span class="h2 text-en">Heading Two</span></div>
+    <div class="sample"><span class="label">H3 · 600 32px 130%</span><span class="h3 text-en">Heading Three</span></div>
+    <div class="sample"><span class="label">H4 · 600 28px 130%</span><span class="h4 text-en">Heading Four</span></div>
+    <div class="sample"><span class="label">H5 · 600 24px 130%</span><span class="h5 text-en">Heading Five</span></div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Subtitle 副标题</h2>
+    <div class="sample"><span class="label">S1 · 500 24px</span><span class="s1 text-en">Subtitle One</span></div>
+    <div class="sample"><span class="label">S2 · 500 24px</span><span class="s2 text-en">Subtitle Two</span></div>
+    <div class="sample"><span class="label">S3 · 600 20px</span><span class="s3 text-en">Subtitle Three</span></div>
+    <div class="sample"><span class="label">S4 · 500 20px</span><span class="s4 text-en">Subtitle Four</span></div>
+    <div class="sample"><span class="label">S5 · 600 18px</span><span class="s5 text-en">Subtitle Five</span></div>
+    <div class="sample"><span class="label">S6 · 500 18px</span><span class="s6 text-en">Subtitle Six</span></div>
+    <div class="sample"><span class="label">S7 · 600 16px</span><span class="s7 text-en">Subtitle Seven</span></div>
+    <div class="sample"><span class="label">中文副标题</span><span class="s3 text-cn">卡片标题、子模块标题</span></div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Body 单行正文（B1～B14）</h2>
+    <div class="sample"><span class="label">B1 · 400 20px</span><span class="b1 text-en">Body text largest</span></div>
+    <div class="sample"><span class="label">B2 · 400 18px</span><span class="b2 text-en">Body text 18px</span></div>
+    <div class="sample"><span class="label">B3 · 500 16px</span><span class="b3 text-en">Medium 16px</span></div>
+    <div class="sample"><span class="label">B4 · 500 16px</span><span class="b4 text-en">Medium 16px (B4)</span></div>
+    <div class="sample"><span class="label">B5 · 400 16px</span><span class="b5 text-en">Regular 16px</span></div>
+    <div class="sample"><span class="label">B6 · 600 14px</span><span class="b6 text-en">Semibold 14px</span></div>
+    <div class="sample"><span class="label">B7 · 500 14px</span><span class="b7 text-en">Medium 14px</span></div>
+    <div class="sample"><span class="label">B8 · 400 14px</span><span class="b8 text-en">Regular 14px</span></div>
+    <div class="sample"><span class="label">B9 · 600 12px</span><span class="b9 text-en">Semibold 12px</span></div>
+    <div class="sample"><span class="label">B10 · 600 12px</span><span class="b10 text-en">Semibold 12px (B10)</span></div>
+    <div class="sample"><span class="label">B11 · 500 12px</span><span class="b11 text-en">Medium 12px</span></div>
+    <div class="sample"><span class="label">B12 · 500 12px</span><span class="b12 text-en">Medium 12px (B12)</span></div>
+    <div class="sample"><span class="label">B13 · 400 12px</span><span class="b13 text-en">Regular 12px</span></div>
+    <div class="sample"><span class="label">B14 · 400 12px</span><span class="b14 text-en">Regular 12px (B14)</span></div>
+    <div class="sample"><span class="label">中文正文</span><span class="b5 text-cn">段落、列表、说明文字</span></div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">BodyMulti 多行正文（行高 150%）</h2>
+    <div class="sample">
+      <span class="label">BM1 · 400 16px 150%</span>
+      <div class="bm1 text-en paragraph-block">Gateway to Crypto 16px. This is multi-line body text for articles, notices and tutorials. Line height 150% for better readability.</div>
+    </div>
+    <div class="sample">
+      <span class="label">BM2 · 400 14px 150%</span>
+      <div class="bm2 text-en paragraph-block">Gateway to Crypto 14px. Multi-line body with 1.5 line height. 适用于公告、博客等长文本。</div>
+    </div>
+    <div class="sample">
+      <span class="label">BM3 · 400 12px 150%</span>
+      <div class="bm3 text-en paragraph-block">Gateway to Crypto 12px. Small multi-line body, line height 150%.</div>
+    </div>
+    <div class="sample">
+      <span class="label">BM4 · 500 14px 130%</span>
+      <div class="bm4 text-en paragraph-block">Medium 14px multi-line, 130% line height. 多行正文中等强调。</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">段落行高（长文本规范）</h2>
+    <div class="sample">
+      <span class="label">16px · 150%</span>
+      <div class="p16 text-en paragraph-block">Gateway to Crypto 16px. Paragraph standard line height 150%. 仅面向长文本（文章/公告/博客/新手教程），非单行 UI 文案。</div>
+    </div>
+    <div class="sample">
+      <span class="label">14px · 170%</span>
+      <div class="p14 text-en paragraph-block">Gateway to Crypto 14px. Line height 170% for readable paragraphs. 实现时可用 line-height: 1.7。</div>
+    </div>
+    <div class="sample">
+      <span class="label">12px · 180%</span>
+      <div class="p12 text-en paragraph-block">Gateway to Crypto 12px. Line height 180%. 小字号段落使用更大行高以保持可读性。</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">字重对比（按语言区分）</h2>
+    <p class="label" style="margin-bottom: 8px;">字重仅包含 400、500、600、700</p>
+    <p class="label" style="margin-bottom: 12px;">EN · Font 文件夹 Switzer</p>
+    <div class="sample">
+      <span class="label">400 Regular</span>
+      <span class="b5 text-en" style="font-weight: 400">Gate</span>
+    </div>
+    <div class="sample">
+      <span class="label">500 Medium</span>
+      <span class="b5 text-en" style="font-weight: 500">Gate</span>
+    </div>
+    <div class="sample">
+      <span class="label">600 Semibold</span>
+      <span class="b5 text-en" style="font-weight: 600">Gate</span>
+    </div>
+    <div class="sample">
+      <span class="label">700 Bold</span>
+      <span class="b5 text-en" style="font-weight: 700">Gate</span>
+    </div>
+    <p class="label" style="margin: 24px 0 12px;">CN · Font 文件夹苹方 (PingFang SC)</p>
+    <div class="sample">
+      <span class="label">400 / 500 / 600 / 700</span>
+      <span class="b5 text-cn" style="font-weight: 400">芝麻</span>
+      <span class="b5 text-cn" style="font-weight: 500">芝麻</span>
+      <span class="b5 text-cn" style="font-weight: 600">芝麻</span>
+      <span class="b5 text-cn" style="font-weight: 700">芝麻</span>
+    </div>
+    <p class="label" style="margin: 24px 0 12px;">其他语言 · 系统字体（不引用 Font 文件夹）</p>
+    <div class="sample">
+      <span class="label">400 / 500 / 600 / 700</span>
+      <span class="b5" style="font-family: var(--font-other); font-weight: 400">Sample</span>
+      <span class="b5" style="font-family: var(--font-other); font-weight: 500">Sample</span>
+      <span class="b5" style="font-family: var(--font-other); font-weight: 600">Sample</span>
+      <span class="b5" style="font-family: var(--font-other); font-weight: 700">Sample</span>
+    </div>
+  </section>
+
+  <footer class="page-meta" style="margin-top: 48px;">
+    依据 Guidelines/Font.md · 字色/背景/边框引用 <a href="Color.html" style="color: var(--text-brand);">Color.md</a> 颜色 Token · 英文 Font/Switzer、中文 Font/苹方 · 字重 400/500/600/700 · © GATE DESIGN
+  </footer>
+</body>
+</html>

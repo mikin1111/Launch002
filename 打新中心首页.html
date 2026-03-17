@@ -1,0 +1,2981 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>打新中心 LaunchX - Gate</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { corePlugins: { preflight: false } }</script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    :root {
+      --text-primary: #070808;
+      --text-secondary: #84888C;
+      --text-tertiary: #A0A3A7;
+      --text-tips: #C4C7CA;
+      --text-disabled: #C4C7CA;
+      --text-error: #F7594B;
+      --text-warning: #FF9447;
+      --text-success: #2BC235;
+      --text-brand: #0068FF;
+      --text-always-white: #FFFFFF;
+      --text-inverse-primary: #FFFFFF;
+      --text-always-black: #070808;
+      --bg-primary: #FFFFFF;
+      --bg-secondary: #FAFAFA;
+      --bg-tertiary: #F2F3F4;
+      --bg-quaternary: #DFE0E2;
+      --bg-inverse-primary: #070808;
+      --bg-inverse-secondary: #18191B;
+      --icon-inverse-filter: brightness(0) invert(1);
+      --bg-always-white: #FFFFFF;
+      --bg-always-black: #070808;
+      --line-gutter: #DFE0E2;
+      --line-border-subtle: #F2F3F4;
+      --line-border-strong: #DFE0E2;
+      --line-divider: #F2F3F4;
+      --line-short-divider: #C4C7CA;
+      --func-green: #2BC287;
+      --func-green-light: #EAF9EB;
+      --func-red: #F74B60;
+      --func-red-light: #FEEEED;
+      --func-orange: #F7594B;
+      --icon-primary: #070808;
+      --icon-secondary: #484B51;
+      --icon-tertiary: #A0A3A7;
+      --cmpt-button-primary: #303236;
+      --cmpt-button-soft: #F5F6F7;
+      --cmpt-button-soft-hover: #F2F3F4;
+      --cmpt-button-soft-active: #DFE0E2;
+      --cmpt-input: #F5F6F7;
+      --cmpt-tag-gray: #F5F6F7;
+      --cmpt-bluefunct-bg: #EBF6FF;
+      --cmpt-greenfunct-bg: #EAF9EB;
+      --cmpt-orange-bg: #FFF4E3;
+      --cmpt-tag-orange-in-secondary: #ffecd4;
+      --function-trade-buy: #2BC287;
+      --function-trade-buy-active: #20A174;
+      --function-tag-primary: #A7F757;
+      --function-hot: #F7594B;
+      --function-brand: #0068FF;
+    }
+
+    [data-theme='dark'] {
+      --text-primary: #FFFFFF;
+      --text-secondary: #A0A3A7;
+      --text-tertiary: #84888C;
+      --text-tips: #484B51;
+      --text-disabled: #484B51;
+      --text-error: #F7594B;
+      --text-warning: #FFAE6B;
+      --text-success: #2BC235;
+      --text-brand: #247CFF;
+      --text-always-white: #FFFFFF;
+      --text-inverse-primary: #070808;
+      --text-always-black: #070808;
+      --bg-primary: #070808;
+      --bg-secondary: #131516;
+      --bg-tertiary: #18191B;
+      --bg-quaternary: #484B51;
+      --bg-inverse-primary: #FFFFFF;
+      --bg-inverse-secondary: #FAFAFA;
+      --icon-inverse-filter: brightness(0);
+      --bg-always-white: #FFFFFF;
+      --bg-always-black: #070808;
+      --line-gutter: #1F2023;
+      --line-border-subtle: #1F2023;
+      --line-border-strong: #484B51;
+      --line-divider: #1F2023;
+      --line-short-divider: #484B51;
+      --func-green: #2BC287;
+      --func-green-light: #092117;
+      --func-red: #F74B60;
+      --func-red-light: #341C1D;
+      --func-orange: #F7594B;
+      --icon-primary: #FFFFFF;
+      --icon-secondary: #A0A3A7;
+      --icon-tertiary: #84888C;
+      --cmpt-button-primary: #FFFFFF;
+      --cmpt-button-soft: #303236;
+      --cmpt-button-soft-hover: #484B51;
+      --cmpt-button-soft-active: #484B51;
+      --cmpt-input: #1F2023;
+      --cmpt-tag-gray: #1F2023;
+      --cmpt-bluefunct-bg: #232840;
+      --cmpt-greenfunct-bg: #072108;
+      --cmpt-orange-bg: #331405;
+      --cmpt-tag-orange-in-secondary: #331405;
+      --function-trade-buy: #2BC287;
+      --function-trade-buy-active: #20A174;
+      --function-tag-primary: #A7F757;
+      --function-hot: #F7594B;
+      --function-brand: #0068FF;
+    }
+
+    [data-theme='dark'] .hodler-card {
+      background: #18191B !important;
+    }
+
+    @font-face {
+      font-family: 'Switzer';
+      src: local('Switzer');
+      font-weight: 400;
+    }
+    @font-face {
+      font-family: 'Switzer';
+      src: local('Switzer');
+      font-weight: 500;
+    }
+    @font-face {
+      font-family: 'Switzer';
+      src: local('Switzer');
+      font-weight: 600;
+    }
+    @font-face {
+      font-family: 'Switzer';
+      src: local('Switzer');
+      font-weight: 700;
+    }
+
+    *, ::before, ::after { box-sizing: border-box; margin: 0; padding: 0; border-width: 0; border-style: solid; border-color: currentColor; }
+    html { line-height: 1.3; -webkit-text-size-adjust: 100%; tab-size: 4; }
+    body {
+      font-family: 'Switzer', 'PingFang SC', system-ui, sans-serif;
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      line-height: 1.3;
+      letter-spacing: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+    img, svg, video, canvas, audio, iframe, embed, object { display: block; vertical-align: middle; }
+    img, video { max-width: 100%; height: auto; }
+    p { line-height: 1.5; }
+
+    @keyframes breathe {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(43, 194, 135, 0.4); }
+      50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(43, 194, 135, 0); }
+    }
+    @keyframes progressFill {
+      from { width: 0; }
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeInUp { animation: fadeInUp 0.5s ease-out both; }
+    .animate-floatIn { animation: floatIn 0.6s ease-out both; }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: var(--cmpt-button-primary); color: var(--text-inverse-primary);
+      border: none; border-radius: 99px; cursor: pointer;
+      font-family: inherit; font-weight: 500; line-height: 1.3;
+      transition: color 100ms ease-out;
+      white-space: nowrap;
+    }
+    .btn-primary:hover,
+    .btn-primary:active { color: var(--text-tertiary); }
+    .btn-primary.btn-md { height: 40px; padding: 0 20px; font-size: 14px; }
+    .btn-primary.btn-lg { height: 44px; padding: 0 24px; font-size: 16px; }
+    .btn-primary.btn-sm { height: 36px; padding: 0 16px; font-size: 14px; }
+    .btn-primary.btn-xs { height: 32px; padding: 0 12px; font-size: 14px; }
+    .btn-primary.btn-xxs { height: 28px; padding: 0 12px; font-size: 12px; }
+
+    .btn-secondary {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: var(--cmpt-button-soft); color: var(--text-primary);
+      border: none; border-radius: 99px; cursor: pointer;
+      font-family: inherit; font-weight: 500; line-height: 1.3;
+      transition: background 100ms ease-out;
+      white-space: nowrap;
+    }
+    .btn-secondary:hover { background: var(--cmpt-button-soft-hover); }
+    .btn-secondary:active { background: var(--cmpt-button-soft-active); }
+    .btn-secondary.btn-md { height: 40px; padding: 0 20px; font-size: 14px; }
+    .btn-secondary.btn-lg { height: 44px; padding: 0 24px; font-size: 16px; }
+
+    .btn-white {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: var(--bg-always-white, #FFFFFF); color: var(--text-always-black, #070808);
+      border: none; border-radius: 99px; cursor: pointer;
+      font-family: inherit; font-weight: 500; line-height: 1.3;
+      transition: background 100ms ease-out;
+      white-space: nowrap;
+    }
+    .btn-white:hover { background: #F9F9F9; }
+    .btn-white:active { background: #EBECED; }
+    .btn-white.btn-md { height: 40px; padding: 0 20px; font-size: 14px; }
+
+    .btn-green {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: var(--function-trade-buy); color: var(--text-always-white);
+      border: none; border-radius: 99px; cursor: pointer;
+      font-family: inherit; font-weight: 500; line-height: 1.3;
+      transition: color 100ms ease-out, background 100ms ease-out;
+      white-space: nowrap;
+    }
+    .btn-green:hover { color: var(--text-tertiary); }
+    .btn-green:active { background: var(--function-trade-buy-active); color: var(--text-tertiary); }
+
+    /* Text Button（文字按钮，引用 demo/button.html） */
+    .text-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      cursor: pointer; font-family: inherit; line-height: 1.3;
+      text-decoration: none; background: transparent; border: none; padding: 0;
+      color: inherit; transition: color 100ms ease-out;
+    }
+    .text-btn:focus-visible { outline: 2px solid var(--text-brand); outline-offset: 2px; }
+    .text-btn--sm { font-size: 14px; font-weight: 500; }
+    .text-btn--black { color: var(--text-primary); }
+    .text-btn--black:hover { color: var(--text-secondary); }
+
+    .tag {
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 2px; font-family: inherit; line-height: 1.3;
+      white-space: nowrap;
+    }
+    .tag-sm { height: 16px; padding: 0 4px; font-size: 12px; }
+    .tag-md { height: 20px; padding: 2px 4px; font-size: 12px; border-radius: 4px; }
+    .tag-gray { background: var(--cmpt-tag-gray); color: var(--text-secondary); font-weight: 400; }
+    .tag-green { background: var(--function-tag-primary); color: var(--text-always-black); font-weight: 500; }
+    .tag-blue { background: var(--cmpt-bluefunct-bg); color: var(--text-brand); font-weight: 400; }
+    .tag-orange { background: var(--cmpt-orange-bg); color: var(--text-warning); font-weight: 400; }
+
+    .divider-h { width: 100%; height: 1px; background: var(--line-divider); }
+    /* Footer 组件库样式（Guidelines/Header&Footer.md §3） */
+    .footer-web { background: var(--bg-secondary); padding-top: 80px; }
+    .footer-web-inner { max-width: 1200px; margin: 0 auto; padding: 0; display: flex; gap: 24px; flex-wrap: wrap; }
+    .footer-web-left { width: 232px; flex-shrink: 0; }
+    .footer-web-title { font-size: 20px; font-weight: 600; line-height: 1.3; color: var(--text-primary); margin: 0 0 16px; }
+    .footer-qr-box { width: 132px; height: 132px; background: var(--bg-primary); border-radius: 8px; padding: 8px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; }
+    .footer-qr-caption { font-size: 14px; font-weight: 400; color: var(--text-tertiary); margin: 0 0 24px; }
+    .footer-community-title { font-size: 20px; font-weight: 600; color: var(--text-primary); margin: 0 0 16px; }
+    .footer-social-row { display: flex; gap: 32px; margin-bottom: 24px; }
+    .footer-social-row:last-child { margin-bottom: 4px; }
+    .footer-social-row .icon { width: 24px; height: 24px; display: block; cursor: pointer; filter: brightness(0) saturate(100%) invert(28%); }
+    .footer-social-row .icon:hover { opacity: 0.8; }
+    .footer-web .footer-select-wrap { position: relative; display: inline-flex; flex-direction: column; width: 168px; }
+    .footer-web .footer-select-trigger { display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 8px; background: var(--bg-tertiary); border: none; border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 500; line-height: 1.3; color: var(--text-primary); min-width: 0; }
+    .footer-web .footer-select-trigger:hover { background: var(--bg-quaternary); }
+    .footer-web .footer-select-trigger .select-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+    .footer-web .footer-select-trigger .select-suffix { flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .footer-web .footer-select-trigger .select-suffix img { width: 16px; height: 16px; display: block; }
+    .footer-col { flex: 1; min-width: 180px; }
+    .footer-col-title { font-size: 20px; font-weight: 600; color: var(--text-primary); margin: 0 0 16px; }
+    .footer-col-links { display: flex; flex-direction: column; gap: 16px; }
+    .footer-col-links a { font-size: 14px; font-weight: 500; color: var(--text-secondary); text-decoration: none; line-height: 1.3; }
+    .footer-col-links a:hover { color: var(--text-primary); }
+    .footer-col-services .footer-col-links { gap: 20px; }
+    .footer-col-learn .footer-col-links { gap: 20px; }
+    .footer-learn-item { display: inline-flex; align-items: center; gap: 2px; font-size: 14px; font-weight: 500; color: var(--text-secondary); text-decoration: none; line-height: 1.3; }
+    .footer-learn-item:hover { color: var(--text-primary); }
+    .footer-learn-item .arrow { width: 14px; height: 14px; flex-shrink: 0; filter: brightness(0) saturate(100%) invert(63%); }
+    .footer-bottom { margin-top: 40px; border-top: 1px solid var(--line-border-subtle); padding: 26px 0; text-align: center; }
+    .footer-copyright { font-size: 14px; font-weight: 500; color: var(--text-tertiary); margin: 0; }
+    .divider-v { width: 1px; height: 16px; background: var(--line-short-divider); flex-shrink: 0; }
+
+    .section-module { animation: floatIn 0.6s ease-out both; }
+
+    .card-hover {
+      transition: transform 280ms cubic-bezier(0.25, 0.4, 0.25, 1);
+    }
+    .card-hover:hover {
+      transform: translateY(-6px);
+    }
+
+    .table-row-hover {
+      transition: background 100ms ease-out;
+    }
+    .table-row-hover:hover {
+      background: var(--bg-secondary);
+    }
+
+    .hodler-token-card {
+      transition: background 150ms ease-out;
+    }
+    .hodler-token-card:hover {
+      background: rgba(255,255,255,0.12) !important;
+    }
+
+    /* FAQ Accordion (Guidelines/FAQ.md, Figma 9922-32185) */
+    .faq-hodler { width: 100%; max-width: 1200px; font-family: inherit; }
+    .faq-hodler__list { margin: 0; padding: 0; list-style: none; }
+    .faq-hodler__trigger { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 0; margin: 0; border: none; background: transparent; color: var(--text-primary); font-family: inherit; text-align: start; cursor: pointer; gap: 16px; }
+    .faq-hodler__trigger:focus-visible { outline: 2px solid var(--text-brand); outline-offset: 2px; }
+    .faq-hodler__question { flex: 1; min-width: 0; color: var(--text-primary); }
+    .faq-hodler__icon { flex-shrink: 0; }
+    .faq-hodler__content { overflow: hidden; max-height: 0; transition: max-height 0.35s cubic-bezier(0, 0, 0.2, 1); }
+    .faq-hodler__content[data-expanded='true'] { max-height: 800px; }
+    .faq-hodler__answer { margin: 0; color: var(--text-secondary); }
+    .faq-hodler__more { font-weight: 500; color: var(--text-primary); text-decoration: underline; cursor: pointer; }
+    .faq-hodler__more:hover { opacity: 0.8; }
+
+    .progress-bar-fill {
+      animation: progressFill 1.5s ease-out both;
+      position: relative;
+      overflow: hidden;
+    }
+    .progress-bar-fill::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      background-size: 200% 100%;
+      animation: shimmer 2s infinite;
+    }
+
+    .breathing-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--function-trade-buy);
+      animation: breathe 2s ease-in-out infinite;
+    }
+
+    .coin-icon {
+      width: 100%; height: 100%; border-radius: 50%;
+      object-fit: contain;
+      background: var(--bg-primary);
+    }
+    .coin-icon-stack { --coin-stack-border: var(--bg-primary); }
+    .coin-icon-stack .coin-icon { border: 0.5px solid var(--coin-stack-border); box-sizing: border-box; }
+    .coin-icon-stack-bg-secondary { --coin-stack-border: var(--bg-secondary); }
+
+    .tabs-underline {
+      display: flex; gap: 16px; border-bottom: 1px solid var(--line-border-subtle);
+      margin-bottom: -1px;
+    }
+    .tabs-underline button {
+      background: none; border: none; cursor: pointer;
+      font-family: inherit; font-size: 14px; font-weight: 500;
+      color: var(--text-secondary); padding: 0;
+      height: 40px; position: relative;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center;
+      transition: color 100ms ease-out;
+    }
+    .tabs-underline button:hover { color: var(--text-primary); }
+    .tabs-underline button.active {
+      color: var(--text-primary);
+    }
+    .tabs-underline button.active::after {
+      content: ''; position: absolute; bottom: 0;
+      width: 16px; height: 3px; border-radius: 1px;
+      background: var(--text-primary);
+    }
+
+    .tabs-menu {
+      display: flex; gap: 24px; border-bottom: 1px solid var(--line-border-subtle);
+      margin-bottom: -1px;
+    }
+    .tabs-menu button {
+      background: none; border: none; cursor: pointer;
+      font-family: inherit; font-size: 16px; font-weight: 600;
+      color: var(--text-secondary); padding: 0;
+      height: 44px; position: relative;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center;
+      transition: color 100ms ease-out;
+    }
+    .tabs-menu button:hover { color: var(--text-primary); }
+    .tabs-menu button.active { color: var(--text-primary); }
+    .tabs-menu button.active::after {
+      content: ''; position: absolute; bottom: 0;
+      width: 16px; height: 3px; border-radius: 1px;
+      background: var(--text-primary);
+    }
+    .launchpool-action-tabs { display: flex; gap: 24px; }
+    .launchpool-action-tabs button { background: none; border: none; cursor: pointer; font-family: inherit; font-size: 20px; font-weight: 600; color: var(--text-secondary); padding: 0; height: 56px; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: color 100ms ease-out; }
+    .launchpool-action-tabs button:hover { color: var(--text-primary); }
+    .launchpool-action-tabs button.active { color: var(--text-primary); }
+    .launchpool-action-tabs button.active::after { content: ''; position: absolute; bottom: 0; width: 16px; height: 3px; border-radius: 1px; background: var(--text-primary); }
+    .hodler-action-tabs { display: flex; gap: 24px; }
+    .hodler-action-tabs button { background: none; border: none; cursor: pointer; font-family: inherit; font-size: 20px; font-weight: 600; color: var(--text-secondary); padding: 0; height: 56px; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: color 100ms ease-out; }
+    .hodler-action-tabs button:hover { color: var(--text-primary); }
+    .hodler-action-tabs button.active { color: var(--text-primary); }
+    .hodler-action-tabs button.active::after { content: ''; position: absolute; bottom: 0; width: 16px; height: 3px; border-radius: 1px; background: var(--text-primary); }
+
+    .icon-inline {
+      display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* ===== Header 组件（Guidelines/Header&Footer.md §2.2 Web 未登录） ===== */
+    .header-bar {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      background: var(--bg-primary);
+    }
+    .header-left { display: flex; align-items: center; gap: 20px; }
+    .header-right { display: flex; align-items: center; gap: 16px; }
+    .header-logo { height: 24px; width: auto; display: block; }
+    .nav-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.3;
+      color: var(--text-primary);
+      text-decoration: none;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .nav-item:hover { opacity: 0.85; }
+    .nav-item .arrow {
+      width: 16px;
+      height: 16px;
+      filter: brightness(0) saturate(100%) invert(63%);
+    }
+    .rewards-hub {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      cursor: pointer;
+    }
+    .rewards-hub img.gift-icon { width: 24px; height: 24px; }
+    .rewards-hub span { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+    .link-login {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .link-login:hover { text-decoration: underline; }
+    .header-icon {
+      width: 24px;
+      height: 24px;
+      display: block;
+      cursor: pointer;
+      filter: brightness(0) saturate(100%) invert(28%);
+    }
+    .header-icon:hover { opacity: 0.8; }
+
+    [data-theme='dark'] .header-icon {
+      filter: brightness(0) saturate(100%) invert(68%);
+    }
+    [data-theme='dark'] .nav-item .arrow {
+      filter: brightness(0) saturate(100%) invert(55%);
+    }
+    [data-theme='dark'] .footer-social-row .icon {
+      filter: brightness(0) saturate(100%) invert(68%);
+    }
+    [data-theme='dark'] .footer-web .footer-select-trigger .select-suffix img {
+      filter: brightness(0) saturate(100%) invert(1);
+    }
+    [data-theme='dark'] .footer-learn-item .arrow {
+      filter: brightness(0) saturate(100%) invert(55%);
+    }
+    [data-theme='dark'] .coin-icon {
+      background: var(--bg-tertiary);
+    }
+    [data-theme='dark'] .icon-inline {
+      filter: brightness(0) saturate(100%) invert(1);
+    }
+    [data-theme='dark'] .rewards-hub .gift-icon {
+      filter: brightness(0) saturate(100%) invert(1);
+    }
+
+    @media (max-width: 1023px) {
+      .resp-col { flex-direction: column !important; }
+      .resp-grid-1 { grid-template-columns: 1fr !important; }
+      .resp-hide { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useMemo, useCallback } = React;
+
+    function toLabelCase(s) {
+      if (!s) return s;
+      return s.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+    }
+
+    function RippleGrid({
+      enableRainbow = false,
+      gridColor = '#a7f757',
+      rippleIntensity = 0.01,
+      gridSize = 17,
+      gridThickness = 15,
+      fadeDistance = 1.7,
+      vignetteStrength = 2,
+      glowIntensity = 0.25,
+      opacity = 0.45,
+      gridRotation = 0,
+      mouseInteraction = true,
+      mouseInteractionRadius = 0.8,
+      className = '',
+      style = {},
+    }) {
+      const canvasRef = useRef(null);
+      const containerRef = useRef(null);
+      const mouseRef = useRef({ x: 0.5, y: 0.5 });
+      const ripplesRef = useRef([]);
+      const animationRef = useRef(null);
+      const lastRippleRef = useRef(0);
+      const autoRippleRef = useRef(0);
+      const handleMouseMove = useCallback((e) => {
+        if (!containerRef.current || !mouseInteraction) return;
+        const rect = containerRef.current.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = (e.clientY - rect.top) / rect.height;
+        mouseRef.current = { x, y };
+        const now = performance.now();
+        if (now - lastRippleRef.current > 80) {
+          lastRippleRef.current = now;
+          ripplesRef.current.push({ x, y, t: 0, maxT: 1.5 });
+        }
+      }, [mouseInteraction]);
+      useEffect(() => {
+        const canvas = canvasRef.current;
+        const container = containerRef.current;
+        if (!canvas || !container) return;
+        const ctx = canvas.getContext('2d');
+        let width = 0, height = 0;
+        const resize = () => {
+          const dpr = window.devicePixelRatio || 1;
+          const rect = container.getBoundingClientRect();
+          width = rect.width;
+          height = rect.height;
+          canvas.width = width * dpr;
+          canvas.height = height * dpr;
+          canvas.style.width = width + 'px';
+          canvas.style.height = height + 'px';
+          ctx.scale(dpr, dpr);
+        };
+        const parseColor = (hex) => {
+          const m = hex.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+          return m ? [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)] : [0, 255, 0];
+        };
+        const hslToRgb = (h, s, l) => {
+          h = (h % 360) / 360;
+          const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+          const p = 2 * l - q;
+          const hue2rgb = (p, q, t) => {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1/6) return p + (q - p) * 6 * t;
+            if (t < 1/2) return q;
+            if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+          };
+          return [Math.round(hue2rgb(p, q, h + 1/3) * 255), Math.round(hue2rgb(p, q, h) * 255), Math.round(hue2rgb(p, q, h - 1/3) * 255)];
+        };
+        const draw = () => {
+          if (!width || !height) return;
+          ctx.clearRect(0, 0, width, height);
+          const time = performance.now() * 0.001;
+          const cx = width / 2, cy = height / 2, maxDim = Math.max(width, height);
+          const cellPx = maxDim / gridSize;
+          const halfCells = Math.ceil(maxDim / cellPx) + 2;
+          for (let i = -halfCells; i <= halfCells; i++) {
+            for (let j = -halfCells; j <= halfCells; j++) {
+              const gx = cx + (i - 0.5) * cellPx, gy = cy + (j - 0.5) * cellPx;
+              const cos = Math.cos((gridRotation * Math.PI) / 180), sin = Math.sin((gridRotation * Math.PI) / 180);
+              const dx = (gx - cx) * cos - (gy - cy) * sin + cx, dy = (gx - cx) * sin + (gy - cy) * cos + cy;
+              let intensity = 1;
+              if (mouseInteraction) {
+                const mx = mouseRef.current.x * width, my = mouseRef.current.y * height;
+                const dist = Math.sqrt((dx - mx) ** 2 + (dy - my) ** 2) / maxDim;
+                if (dist < mouseInteractionRadius * 0.5) intensity += rippleIntensity * 50 * (1 - (dist / (mouseInteractionRadius * 0.5)) ** 2);
+              } else if (time - autoRippleRef.current > 1.5) {
+                autoRippleRef.current = time;
+                ripplesRef.current.push({ x: 0.5 + (Math.random() - 0.5) * 0.4, y: 0.5 + (Math.random() - 0.5) * 0.4, t: 0, maxT: 2.2 });
+              }
+              ripplesRef.current = ripplesRef.current.filter((r) => {
+                r.t += 0.018;
+                if (r.t > r.maxT) return false;
+                const rdist = Math.sqrt((dx - r.x * width) ** 2 + (dy - r.y * height) ** 2) / maxDim;
+                const wave = Math.sin(r.t * Math.PI) * (1 - rdist / fadeDistance);
+                if (wave > 0) intensity += rippleIntensity * 120 * wave;
+                return true;
+              });
+              intensity += Math.sin(time * 0.5 + i * 0.1 + j * 0.1) * rippleIntensity * 10;
+              let r, g, b;
+              if (enableRainbow) {
+                [r, g, b] = hslToRgb((time * 30 + i * 2 + j * 2) % 360, 0.7, 0.6);
+              } else {
+                [r, g, b] = parseColor(gridColor);
+              }
+              const glow = 1 + glowIntensity * intensity;
+              ctx.fillStyle = `rgba(${Math.min(255,r*glow)},${Math.min(255,g*glow)},${Math.min(255,b*glow)},${Math.min(1, opacity * intensity * 0.15)})`;
+              ctx.fillRect(dx - gridThickness / 2, dy - gridThickness / 2, gridThickness, gridThickness);
+            }
+          }
+          const [r, g, b] = enableRainbow ? hslToRgb((time * 30) % 360, 0.7, 0.6) : parseColor(gridColor);
+          const linePulse = 0.85 + 0.15 * Math.sin(time * 1.2);
+          ctx.strokeStyle = enableRainbow ? `hsla(${(time * 30) % 360}, 70%, 60%, ${opacity * 0.6 * linePulse})` : `rgba(${r},${g},${b},${opacity * 0.6 * linePulse})`;
+          ctx.lineWidth = Math.max(1, gridThickness * 0.3);
+          const rotate = (px, py) => ({ x: cx + (px - cx) * Math.cos((gridRotation * Math.PI) / 180) - (py - cy) * Math.sin((gridRotation * Math.PI) / 180), y: cy + (px - cx) * Math.sin((gridRotation * Math.PI) / 180) + (py - cy) * Math.cos((gridRotation * Math.PI) / 180) });
+          for (let i = -halfCells; i <= halfCells; i++) {
+            const gx = cx + (i - 0.5) * cellPx;
+            const p1 = rotate(gx, cy - maxDim), p2 = rotate(gx, cy + maxDim);
+            ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+          }
+          for (let j = -halfCells; j <= halfCells; j++) {
+            const gy = cy + (j - 0.5) * cellPx;
+            const p1 = rotate(cx - maxDim, gy), p2 = rotate(cx + maxDim, gy);
+            ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+          }
+          if (vignetteStrength > 0) {
+            const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxDim * 0.8);
+            grad.addColorStop(0, 'transparent'); grad.addColorStop(1, `rgba(0,0,0,${vignetteStrength * 0.4})`);
+            ctx.fillStyle = grad; ctx.fillRect(0, 0, width, height);
+          }
+          animationRef.current = requestAnimationFrame(draw);
+        };
+        resize();
+        window.addEventListener('resize', resize);
+        if (mouseInteraction && container) container.addEventListener('mousemove', handleMouseMove);
+        draw();
+        return () => {
+          window.removeEventListener('resize', resize);
+          if (mouseInteraction && container) container.removeEventListener('mousemove', handleMouseMove);
+          if (animationRef.current) cancelAnimationFrame(animationRef.current);
+        };
+      }, [enableRainbow, gridColor, rippleIntensity, gridSize, gridThickness, fadeDistance, vignetteStrength, glowIntensity, opacity, gridRotation, mouseInteraction, mouseInteractionRadius, handleMouseMove]);
+      return (
+        <div ref={containerRef} className={className} style={{ position: 'absolute', inset: 0, overflow: 'hidden', ...style }}>
+          <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }} />
+        </div>
+      );
+    }
+
+    const ICON_BASE = 'Guidelines/icons/Basic%20Product%20Icons';
+    const SOCIAL_ICON_BASE = 'Guidelines/icons/Social%20Media%20Icons';
+    const COIN_BASE = 'Guidelines/icons/Currency%20Icons';
+    const HEADER_BASE = 'Guidelines/Slicing/Header';
+
+    function Icon({ name, size = 24, className = '' }) {
+      return (
+        <img
+          src={`${ICON_BASE}/${name}.svg`}
+          alt={name}
+          width={size}
+          height={size}
+          className={`icon-inline ${className}`}
+          style={{ width: size, height: size }}
+        />
+      );
+    }
+
+    function CoinIcon({ coin, size = 32 }) {
+      return (
+        <img
+          src={`${COIN_BASE}/Crypto_${coin}.svg`}
+          alt={coin}
+          width={size}
+          height={size}
+          className="coin-icon"
+          style={{ width: size, height: size }}
+          onError={(e) => {
+            e.target.style.display = 'none';
+          }}
+        />
+      );
+    }
+
+    function ProjectIcon({ coin, name, size = 44 }) {
+      const [imgFailed, setImgFailed] = useState(false);
+      return (
+        <div style={{ width: size, height: size, borderRadius: '50%', background: 'var(--cmpt-bluefunct-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+          {!imgFailed ? (
+            <img src={`${COIN_BASE}/Crypto_${coin}.svg`} alt={coin} width={size} height={size} className="coin-icon" style={{ width: size, height: size }} onError={() => setImgFailed(true)} />
+          ) : (
+            <span style={{ fontSize: size * 0.4, fontWeight: 600, color: 'var(--text-primary)' }}>{String(name || coin).slice(0, 2)}</span>
+          )}
+        </div>
+      );
+    }
+
+    function useCountdown(endTime) {
+      const [time, setTime] = useState(endTime);
+      useEffect(() => {
+        const timer = setInterval(() => {
+          setTime(prev => (prev > 0 ? prev - 1 : 0));
+        }, 1000);
+        return () => clearInterval(timer);
+      }, []);
+      const days = Math.floor(time / 86400);
+      const hours = String(Math.floor((time % 86400) / 3600)).padStart(2, '0');
+      const mins = String(Math.floor((time % 3600) / 60)).padStart(2, '0');
+      const secs = String(time % 60).padStart(2, '0');
+      return { days, hours, mins, secs };
+    }
+
+    function CountdownDisplay({ seconds, showDays = false }) {
+      const { days, hours, mins, secs } = useCountdown(seconds);
+      const boxStyle = {
+        background: 'var(--bg-tertiary)',
+        borderRadius: '4px',
+        fontWeight: 600,
+        fontSize: '14px',
+        fontVariantNumeric: 'tabular-nums',
+        width: 32,
+        height: 32,
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      };
+      const sepStyle = { color: 'var(--text-tertiary)', fontWeight: 500, fontSize: '14px' };
+      return (
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+          {showDays && days > 0 && (
+            <>
+              <span style={boxStyle}>{days}</span>
+              <span style={sepStyle}>天</span>
+            </>
+          )}
+          <span style={boxStyle}>{hours}</span>
+          <span style={sepStyle}>:</span>
+          <span style={boxStyle}>{mins}</span>
+          <span style={sepStyle}>:</span>
+          <span style={boxStyle}>{secs}</span>
+        </span>
+      );
+    }
+
+    /* ==================== HEADER (Guidelines §2.2 Web 未登录 1:1) ==================== */
+    function Header({ isDark, onToggleTheme }) {
+      const ARROW = `${ICON_BASE}/CEX_down_fill.svg`;
+      const themeIcon = isDark ? `${ICON_BASE}/CEX_Lightmode.svg` : `${ICON_BASE}/CEX_Darkmode.svg`;
+      return (
+        <header style={{ position: 'sticky', top: 0, zIndex: 100, background: 'var(--bg-primary)' }}>
+          <div className="header-bar">
+            <div className="header-left">
+              <img className="header-logo" src={`${HEADER_BASE}/Logo.svg`} alt="Gate" style={isDark ? { filter: 'brightness(0) invert(1)' } : undefined} />
+              <a href="#" className="nav-item resp-hide">Buy Crypto <img className="arrow" src={ARROW} alt="" /></a>
+              <a href="#" className="nav-item resp-hide">Markets</a>
+              <a href="#" className="nav-item resp-hide">Trade <img className="arrow" src={ARROW} alt="" /></a>
+              <a href="#" className="nav-item resp-hide">Futures <img className="arrow" src={ARROW} alt="" /></a>
+              <a href="#" className="nav-item resp-hide">Earn <img className="arrow" src={ARROW} alt="" /></a>
+              <a href="#" className="nav-item resp-hide">Community <img className="arrow" src={ARROW} alt="" /></a>
+              <a href="#" className="nav-item resp-hide">Web3</a>
+              <a href="#" className="nav-item resp-hide">More <img className="arrow" src={ARROW} alt="" /></a>
+              <span className="rewards-hub resp-hide">
+                <img className="gift-icon" src={`${HEADER_BASE}/gift_box.svg`} alt="" />
+                <span>Rewards Hub</span>
+              </span>
+            </div>
+            <div className="header-right">
+              <a href="#" className="link-login resp-hide">Log In</a>
+              <button type="button" className="btn-primary btn-xxs">Sign Up</button>
+              <span className="divider-v resp-hide" />
+              <img className="header-icon resp-hide" src={`${ICON_BASE}/CEX_Search.svg`} alt="Search" />
+              <img className="header-icon resp-hide" src={`${ICON_BASE}/CEX_Download.svg`} alt="Download" />
+              <img className="header-icon resp-hide" src={`${ICON_BASE}/CEX_Language.svg`} alt="Language" />
+              <img className="header-icon resp-hide" src={themeIcon} alt={isDark ? 'Light mode' : 'Dark mode'} onClick={onToggleTheme} style={{ cursor: 'pointer' }} />
+              <img className="header-icon resp-hide" src={`${ICON_BASE}/CEX_Settings.svg`} alt="Settings" />
+            </div>
+          </div>
+        </header>
+      );
+    }
+
+    /* ==================== SUB NAV ==================== */
+    const TAB_ITEMS = ['Launch', 'CandyDrop', 'Launchpool', 'Alpha Points', 'Futures Points', 'HODLer Airdrop', 'Launchpad'];
+    const TAB_ENTRY_CONFIG = {
+      1: [{ icon: 'CEX_OrderHistory', label: 'Participation History' }, { icon: 'CEX_Gift', label: 'Airdrop Records' }], // CandyDrop
+      2: [{ icon: 'CEX_OrderHistory', label: 'Participation History' }, { icon: 'CEX_Gift', label: 'Airdrop Records' }], // Launchpool
+      3: [], // Alpha Points - 无右侧按钮入口
+      4: [], // Futures Points - 无右侧按钮入口
+      5: [{ icon: 'CEX_OrderHistory', label: 'Participation History' }], // HODLer Airdrop
+      6: [{ icon: 'CEX_OrderHistory', label: 'Participation History' }, { icon: 'CEX_Gift', label: 'Airdrop Records' }], // Launchpad
+    };
+    function SubNav({ activeTab, onTabChange }) {
+      const tabEntries = TAB_ENTRY_CONFIG[activeTab];
+      return (
+        <div style={{ borderBottom: '1px solid var(--line-border-subtle)', background: 'var(--bg-primary)', position: 'sticky', top: 48, zIndex: 99 }}>
+          <div style={{ maxWidth: 1200, margin: '0 auto', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div className="tabs-menu" style={{ borderBottom: 'none', overflow: 'auto' }}>
+              {TAB_ITEMS.map((item, i) => (
+                <button key={item} className={activeTab === i ? 'active' : ''} style={{ whiteSpace: 'nowrap' }} onClick={() => onTabChange(i)}>{item}</button>
+              ))}
+            </div>
+            {tabEntries && tabEntries.length > 0 && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 24, flexShrink: 0 }}>
+                {tabEntries.map((entry) => (
+                  <button key={entry.label} style={{
+                    background: 'none', border: 'none', cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    fontSize: 14, fontWeight: 500, color: 'var(--text-primary)',
+                    fontFamily: 'inherit' }} onClick={(e) => { e.stopPropagation(); }}>
+                    <Icon name={entry.icon} size={20} />
+                    {entry.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    function EmptyProductPage({ title }) {
+      return (
+        <main style={{ flex: 1, maxWidth: 1200, width: '100%', margin: '0 auto', padding: '80px 0 120px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 400 }}>
+          <h2 style={{ fontSize: 32, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 12 }}>{title}</h2>
+          <p style={{ fontSize: 16, fontWeight: 400, color: 'var(--text-secondary)' }}>Coming soon</p>
+        </main>
+      );
+    }
+
+    /* ==================== ALPHA POINTS PAGE (Figma 9922-41716 1:1) ==================== */
+    function AlphaPointsHeroSection({ isDark }) {
+      return (
+        <section className="section-module" style={{ animationDelay: '0.1s', background: 'var(--bg-primary)', padding: '80px 0', marginBottom: 40 }}>
+          <div className="resp-col" style={{
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            maxWidth: 1200, margin: '0 auto', padding: 0,
+          }}>
+            <div style={{ width: 663, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 40 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <h1 style={{ fontSize: 56, fontWeight: 600, lineHeight: 1.2, color: 'var(--text-primary)' }}>Alpha Points</h1>
+                <p style={{ fontSize: 20, fontWeight: 500, color: 'var(--text-secondary)' }}>
+                  Earn points through spot trading and exchange for airdrops
+                </p>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 48 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ fontSize: 32, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>15</div>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Alpha Points</div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ fontSize: 32, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>9</div>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Airdrops</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <button className="btn-primary" style={{ height: 56, padding: '0 32px', fontSize: 18, fontWeight: 600, borderRadius: 99 }}>About Alpha Points</button>
+                <button className="btn-secondary" style={{ width: 56, height: 56, padding: 0, borderRadius: 99, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon name="CEX_Notification" size={24} />
+                </button>
+              </div>
+            </div>
+            <div className="resp-hide" style={{ width: 280, height: 280, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <img src={isDark ? 'assets/Alpha-dark.png' : 'assets/Alpha-light.png'} alt="Alpha Points" style={{ width: 240, height: 240, objectFit: 'contain' }} />
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function AlphaPointsPage({ isDark }) {
+      const [mainTab, setMainTab] = useState('airdrop');
+      const [filterTab, setFilterTab] = useState('all');
+      const [participatedOnly, setParticipatedOnly] = useState(false);
+      const mainTabs = [
+        { key: 'airdrop', label: 'Airdrop' },
+        { key: 'lucky', label: 'Lucky Pool' },
+        { key: 'treasure', label: 'Treasure Hunt' },
+        { key: 'referral', label: 'Referral Points' },
+      ];
+      const filterTabs = [
+        { key: 'all', label: 'All' },
+        { key: 'upcoming', label: 'Upcoming(9)' },
+        { key: 'distributing', label: 'Distributing(9)' },
+        { key: 'ended', label: 'Ended(9)' },
+      ];
+      const cards = [
+        { coin: 'GT', name: 'B2', status: 'Upcoming', minPoints: 218, deduction: 0, dropDate: '06/01/2025 12:00:00', eachAirdrop: '300 B2', claimable: '23,451.08 B2', buttonText: 'Coming Soon', disabled: true },
+        { coin: 'GT', name: 'B2', status: 'Upcoming', minPoints: 218, deduction: 0, dropDate: '06/01/2025 12:00:00', eachAirdrop: '300 B2', claimable: '23,451.08 B2', buttonText: 'Coming Soon', disabled: true },
+        { coin: 'GT', name: 'B2', status: 'Upcoming', minPoints: 218, deduction: 0, dropDate: '06/01/2025 12:00:00', eachAirdrop: '300 B2', claimable: '23,451.08 B2', buttonText: 'Coming Soon', disabled: true },
+        { coin: 'GT', name: 'B2', status: 'Distributing', minPoints: 218, deduction: 0, timeRemaining: '25H : 30M : 12S', eachAirdrop: '300 B2', claimable: '23,451.08 B2', buttonText: 'Claim Now', disabled: false },
+        { coin: 'GT', name: 'B2', status: 'Distributing', minPoints: 218, deduction: 0, timeRemaining: '25H : 30M : 12S', eachAirdrop: '300 B2', claimable: '23,451.08 B2', buttonText: 'Claimed', disabled: true },
+        { coin: 'GT', name: 'B2', status: 'Distributing', minPoints: 218, deduction: 0, timeRemaining: '25H : 30M : 12S', eachAirdrop: '300 B2', claimable: '23,451.08 B2', buttonText: 'Exhausted', disabled: true },
+        { coin: 'GT', name: 'B2', status: 'Distributing', minPoints: 218, deduction: 0, timeRemaining: '25H : 30M : 12S', eachAirdrop: '300 B2', claimable: '23,451.08 B2', buttonText: 'Insufficient points', disabled: true },
+        { coin: 'GT', name: 'B2', status: 'Ended', minPoints: 218, deduction: 0, dropDate: '06/01/2025 12:00:00', eachAirdrop: '300 B2', claimable: '300 B2', buttonText: '您已获得300B2', disabled: true },
+        { coin: 'GT', name: 'B2', status: 'Ended', minPoints: 218, deduction: 0, dropDate: '06/01/2025 12:00:00', eachAirdrop: '300 B2', claimable: '23,451.08 B2', buttonText: 'Expired', disabled: true },
+      ];
+      const dailyRows = [
+        { date: '06/15/2025', spot: '$222.00', spotPts: '1 Point', deposit: '$222.00', depositPts: '3 Points', futures: '3 Points', other: '-1 points', total: '-1 points' },
+        { date: '06/15/2025', spot: '$222.00', spotPts: '1 Point', deposit: '$222.00', depositPts: '3 Points', futures: '3 Points', other: '-1 points', total: '-1 points' },
+        { date: '06/15/2025', spot: '$222.00', spotPts: '1 Point', deposit: '$222.00', depositPts: '3 Points', futures: '3 Points', other: '-1 points', total: '-1 points' },
+      ];
+      return (
+        <>
+          <AlphaPointsHeroSection isDark={isDark} />
+          <main style={{ flex: 1, maxWidth: 1200, width: '100%', margin: '0 auto', padding: '0 0 140px', display: 'flex', flexDirection: 'column', gap: 24 }}>
+            <div className="section-module" style={{ animationDelay: '0.2s' }}>
+              <div className="tabs-underline" style={{ gap: 20, marginBottom: 0, borderBottom: 'none' }}>
+                {mainTabs.map((t) => (
+                  <button key={t.key} style={{
+                    background: 'none', border: 'none', cursor: 'pointer', padding: '8px 0',
+                    fontSize: 18, fontWeight: 600,
+                    color: mainTab === t.key ? 'var(--text-primary)' : 'var(--text-secondary)',
+                    fontFamily: 'inherit', position: 'relative', height: 48,
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                  }} onClick={() => setMainTab(t.key)}>
+                    {t.label}
+                    {mainTab === t.key && <span style={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: 16, height: 3, borderRadius: 1, background: 'var(--text-primary)' }} />}
+                  </button>
+                ))}
+              </div>
+              <div style={{ height: 1, background: 'var(--line-divider)', marginTop: -1 }} />
+            </div>
+            <div className="section-module" style={{ animationDelay: '0.3s', display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  {filterTabs.map((t) => (
+                    <button key={t.key} style={{
+                      height: 32, padding: '8px 12px', borderRadius: 6,
+                      background: filterTab === t.key ? 'var(--cmpt-button-soft)' : 'transparent',
+                      color: filterTab === t.key ? 'var(--text-primary)' : 'var(--text-secondary)',
+                      border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 500,
+                    }} onClick={() => setFilterTab(t.key)}>{t.label}</button>
+                  ))}
+                </div>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 14, fontWeight: 400, color: 'var(--text-secondary)' }}>
+                  <input type="checkbox" checked={participatedOnly} onChange={(e) => setParticipatedOnly(e.target.checked)} style={{ width: 12, height: 12 }} />
+                  Participated
+                </label>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+                {cards.map((c, i) => (
+                  <div key={i} className="card-hover" style={{
+                    border: '1px solid var(--line-border-subtle)', borderRadius: 12, padding: '24px 24px 16px',
+                    background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column', gap: 12,
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <CoinIcon coin={c.coin} size={24} />
+                        <span style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)' }}>{c.name}</span>
+                      </div>
+                      <span className="tag tag-sm" style={{
+                        background: c.status === 'Upcoming' ? 'var(--cmpt-orange-bg)' : c.status === 'Distributing' ? 'var(--cmpt-greenfunct-bg)' : 'var(--cmpt-tag-gray)',
+                        color: c.status === 'Upcoming' ? 'var(--text-warning)' : c.status === 'Distributing' ? 'var(--text-success)' : 'var(--text-secondary)',
+                        fontWeight: 500,
+                      }}>{c.status}</span>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 0, fontSize: 12 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 24 }}>
+                        <span style={{ color: 'var(--text-secondary)' }}>Min points needed</span>
+                        <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{c.minPoints}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 24 }}>
+                        <span style={{ color: 'var(--text-secondary)' }}>Points deduction</span>
+                        <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{c.deduction}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 24 }}>
+                        <span style={{ color: 'var(--text-secondary)' }}>{c.timeRemaining ? 'Time Remaining' : 'Drop Date'}</span>
+                        <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{c.timeRemaining || c.dropDate}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 24 }}>
+                        <span style={{ color: 'var(--text-secondary)' }}>Each Airdrop</span>
+                        <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{c.eachAirdrop}</span>
+                      </div>
+                    </div>
+                    <div style={{ height: 1, background: 'var(--line-divider)' }} />
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Claimable: {c.claimable}</span>
+                      <button className={c.disabled ? '' : 'btn-primary'} style={{
+                        height: 36, padding: '0 16px', borderRadius: 99, fontSize: 14, fontWeight: 500,
+                        background: c.disabled ? 'var(--cmpt-button-soft)' : undefined,
+                        color: c.disabled ? 'var(--text-disabled)' : undefined,
+                        border: 'none', cursor: c.disabled ? 'default' : 'pointer', fontFamily: 'inherit',
+                        minWidth: 130,
+                      }}>{c.buttonText}</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, paddingTop: 8 }}>
+                <button style={{ width: 28, height: 28, borderRadius: 99, background: 'var(--cmpt-button-soft)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icon name="CEX_chevron_left" size={12} /></button>
+                {[1,2,3,4,5].map((n) => (
+                  <button key={n} style={{
+                    width: 28, height: 28, borderRadius: 99,
+                    background: n === 1 ? 'var(--cmpt-button-primary)' : 'var(--cmpt-button-soft)',
+                    color: n === 1 ? 'var(--text-inverse-primary)' : 'var(--text-primary)',
+                    border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 500,
+                  }}>{n}</button>
+                ))}
+                <button style={{ width: 28, height: 28, borderRadius: 99, background: 'var(--cmpt-button-soft)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icon name="CEX_chevron_right" size={12} /></button>
+              </div>
+            </div>
+            <div className="section-module" style={{ animationDelay: '0.4s', marginTop: 24 }}>
+              <h3 style={{ fontSize: 24, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 24 }}>Daily points</h3>
+              <p style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: 24 }}>
+                Daily snapshot time: 00:00:00 (UTC). Data is updated daily before 02:00:00 (UTC). The 00:00:00 (UTC) cutoff determines which day a trade is attributed to. Trades completed before 00:00:00 (UTC) count for the previous day. Trades completed after 00:00:00 (UTC) count for the current day and will appear in the next update. Example: Trade at 23:59:59 (UTC) on April 22 - Counts for April 22 (before snapshot). Trade at 00:00:01 (UTC) on April 23 - Counts for April 23 (after snapshot) and will be reflected in the next update (before 02:00:00 UTC on April 24).
+              </p>
+              <div style={{ border: '1px solid var(--line-border-subtle)', borderRadius: 12, overflow: 'hidden', background: 'var(--bg-primary)' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+                  <thead>
+                    <tr style={{ background: 'var(--bg-secondary)' }}>
+                      {['Date', 'Spot', 'Spot Points', 'Deposit', 'Deposit Points', 'Futures', 'Other', 'Total'].map((h) => (
+                        <th key={h} style={{ padding: '8px 16px', textAlign: 'left', fontWeight: 500, color: 'var(--text-secondary)', borderBottom: '1px solid var(--line-divider)' }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dailyRows.map((r, i) => (
+                      <tr key={i} style={{ borderBottom: i < dailyRows.length - 1 ? '1px solid var(--line-divider)' : 'none' }}>
+                        <td style={{ padding: '16px' }}>{r.date}</td>
+                        <td style={{ padding: '16px' }}>{r.spot}</td>
+                        <td style={{ padding: '16px' }}>{r.spotPts}</td>
+                        <td style={{ padding: '16px' }}>{r.deposit}</td>
+                        <td style={{ padding: '16px' }}>{r.depositPts}</td>
+                        <td style={{ padding: '16px' }}>{r.futures}</td>
+                        <td style={{ padding: '16px' }}>{r.other}</td>
+                        <td style={{ padding: '16px' }}>{r.total}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </main>
+        </>
+      );
+    }
+
+    /* ==================== FUTURES POINTS PAGE (Figma 9923-19968 1:1) ==================== */
+    function FuturesPointsHeroSection({ isDark }) {
+      return (
+        <section className="section-module" style={{ animationDelay: '0.1s', background: 'var(--bg-primary)', padding: '80px 0', marginBottom: 40 }}>
+          <div className="resp-col" style={{
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            maxWidth: 1200, margin: '0 auto', padding: 0,
+          }}>
+            <div style={{ width: 663, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 40 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <h1 style={{ fontSize: 56, fontWeight: 600, lineHeight: 1.2, color: 'var(--text-primary)' }}>Futures Points</h1>
+                <p style={{ fontSize: 20, fontWeight: 500, color: 'var(--text-secondary)' }}>
+                  Earn points through futures trading and exchange for airdrops
+                </p>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 48 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ fontSize: 32, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>15</div>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Futures Points</div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ fontSize: 32, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>9</div>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Airdrops</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <button className="btn-primary" style={{ height: 56, padding: '0 32px', fontSize: 18, fontWeight: 600, borderRadius: 99 }}>About Futures Points</button>
+                <button className="btn-secondary" style={{ width: 56, height: 56, padding: 0, borderRadius: 99, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon name="CEX_Notification" size={24} />
+                </button>
+              </div>
+            </div>
+            <div className="resp-hide" style={{ width: 280, height: 280, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <img src={isDark ? 'assets/Futures-dark.png' : 'assets/Futures-light.png'} alt="Futures Points" style={{ width: 220, height: 220, objectFit: 'contain' }} />
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function FuturesPointsPage({ isDark }) {
+      const [mainTab, setMainTab] = useState('airdrop');
+      const [filterTab, setFilterTab] = useState('all');
+      const [participatedOnly, setParticipatedOnly] = useState(false);
+      const mainTabs = [
+        { key: 'airdrop', label: 'Airdrop' },
+      ];
+      const filterTabs = [
+        { key: 'all', label: 'All' },
+        { key: 'upcoming', label: 'Upcoming(9)' },
+        { key: 'distributing', label: 'Distributing(9)' },
+        { key: 'ended', label: 'Ended(9)' },
+      ];
+      const cards = [
+        { coin: 'GT', name: 'B2', status: 'Upcoming', minPoints: 218, deduction: 0, dropDate: '06/01/2025 12:00:00', eachAirdrop: '300 B2', claimable: '23,451.08 B2', buttonText: 'Coming Soon', disabled: true },
+        { coin: 'GT', name: 'B2', status: 'Upcoming', minPoints: 218, deduction: 0, dropDate: '06/01/2025 12:00:00', eachAirdrop: '300 B2', claimable: '23,451.08 B2', buttonText: 'Coming Soon', disabled: true },
+        { coin: 'GT', name: 'B2', status: 'Upcoming', minPoints: 218, deduction: 0, dropDate: '06/01/2025 12:00:00', eachAirdrop: '300 B2', claimable: '23,451.08 B2', buttonText: 'Coming Soon', disabled: true },
+        { coin: 'GT', name: 'B2', status: 'Distributing', minPoints: 218, deduction: 0, timeRemaining: '25H : 30M : 12S', eachAirdrop: '300 B2', claimable: '23,451.08 B2', buttonText: 'Claim Now', disabled: false },
+        { coin: 'GT', name: 'B2', status: 'Distributing', minPoints: 218, deduction: 0, timeRemaining: '25H : 30M : 12S', eachAirdrop: '300 B2', claimable: '23,451.08 B2', buttonText: 'Claimed', disabled: true },
+        { coin: 'GT', name: 'B2', status: 'Distributing', minPoints: 218, deduction: 0, timeRemaining: '25H : 30M : 12S', eachAirdrop: '300 B2', claimable: '23,451.08 B2', buttonText: 'Exhausted', disabled: true },
+        { coin: 'GT', name: 'B2', status: 'Distributing', minPoints: 218, deduction: 0, timeRemaining: '25H : 30M : 12S', eachAirdrop: '300 B2', claimable: '23,451.08 B2', buttonText: 'Insufficient points', disabled: true },
+        { coin: 'GT', name: 'B2', status: 'Ended', minPoints: 218, deduction: 0, dropDate: '06/01/2025 12:00:00', eachAirdrop: '300 B2', claimable: '300 B2', buttonText: '您已获得300B2', disabled: true },
+        { coin: 'GT', name: 'B2', status: 'Ended', minPoints: 218, deduction: 0, dropDate: '06/01/2025 12:00:00', eachAirdrop: '300 B2', claimable: '23,451.08 B2', buttonText: 'Expired', disabled: true },
+      ];
+      const dailyRows = [
+        { date: '06/15/2025', spot: '$222.00', spotPts: '1 Point', deposit: '$222.00', depositPts: '3 Points', futures: '3 Points', other: '-1 points', total: '-1 points' },
+        { date: '06/15/2025', spot: '$222.00', spotPts: '1 Point', deposit: '$222.00', depositPts: '3 Points', futures: '3 Points', other: '-1 points', total: '-1 points' },
+        { date: '06/15/2025', spot: '$222.00', spotPts: '1 Point', deposit: '$222.00', depositPts: '3 Points', futures: '3 Points', other: '-1 points', total: '-1 points' },
+      ];
+      return (
+        <>
+          <FuturesPointsHeroSection isDark={isDark} />
+          <main style={{ flex: 1, maxWidth: 1200, width: '100%', margin: '0 auto', padding: '0 0 140px', display: 'flex', flexDirection: 'column', gap: 24 }}>
+            <div className="section-module" style={{ animationDelay: '0.2s' }}>
+              <div className="tabs-underline" style={{ gap: 20, marginBottom: 0, borderBottom: 'none' }}>
+                {mainTabs.map((t) => (
+                  <button key={t.key} style={{
+                    background: 'none', border: 'none', cursor: 'pointer', padding: '8px 0',
+                    fontSize: 18, fontWeight: 600,
+                    color: mainTab === t.key ? 'var(--text-primary)' : 'var(--text-secondary)',
+                    fontFamily: 'inherit', position: 'relative', height: 48,
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                  }} onClick={() => setMainTab(t.key)}>
+                    {t.label}
+                    {mainTab === t.key && <span style={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: 16, height: 3, borderRadius: 1, background: 'var(--text-primary)' }} />}
+                  </button>
+                ))}
+              </div>
+              <div style={{ height: 1, background: 'var(--line-divider)', marginTop: -1 }} />
+            </div>
+            <div className="section-module" style={{ animationDelay: '0.3s', display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  {filterTabs.map((t) => (
+                    <button key={t.key} style={{
+                      height: 32, padding: '8px 12px', borderRadius: 6,
+                      background: filterTab === t.key ? 'var(--cmpt-button-soft)' : 'transparent',
+                      color: filterTab === t.key ? 'var(--text-primary)' : 'var(--text-secondary)',
+                      border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 500,
+                    }} onClick={() => setFilterTab(t.key)}>{t.label}</button>
+                  ))}
+                </div>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 14, fontWeight: 400, color: 'var(--text-secondary)' }}>
+                  <input type="checkbox" checked={participatedOnly} onChange={(e) => setParticipatedOnly(e.target.checked)} style={{ width: 12, height: 12 }} />
+                  Participated
+                </label>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+                {cards.map((c, i) => (
+                  <div key={i} className="card-hover" style={{
+                    border: '1px solid var(--line-border-subtle)', borderRadius: 12, padding: '24px 24px 16px',
+                    background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column', gap: 12,
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <CoinIcon coin={c.coin} size={24} />
+                        <span style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)' }}>{c.name}</span>
+                      </div>
+                      <span className="tag tag-sm" style={{
+                        background: c.status === 'Upcoming' ? 'var(--cmpt-orange-bg)' : c.status === 'Distributing' ? 'var(--cmpt-greenfunct-bg)' : 'var(--cmpt-tag-gray)',
+                        color: c.status === 'Upcoming' ? 'var(--text-warning)' : c.status === 'Distributing' ? 'var(--text-success)' : 'var(--text-secondary)',
+                        fontWeight: 500,
+                      }}>{c.status}</span>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 0, fontSize: 12 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 24 }}>
+                        <span style={{ color: 'var(--text-secondary)' }}>Min points needed</span>
+                        <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{c.minPoints}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 24 }}>
+                        <span style={{ color: 'var(--text-secondary)' }}>Points deduction</span>
+                        <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{c.deduction}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 24 }}>
+                        <span style={{ color: 'var(--text-secondary)' }}>{c.timeRemaining ? 'Time Remaining' : 'Drop Date'}</span>
+                        <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{c.timeRemaining || c.dropDate}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 24 }}>
+                        <span style={{ color: 'var(--text-secondary)' }}>Each Airdrop</span>
+                        <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{c.eachAirdrop}</span>
+                      </div>
+                    </div>
+                    <div style={{ height: 1, background: 'var(--line-divider)' }} />
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Claimable: {c.claimable}</span>
+                      <button className={c.disabled ? '' : 'btn-primary'} style={{
+                        height: 36, padding: '0 16px', borderRadius: 99, fontSize: 14, fontWeight: 500,
+                        background: c.disabled ? 'var(--cmpt-button-soft)' : undefined,
+                        color: c.disabled ? 'var(--text-disabled)' : undefined,
+                        border: 'none', cursor: c.disabled ? 'default' : 'pointer', fontFamily: 'inherit',
+                        minWidth: 130,
+                      }}>{c.buttonText}</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, paddingTop: 8 }}>
+                <button style={{ width: 28, height: 28, borderRadius: 99, background: 'var(--cmpt-button-soft)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icon name="CEX_chevron_left" size={12} /></button>
+                {[1,2,3,4,5].map((n) => (
+                  <button key={n} style={{
+                    width: 28, height: 28, borderRadius: 99,
+                    background: n === 1 ? 'var(--cmpt-button-primary)' : 'var(--cmpt-button-soft)',
+                    color: n === 1 ? 'var(--text-inverse-primary)' : 'var(--text-primary)',
+                    border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 500,
+                  }}>{n}</button>
+                ))}
+                <button style={{ width: 28, height: 28, borderRadius: 99, background: 'var(--cmpt-button-soft)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icon name="CEX_chevron_right" size={12} /></button>
+              </div>
+            </div>
+            <div className="section-module" style={{ animationDelay: '0.4s', marginTop: 24 }}>
+              <h3 style={{ fontSize: 24, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 24 }}>Daily points</h3>
+              <p style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: 24 }}>
+                Daily snapshot time: 00:00:00 (UTC). Data is updated daily before 02:00:00 (UTC). The 00:00:00 (UTC) cutoff determines which day a trade is attributed to. Trades completed before 00:00:00 (UTC) count for the previous day. Trades completed after 00:00:00 (UTC) count for the current day and will appear in the next update. Example: Trade at 23:59:59 (UTC) on April 22 - Counts for April 22 (before snapshot). Trade at 00:00:01 (UTC) on April 23 - Counts for April 23 (after snapshot) and will be reflected in the next update (before 02:00:00 UTC on April 24).
+              </p>
+              <div style={{ border: '1px solid var(--line-border-subtle)', borderRadius: 12, overflow: 'hidden', background: 'var(--bg-primary)' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+                  <thead>
+                    <tr style={{ background: 'var(--bg-secondary)' }}>
+                      {['Date', 'Spot', 'Spot Points', 'Deposit', 'Deposit Points', 'Futures', 'Other', 'Total'].map((h) => (
+                        <th key={h} style={{ padding: '8px 16px', textAlign: 'left', fontWeight: 500, color: 'var(--text-secondary)', borderBottom: '1px solid var(--line-divider)' }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dailyRows.map((r, i) => (
+                      <tr key={i} style={{ borderBottom: i < dailyRows.length - 1 ? '1px solid var(--line-divider)' : 'none' }}>
+                        <td style={{ padding: '16px' }}>{r.date}</td>
+                        <td style={{ padding: '16px' }}>{r.spot}</td>
+                        <td style={{ padding: '16px' }}>{r.spotPts}</td>
+                        <td style={{ padding: '16px' }}>{r.deposit}</td>
+                        <td style={{ padding: '16px' }}>{r.depositPts}</td>
+                        <td style={{ padding: '16px' }}>{r.futures}</td>
+                        <td style={{ padding: '16px' }}>{r.other}</td>
+                        <td style={{ padding: '16px' }}>{r.total}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </main>
+        </>
+      );
+    }
+
+    /* ==================== LAUNCHPOOL PAGE (Figma 9921:17027 1:1) ==================== */
+    function LaunchpoolHeroSection({ isDark }) {
+      return (
+        <section className="section-module" style={{ animationDelay: '0.1s', background: 'var(--bg-primary)', padding: '80px 0', marginBottom: 40 }}>
+          <div className="resp-col" style={{
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            maxWidth: 1200, margin: '0 auto', padding: 0,
+          }}>
+            <div style={{ width: 663, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 40 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <h1 style={{ fontSize: 56, fontWeight: 600, lineHeight: 1.2, color: 'var(--text-primary)' }}>Launchpool</h1>
+                <p style={{ fontSize: 20, fontWeight: 500, color: 'var(--text-secondary)' }}>
+                  Quick staking, earn potential new tokens!
+                </p>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 48 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ fontSize: 32, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>$438.8M</div>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Cumulative Airdrops</div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ fontSize: 32, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>$294.0K</div>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Estimated Total Rewards</div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ fontSize: 32, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>$27.04B</div>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Funds Raised</div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ fontSize: 32, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>5.39M+</div>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Participants</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <button className="btn-primary" style={{ height: 56, padding: '0 32px', fontSize: 18, fontWeight: 600, borderRadius: 99 }}>About Launchpool</button>
+                <button className="btn-secondary" style={{ width: 56, height: 56, padding: 0, borderRadius: 99, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon name="CEX_Notification" size={24} />
+                </button>
+              </div>
+            </div>
+            <div className="resp-hide" style={{ width: 280, height: 280, overflow: 'hidden', flexShrink: 0 }}>
+              <img src={isDark ? 'assets/Launchpool-dark.png' : 'assets/Launchpool-light.png'} alt="Launchpool" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function LaunchpoolAnnouncement() {
+      return (
+        <div className="section-module" style={{ animationDelay: '0.2s' }}>
+          <div style={{
+            border: '1px solid var(--line-border-subtle)', borderRadius: 8, padding: '16px 24px',
+            background: 'var(--bg-primary)', display: 'flex', alignItems: 'center', gap: 12,
+          }}>
+          <Icon name="CEX_Notification" size={24} />
+          <p style={{ flex: 1, fontSize: 14, fontWeight: 400, color: 'var(--text-primary)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            EDGEN is open for staking now. Stake BTC/GT/ETH to share 7500000 EDGEN and receive hourly rewards. <a href="#" style={{ color: 'var(--text-primary)', textDecoration: 'none' }}>Stake now</a>
+          </p>
+          </div>
+        </div>
+      );
+    }
+
+    function LaunchpoolActionBar({ filterTab, onFilterTabChange, projects = [] }) {
+      const ongoingCount = projects.filter((p) => p.tag === 'Ongoing').length;
+      const upcomingCount = projects.filter((p) => p.tag === 'Upcoming').length;
+      const endedCount = projects.filter((p) => p.tag === 'Ended').length;
+      const tabs = [
+        { key: 'all', label: 'All' },
+        { key: 'ongoing', label: `Ongoing (${ongoingCount})` },
+        { key: 'upcoming', label: `Upcoming (${upcomingCount})` },
+        { key: 'ended', label: `Ended (${endedCount})` },
+      ];
+      return (
+        <div className="section-module" style={{ animationDelay: '0.3s', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+          <div className="launchpool-action-tabs">
+            {tabs.map((t) => (
+              <button key={t.key} className={filterTab === t.key ? 'active' : ''} onClick={() => onFilterTabChange(t.key)}>
+                {t.label}
+              </button>
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: 16 }}>
+            <button style={{ height: 40, padding: '0 8px', background: 'var(--cmpt-input)', borderRadius: 8, border: 'none', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', minWidth: 160 }}>
+              <span style={{ flex: 1, textAlign: 'left' }}>All Pools</span>
+              <Icon name="CEX_chevron_down" size={16} />
+            </button>
+            <button style={{ height: 40, padding: '0 8px', background: 'var(--cmpt-input)', borderRadius: 8, border: 'none', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', minWidth: 160 }}>
+              <span style={{ flex: 1, textAlign: 'left' }}>All Filters</span>
+              <Icon name="CEX_chevron_down" size={16} />
+            </button>
+            <button style={{ height: 40, padding: '0 8px', background: 'var(--cmpt-input)', borderRadius: 8, border: 'none', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', minWidth: 160 }}>
+              <span style={{ flex: 1, textAlign: 'left' }}>All Coins</span>
+              <Icon name="CEX_chevron_down" size={16} />
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    function LaunchpoolProjectCard({ coin, name, tag, subTag, totalRewards, usdtVal, stakingPeriod, countdownSeconds, countdownLabel, pools, animationDelay }) {
+      const descRow = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, gap: 8 };
+      return (
+        <div className="section-module" style={{ animationDelay: animationDelay || '0.4s' }}>
+          <div style={{ borderRadius: 16, background: 'var(--bg-secondary)', padding: '28px 24px', position: 'relative' }}>
+          <span style={{
+            position: 'absolute', top: 0, left: 0,
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            height: 24, fontSize: 14, fontWeight: 400,
+            color: tag === 'Ongoing' ? 'var(--text-success)' : tag === 'Upcoming' ? 'var(--text-warning)' : 'var(--text-secondary)',
+            background: tag === 'Ongoing' ? 'var(--cmpt-greenfunct-bg)' : tag === 'Upcoming' ? 'var(--cmpt-orange-bg)' : 'var(--cmpt-tag-gray)',
+            borderRadius: '16px 4px 4px 0',
+            padding: '3px 8px', zIndex: 1,
+          }}>
+            {tag}
+          </span>
+          <div className="resp-col" style={{ display: 'flex', gap: 32 }}>
+            <div style={{ flex: '0 0 280px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 8, marginBottom: 40 }}>
+                  <CoinIcon coin={coin} size={44} />
+                  <div>
+                    <h3 style={{ fontSize: 24, fontWeight: 600, margin: 0 }}>{name}</h3>
+                    {subTag && (
+                      <span className="tag tag-sm" style={{ background: '#89eff6', color: 'var(--text-always-black)', fontWeight: 500, marginTop: 4, display: 'inline-block' }}>{toLabelCase(subTag)}</span>
+                    )}
+                  </div>
+                </div>
+                <div style={{ marginBottom: 24 }}>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)', marginBottom: 2 }}>Total Rewards</div>
+                  <div style={{ fontSize: 18, fontWeight: 600 }}>{totalRewards}</div>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>{usdtVal}</div>
+                </div>
+                <div style={{ marginBottom: 24 }}>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)', marginBottom: 2 }}>Staking Period</div>
+                  <div style={{ fontSize: 18, fontWeight: 600 }}>{stakingPeriod}</div>
+                </div>
+              </div>
+              <div>
+                <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)', marginBottom: 8 }}>{countdownLabel}</div>
+                {(() => {
+                  const { days, hours, mins, secs } = useCountdown(countdownSeconds);
+                  const boxStyle = { height: 40, borderRadius: 6, padding: '8px 12px', background: 'var(--bg-tertiary)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' };
+                  const sepStyle = { fontSize: 16, fontWeight: 600, color: 'var(--text-disabled)' };
+                  return (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={boxStyle}>{days}D</span>
+                      <span style={sepStyle}>:</span>
+                      <span style={boxStyle}>{hours}</span>
+                      <span style={sepStyle}>:</span>
+                      <span style={boxStyle}>{mins}</span>
+                      <span style={sepStyle}>:</span>
+                      <span style={boxStyle}>{secs}</span>
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
+            <div style={{ flex: 1, display: 'flex', gap: 16 }}>
+              {pools.map((p) => (
+                <div key={p.title} className="card-hover" style={{ flex: 1, background: 'var(--bg-primary)', borderRadius: 16, padding: 24, display: 'flex', flexDirection: 'column', gap: 24 }}>
+                  <div style={{ textAlign: 'center' }}>
+                    <p style={{ fontSize: 18, fontWeight: 600, margin: '0 0 12px' }}>{p.title}</p>
+                    <div className="coin-icon-stack" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <span style={{ marginRight: -8, zIndex: 1 }}><CoinIcon coin={coin} size={32} /></span>
+                      <CoinIcon coin={p.coin} size={32} />
+                    </div>
+                    <div style={{ marginTop: 16 }}>
+                      <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 4 }}>Reward({name})</div>
+                      <div style={{ fontSize: 20, fontWeight: 600 }}>{p.reward}</div>
+                    </div>
+                    {p.badge && (
+                      <span className="tag tag-sm" style={{ background: '#89eff6', color: 'var(--text-always-black)', fontWeight: 500, marginTop: 8, display: 'inline-block' }}>{toLabelCase(p.badge)}</span>
+                    )}
+                  </div>
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: 12 }}>
+                    <div style={descRow}><span style={{ color: 'var(--text-secondary)', flexShrink: 0 }}>APR</span><span style={{ fontWeight: 600, textAlign: 'right', fontVariantNumeric: 'tabular-nums', minWidth: 0 }}>{p.apr}</span></div>
+                    <div style={descRow}><span style={{ color: 'var(--text-secondary)', flexShrink: 0 }}>Total Staked</span><span style={{ fontWeight: 600, textAlign: 'right', fontVariantNumeric: 'tabular-nums', minWidth: 0 }}>{p.totalStaked}</span></div>
+                    <div style={descRow}><span style={{ color: 'var(--text-secondary)', flexShrink: 0 }}>Individual Staking Cap</span><span style={{ fontWeight: 600, textAlign: 'right', fontVariantNumeric: 'tabular-nums', minWidth: 0 }}>{p.cap}</span></div>
+                  </div>
+                  <button className="btn-primary btn-md" style={{ width: '100%' }}>Participate</button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        </div>
+      );
+    }
+
+    /* ==================== HODLER AIRDROP PAGE (Figma 9922:31859 1:1) ==================== */
+    function HODLerAirdropHeroSection({ isDark }) {
+      return (
+        <section className="section-module" style={{ animationDelay: '0.1s', background: 'var(--bg-primary)', padding: '80px 0', marginBottom: 40 }}>
+          <div className="resp-col" style={{
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            maxWidth: 1200, margin: '0 auto', padding: 0,
+          }}>
+            <div style={{ width: 663, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 40 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <h1 style={{ fontSize: 56, fontWeight: 600, lineHeight: 1.2, color: 'var(--text-primary)' }}>HODLer Airdrop</h1>
+                <p style={{ fontSize: 20, fontWeight: 500, color: 'var(--text-secondary)' }}>
+                  Hold GT and get massive airdrops for free
+                </p>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 48 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ fontSize: 32, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>$33.54M</div>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Cumulative airdrops</div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ fontSize: 32, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>380.0K+</div>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Participants</div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ fontSize: 32, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>249</div>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Projects launched</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <button className="btn-primary" style={{ height: 56, padding: '0 32px', fontSize: 18, fontWeight: 600, borderRadius: 99 }}>Quick claim</button>
+                <button className="btn-secondary" style={{ width: 56, height: 56, padding: 0, borderRadius: 99, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon name="CEX_Notification" size={24} />
+                </button>
+              </div>
+            </div>
+            <div className="resp-hide" style={{ width: 280, height: 280, overflow: 'hidden', flexShrink: 0 }}>
+              <img src={isDark ? 'assets/Airdrop-dark.png' : 'assets/Airdrop-light.png'} alt="HODLer Airdrop" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function HODLerAirdropActionBar({ filterTab, onFilterTabChange, projects = [] }) {
+      const ongoingCount = projects.filter((p) => p.tag === 'Ongoing').length;
+      const upcomingCount = projects.filter((p) => p.tag === 'Upcoming').length;
+      const endedCount = projects.filter((p) => p.tag === 'Ended').length;
+      const tabs = [
+        { key: 'all', label: 'All' },
+        { key: 'ongoing', label: `Ongoing (${ongoingCount})` },
+        { key: 'upcoming', label: `Upcoming (${upcomingCount})` },
+        { key: 'ended', label: `Ended (${endedCount})` },
+      ];
+      return (
+        <div className="section-module" style={{ animationDelay: '0.3s' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+            <div className="hodler-action-tabs">
+              {tabs.map((t) => (
+                <button key={t.key} className={filterTab === t.key ? 'active' : ''} onClick={() => onFilterTabChange(t.key)}>
+                  {t.label}
+                </button>
+              ))}
+            </div>
+            <div style={{ display: 'flex', gap: 16 }}>
+              <button style={{ height: 40, padding: '0 8px', background: 'var(--cmpt-input)', borderRadius: 8, border: 'none', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', minWidth: 160 }}>
+                <span style={{ flex: 1, textAlign: 'left' }}>All Projects</span>
+                <Icon name="CEX_chevron_down" size={16} />
+              </button>
+              <button style={{ height: 40, padding: '0 8px', background: 'var(--cmpt-input)', borderRadius: 8, border: 'none', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', minWidth: 160 }}>
+                <span style={{ flex: 1, textAlign: 'left' }}>All Coins</span>
+                <Icon name="CEX_chevron_down" size={16} />
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    const GT_UPCOMING_ILLUSTRATION = 'assets/gt-upcoming-illustration.png?v=2';
+
+    function HODLerAirdropProjectCard({ coin, name, subTag, tag, totalAirdrop, perGT, cnyVal, participants, desc, countdownLabel, countdownSeconds, endTime, projectDesc, links, animationDelay }) {
+      const isUpcoming = tag === 'Upcoming';
+      const countdownBoxStyle = isUpcoming
+        ? { height: 32, borderRadius: 6, padding: '8px 12px', background: 'var(--cmpt-input)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }
+        : { height: 24, borderRadius: 2, padding: '3px 4px', background: 'var(--cmpt-input)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' };
+      const sepStyle = { fontSize: isUpcoming ? 20 : 12, fontWeight: isUpcoming ? 600 : 500, color: 'var(--text-disabled)' };
+      return (
+        <div className="section-module" style={{ animationDelay: animationDelay || '0.4s' }}>
+          <div style={{ borderRadius: 16, background: 'var(--bg-secondary)', padding: '28px 24px', position: 'relative' }}>
+            <span style={{
+              position: 'absolute', top: 0, left: 0,
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              height: 24, fontSize: 14, fontWeight: 400,
+              color: tag === 'Ongoing' ? 'var(--text-success)' : tag === 'Upcoming' ? 'var(--text-warning)' : 'var(--text-secondary)',
+              background: tag === 'Ongoing' ? 'var(--cmpt-greenfunct-bg)' : tag === 'Upcoming' ? 'var(--cmpt-tag-orange-in-secondary)' : 'var(--cmpt-tag-gray)',
+              borderRadius: '16px 4px 4px 0',
+              padding: '3px 8px', zIndex: 1,
+            }}>
+              {tag}
+            </span>
+            <div className="resp-col" style={{ display: 'flex', gap: 32, alignItems: 'stretch' }}>
+              <div style={{ flex: '0 0 280px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', paddingTop: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+                  <CoinIcon coin={coin} size={44} />
+                  <div>
+                    <h3 style={{ fontSize: 24, fontWeight: 600, margin: 0 }}>{name}</h3>
+                    {subTag && (
+                      <span className="tag tag-sm" style={{ background: '#89eff6', color: 'var(--text-always-black)', fontWeight: 500, marginTop: 4, display: 'inline-block' }}>{toLabelCase(subTag)}</span>
+                    )}
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 2, flexShrink: 0 }}>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Total airdrop</div>
+                  <div style={{ fontSize: 20, fontWeight: 600 }}>{totalAirdrop}</div>
+                </div>
+              </div>
+              {isUpcoming ? (
+                <div style={{ flex: 1, background: 'var(--bg-primary)', borderRadius: 16, padding: 24, display: 'flex', flexDirection: 'column', justifyContent: 'center', minWidth: 0 }}>
+                  <div style={{ display: 'flex', gap: 12, alignItems: 'stretch' }}>
+                    <div style={{ width: 320, flexShrink: 0, background: 'var(--bg-primary)', border: '1px solid var(--line-border-subtle)', borderRadius: 12, padding: 20, display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'center', justifyContent: 'center' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center' }}>
+                        <div style={{ width: 44, height: 44, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                          <img src={GT_UPCOMING_ILLUSTRATION} alt="GT" style={{ width: 44, height: 44, objectFit: 'cover', objectPosition: 'center' }} onError={(e) => { e.target.style.display = 'none'; const fb = e.target.nextElementSibling; if (fb) fb.style.display = 'flex'; }} />
+                          <div style={{ display: 'none', position: 'absolute', inset: 0, alignItems: 'center', justifyContent: 'center' }}><CoinIcon coin="GT" size={44} /></div>
+                        </div>
+                        <p style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', textAlign: 'center', margin: 0 }}>{desc}</p>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        {countdownSeconds != null && (() => {
+                          const { days, hours, mins, secs } = useCountdown(countdownSeconds);
+                          return (
+                            <>
+                              <span style={countdownBoxStyle}>{days}D</span>
+                              <span style={sepStyle}>:</span>
+                              <span style={countdownBoxStyle}>{String(hours).padStart(2, '0')}</span>
+                              <span style={sepStyle}>:</span>
+                              <span style={countdownBoxStyle}>{String(mins).padStart(2, '0')}</span>
+                              <span style={sepStyle}>:</span>
+                              <span style={countdownBoxStyle}>{String(secs).padStart(2, '0')}</span>
+                            </>
+                          );
+                        })()}
+                      </div>
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0, background: 'var(--bg-primary)', border: '1px solid var(--line-border-subtle)', borderRadius: 12, padding: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 12, minHeight: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <CoinIcon coin={coin} size={28} />
+                          <span style={{ fontSize: 16, fontWeight: 600 }}>{name}</span>
+                        </div>
+                        <p style={{ fontSize: 12, fontWeight: 400, lineHeight: 1.5, color: 'var(--text-primary)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{projectDesc || 'Calcify Tech is a decentralized compute marketplace that provides fair, Calcify Tech is a decentralized compute marketplace that provides fair, Calcify Tech is a decentralized compute marketplace that provides fair.'}</p>
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                        {(links || [{ icon: 'CEX_Language', label: 'Website' }, { icon: 'CEX_Link', label: 'Announcements' }]).map((l) => (
+                          <button key={l.label} style={{ height: 28, padding: '0 12px', background: 'var(--cmpt-button-soft)', border: 'none', borderRadius: 99, display: 'inline-flex', alignItems: 'center', gap: 4, cursor: 'pointer', fontFamily: 'inherit', fontSize: 12, fontWeight: 500, color: 'var(--text-primary)' }}>
+                            <Icon name={l.icon} size={14} />
+                            {toLabelCase(l.label)}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ flex: 1, background: 'var(--bg-primary)', borderRadius: 16, padding: 24, display: 'flex', flexDirection: 'column', gap: 24 }}>
+                  <div style={{ display: 'flex', gap: 16, alignItems: 'flex-end' }}>
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
+                      <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Per GT</div>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                        <span style={{ fontSize: 16, fontWeight: 600 }}>{perGT}</span>
+                        <span style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>{cnyVal}</span>
+                      </div>
+                    </div>
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
+                      <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Participants</div>
+                      <div style={{ fontSize: 16, fontWeight: 600 }}>{participants}</div>
+                    </div>
+                    <button className="btn-primary btn-sm" style={{ width: 160, flexShrink: 0, height: 36, padding: '0 16px' }}>Claim for Free</button>
+                  </div>
+                  <div style={{ height: 1, background: 'var(--line-divider)', flexShrink: 0 }} />
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <Icon name="CEX_Gift" size={16} />
+                      <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-primary)' }}>{desc}</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>{countdownLabel}</span>
+                      {countdownSeconds != null ? (
+                        (() => {
+                          const { days, hours, mins, secs } = useCountdown(countdownSeconds);
+                          return (
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                              <span style={countdownBoxStyle}>{days}D</span>
+                              <span style={sepStyle}>:</span>
+                              <span style={countdownBoxStyle}>{hours}</span>
+                              <span style={sepStyle}>:</span>
+                              <span style={countdownBoxStyle}>{mins}</span>
+                              <span style={sepStyle}>:</span>
+                              <span style={countdownBoxStyle}>{secs}</span>
+                            </span>
+                          );
+                        })()
+                      ) : (
+                        <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-primary)' }}>{endTime}</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function LaunchpoolPage({ isDark }) {
+      const [filterTab, setFilterTab] = useState('all');
+      const projects = [
+        { coin: 'RADAR', name: 'RADAR', tag: 'Ongoing', subTag: 'Highest APR', totalRewards: '250,000,000 RADAR', usdtVal: '≈ 580,000 USDT', stakingPeriod: '10 Days', countdownLabel: 'Ends In', countdownSeconds: 3 * 86400 + 3 * 3600 + 59 * 60 + 23, pools: [
+          { title: 'BTC Pool', coin: 'BTC', reward: '250,000,000', badge: 'New Comers', apr: '102.99%', totalStaked: '2,058,779 BTC', cap: '3,000 BTC' },
+          { title: 'USDT Pool', coin: 'USDT', reward: '250,000,000', apr: '98.50%', totalStaked: '44,069,455 USDT', cap: '500,000 USDT' },
+          { title: 'GT Pool', coin: 'GT', reward: '250,000,000', apr: '95.20%', totalStaked: '27,882,046 GT', cap: '300,000 GT' },
+        ]},
+        { coin: 'XRP', name: 'XRP', tag: 'Ongoing', totalRewards: '180,000,000 XRP', usdtVal: '≈ 320,000 USDT', stakingPeriod: '7 Days', countdownLabel: 'Ends In', countdownSeconds: 2 * 86400 + 12 * 3600, pools: [
+          { title: 'BTC Pool', coin: 'BTC', reward: '180,000,000', apr: '88.00%', totalStaked: '1,200,000 BTC', cap: '2,500 BTC' },
+          { title: 'USDT Pool', coin: 'USDT', reward: '180,000,000', apr: '85.00%', totalStaked: '32,000,000 USDT', cap: '400,000 USDT' },
+          { title: 'GT Pool', coin: 'GT', reward: '180,000,000', apr: '82.00%', totalStaked: '18,500,000 GT', cap: '250,000 GT' },
+        ]},
+        { coin: 'BNB', name: 'BNB', tag: 'Ongoing', totalRewards: '150,000,000 BNB', usdtVal: '≈ 580,000 USDT', stakingPeriod: '14 Days', countdownLabel: 'Ends In', countdownSeconds: 5 * 86400 + 8 * 3600, pools: [
+          { title: 'BTC Pool', coin: 'BTC', reward: '150,000,000', apr: '75.00%', totalStaked: '1,500,000 BTC', cap: '2,800 BTC' },
+          { title: 'USDT Pool', coin: 'USDT', reward: '150,000,000', apr: '72.00%', totalStaked: '38,000,000 USDT', cap: '450,000 USDT' },
+          { title: 'GT Pool', coin: 'GT', reward: '150,000,000', apr: '70.00%', totalStaked: '22,000,000 GT', cap: '280,000 GT' },
+        ]},
+        { coin: 'PIGCOIN', name: 'PIGCOIN', tag: 'Upcoming', subTag: 'HOT', totalRewards: '200,000,000 PIGCOIN', usdtVal: '≈ 580,000 USDT', stakingPeriod: '12 Days', countdownLabel: 'Starts In', countdownSeconds: 1 * 86400 + 6 * 3600, pools: [
+          { title: 'BTC Pool', coin: 'BTC', reward: '200,000,000', apr: '95.00%', totalStaked: '0 BTC', cap: '3,500 BTC' },
+          { title: 'USDT Pool', coin: 'USDT', reward: '200,000,000', apr: '92.00%', totalStaked: '0 USDT', cap: '550,000 USDT' },
+          { title: 'GT Pool', coin: 'GT', reward: '200,000,000', apr: '90.00%', totalStaked: '0 GT', cap: '350,000 GT' },
+        ]},
+        { coin: 'PIGCOIN', name: 'PIGCOIN', tag: 'Upcoming', subTag: 'HOT', totalRewards: '180,000,000 PIGCOIN', usdtVal: '≈ 520,000 USDT', stakingPeriod: '10 Days', countdownLabel: 'Starts In', countdownSeconds: 2 * 86400 + 4 * 3600, pools: [
+          { title: 'BTC Pool', coin: 'BTC', reward: '180,000,000', apr: '88.00%', totalStaked: '0 BTC', cap: '3,200 BTC' },
+          { title: 'USDT Pool', coin: 'USDT', reward: '180,000,000', apr: '85.00%', totalStaked: '0 USDT', cap: '500,000 USDT' },
+          { title: 'GT Pool', coin: 'GT', reward: '180,000,000', apr: '83.00%', totalStaked: '0 GT', cap: '320,000 GT' },
+        ]},
+        { coin: 'SOL', name: 'SOL', tag: 'Ended', totalRewards: '120,000,000 SOL', usdtVal: '≈ 380,000 USDT', stakingPeriod: '7 Days', countdownLabel: 'Ended', countdownSeconds: 0, pools: [
+          { title: 'BTC Pool', coin: 'BTC', reward: '120,000,000', apr: '65.00%', totalStaked: '980,000 BTC', cap: '2,000 BTC' },
+          { title: 'USDT Pool', coin: 'USDT', reward: '120,000,000', apr: '62.00%', totalStaked: '28,000,000 USDT', cap: '350,000 USDT' },
+          { title: 'GT Pool', coin: 'GT', reward: '120,000,000', apr: '60.00%', totalStaked: '15,000,000 GT', cap: '200,000 GT' },
+        ]},
+        { coin: 'SHIB', name: 'SHIB', tag: 'Ended', totalRewards: '100,000,000 SHIB', usdtVal: '≈ 280,000 USDT', stakingPeriod: '5 Days', countdownLabel: 'Ended', countdownSeconds: 0, pools: [
+          { title: 'BTC Pool', coin: 'BTC', reward: '100,000,000', apr: '55.00%', totalStaked: '850,000 BTC', cap: '1,800 BTC' },
+          { title: 'USDT Pool', coin: 'USDT', reward: '100,000,000', apr: '52.00%', totalStaked: '24,000,000 USDT', cap: '300,000 USDT' },
+          { title: 'GT Pool', coin: 'GT', reward: '100,000,000', apr: '50.00%', totalStaked: '12,000,000 GT', cap: '180,000 GT' },
+        ]},
+      ];
+      const filteredProjects = filterTab === 'all' ? projects : projects.filter((p) => p.tag.toLowerCase() === filterTab);
+      return (
+        <>
+          <LaunchpoolHeroSection isDark={isDark} />
+          <main style={{ flex: 1, maxWidth: 1200, width: '100%', margin: '0 auto', padding: '0 0 140px', display: 'flex', flexDirection: 'column', gap: 32 }}>
+            <LaunchpoolAnnouncement />
+            <LaunchpoolActionBar filterTab={filterTab} onFilterTabChange={setFilterTab} projects={projects} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+              {filteredProjects.map((p, i) => (
+                <LaunchpoolProjectCard key={`${p.coin}-${p.name}-${i}`} {...p} animationDelay={`${0.4 + i * 0.1}s`} />
+              ))}
+            </div>
+          </main>
+        </>
+      );
+    }
+
+    /* ==================== CANDYDROP PAGE (Figma 9922:30757 1:1) ==================== */
+    function CandyDropHeroSection({ isDark }) {
+      return (
+        <section className="section-module" style={{ animationDelay: '0.1s', background: 'var(--bg-primary)', padding: '80px 0', marginBottom: 40 }}>
+          <div className="resp-col" style={{
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            maxWidth: 1200, margin: '0 auto', padding: 0,
+          }}>
+            <div style={{ width: 663, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 40 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <h1 style={{ fontSize: 56, fontWeight: 600, lineHeight: 1.2, color: 'var(--text-primary)' }}>CandyDrop</h1>
+                <p style={{ fontSize: 20, fontWeight: 500, color: 'var(--text-secondary)' }}>
+                  Complete tasks to claim airdrops
+                </p>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 48 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ fontSize: 32, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>$354.5K</div>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Total Airdrops</div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ fontSize: 32, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>$296.6M</div>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Cumulative Airdrops</div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ fontSize: 32, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>12,392</div>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Participants</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <button className="btn-primary" style={{ height: 56, padding: '0 32px', fontSize: 18, fontWeight: 600, borderRadius: 99 }}>About CandyDrop</button>
+                <button className="btn-secondary" style={{ width: 56, height: 56, padding: 0, borderRadius: 99, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon name="CEX_Notification" size={24} />
+                </button>
+              </div>
+            </div>
+            <div className="resp-hide" style={{ width: 280, height: 280, overflow: 'hidden', flexShrink: 0 }}>
+              <img src={isDark ? 'assets/Candy-dark.png' : 'assets/Candy-light.png'} alt="CandyDrop" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function CandyDropActionBar({ filterTab, onFilterTabChange, projects = [] }) {
+      const ongoingCount = projects.filter((p) => p.tag === 'Ongoing').length;
+      const upcomingCount = projects.filter((p) => p.tag === 'Upcoming').length;
+      const endedCount = projects.filter((p) => p.tag === 'Ended').length;
+      const tabs = [
+        { key: 'all', label: 'All' },
+        { key: 'ongoing', label: `Ongoing (${ongoingCount})` },
+        { key: 'upcoming', label: `Upcoming (${upcomingCount})` },
+        { key: 'ended', label: `Ended (${endedCount})` },
+      ];
+      return (
+        <div className="section-module" style={{ animationDelay: '0.3s', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+          <div className="hodler-action-tabs">
+            {tabs.map((t) => (
+              <button key={t.key} className={filterTab === t.key ? 'active' : ''} onClick={() => onFilterTabChange(t.key)}>
+                {t.label}
+              </button>
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: 16 }}>
+            <button style={{ height: 40, padding: '0 8px', background: 'var(--cmpt-input)', borderRadius: 8, border: 'none', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', minWidth: 160 }}>
+              <span style={{ flex: 1, textAlign: 'left' }}>Spot</span>
+              <Icon name="CEX_chevron_down" size={16} />
+            </button>
+            <button style={{ height: 40, padding: '0 8px', background: 'var(--cmpt-input)', borderRadius: 8, border: 'none', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', minWidth: 160 }}>
+              <span style={{ flex: 1, textAlign: 'left' }}>All Projects</span>
+              <Icon name="CEX_chevron_down" size={16} />
+            </button>
+            <button style={{ height: 40, padding: '0 8px', background: 'var(--cmpt-input)', borderRadius: 8, border: 'none', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', minWidth: 160 }}>
+              <span style={{ flex: 1, textAlign: 'left' }}>All Coins</span>
+              <Icon name="CEX_chevron_down" size={16} />
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    function CandyDropProjectCard({ coin, name, tag, rewardTags, supply, usdtVal, taskTypes, participants, winAmount, countdownLabel, countdownSeconds, endTime, rewardStatus, animationDelay }) {
+      const hasRewardStatus = !!rewardStatus;
+      const rightCardStyle = {
+        flex: 1, borderRadius: 16, padding: 24, display: 'flex', flexDirection: 'column', gap: 24, minWidth: 0,
+        position: 'relative',
+        ...(hasRewardStatus ? {
+          background: 'linear-gradient(to top, var(--bg-primary) 55.926%, var(--bg-primary) 82.37%, #f5feec 100%)',
+          border: '1px solid var(--function-tag-primary)',
+        } : {
+          background: 'var(--bg-primary)',
+        }),
+      };
+      return (
+        <div className="section-module" style={{ animationDelay: animationDelay || '0.4s' }}>
+          <div style={{ borderRadius: 20, background: 'var(--bg-secondary)', padding: '28px 24px', position: 'relative' }}>
+            <span style={{
+              position: 'absolute', top: 0, left: 0,
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              height: 24, fontSize: 14, fontWeight: 400,
+              color: tag === 'Ongoing' ? 'var(--text-success)' : tag === 'Upcoming' ? 'var(--text-warning)' : 'var(--text-secondary)',
+              background: tag === 'Ongoing' ? 'var(--cmpt-greenfunct-bg)' : tag === 'Upcoming' ? 'var(--cmpt-orange-bg)' : 'var(--cmpt-tag-gray)',
+              borderRadius: '20px 4px 4px 0',
+              padding: '3px 8px', zIndex: 1,
+            }}>
+              {tag}
+            </span>
+            <div className="resp-col" style={{ display: 'flex', gap: 24, alignItems: 'stretch' }}>
+              <div style={{ flex: '0 0 280px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', paddingTop: 6 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+                  <CoinIcon coin={coin} size={44} />
+                  <div>
+                    <h3 style={{ fontSize: 24, fontWeight: 600, margin: 0 }}>{name}</h3>
+                    {rewardTags && rewardTags.length > 0 && (
+                      <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginTop: 4 }}>
+                        {rewardTags.map((t) => (
+                          <span key={t} className="tag tag-sm" style={{ background: 'var(--cmpt-bluefunct-bg)', color: 'var(--text-brand)', fontWeight: 400, fontSize: 12 }}>{toLabelCase(t)}</span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 2, flexShrink: 0 }}>
+                  <div style={{ fontSize: 20, fontWeight: 600 }}>{supply}</div>
+                  <div style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-secondary)' }}>{usdtVal}</div>
+                </div>
+              </div>
+              <div style={rightCardStyle}>
+                {hasRewardStatus && (
+                  <span style={{
+                    position: 'absolute', top: 0, right: 0,
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                    background: 'var(--function-tag-primary)', color: 'var(--text-always-black)',
+                    fontSize: 12, fontWeight: 500, padding: '2px 10px',
+                    borderRadius: '0 15px 0 15px', zIndex: 1,
+                  }}>
+                    {toLabelCase(rewardStatus)}
+                  </span>
+                )}
+                <div style={{ display: 'flex', gap: 16, alignItems: 'flex-end', paddingTop: hasRewardStatus ? 12 : 0 }}>
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
+                    <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Task Type</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      {taskTypes.map((t, i) => (
+                        <span key={t}>
+                          <span style={{ fontSize: 16, fontWeight: 600 }}>{toLabelCase(t)}</span>
+                          {i < taskTypes.length - 1 && <span style={{ width: 1, height: 12, background: 'var(--line-short-divider)', margin: '0 4px', display: 'inline-block' }} />}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
+                    <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Participants</div>
+                    <div style={{ fontSize: 16, fontWeight: 600 }}>{participants}</div>
+                  </div>
+                  <button className="btn-primary btn-sm" style={{ width: 160, flexShrink: 0, height: 36, padding: '0 16px' }}>{hasRewardStatus ? 'Details' : 'Join Now'}</button>
+                </div>
+                <div style={{ height: 1, background: 'var(--line-divider)', flexShrink: 0 }} />
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+                  {hasRewardStatus ? (
+                    <>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <Icon name="CEX_Quote" size={16} />
+                        <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-primary)' }}>The event has ended, but surprises continue.</span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>End Time</span>
+                        <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-primary)' }}>{endTime || '2025-03-28 16:00:00'}</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <Icon name="CEX_Gift" size={16} />
+                        <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-primary)' }}>
+                          Win up to <span style={{ color: 'var(--text-brand)' }}>{winAmount}</span>
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>{countdownLabel}</span>
+                        {countdownSeconds != null && countdownSeconds > 0 ? (
+                          (() => {
+                            const { days, hours, mins, secs } = useCountdown(countdownSeconds);
+                            const boxStyle = { height: 24, borderRadius: 2, padding: '3px 4px', background: 'var(--cmpt-input)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' };
+                            const sepStyle = { fontSize: 12, fontWeight: 500, color: 'var(--text-disabled)' };
+                            return (
+                              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                                <span style={boxStyle}>{days}D</span>
+                                <span style={sepStyle}>:</span>
+                                <span style={boxStyle}>{hours}</span>
+                                <span style={sepStyle}>:</span>
+                                <span style={boxStyle}>{mins}</span>
+                                <span style={sepStyle}>:</span>
+                                <span style={boxStyle}>{secs}</span>
+                              </span>
+                            );
+                          })()
+                        ) : (
+                          <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-primary)' }}>Ended</span>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function CandyDropPage({ isDark }) {
+      const [filterTab, setFilterTab] = useState('all');
+      const projects = [
+        { coin: 'RADAR', name: 'RADAR', tag: 'Ongoing', rewardTags: ['Share Rewards', 'Fixed Rewards'], supply: '1,230,000 RADAR', usdtVal: '≈ 580,000 USDT', taskTypes: ['Spot', 'First Futures', 'Deposit'], participants: '18,456', winAmount: '0.01 RADAR', countdownLabel: 'Ends In', countdownSeconds: 15 * 86400 + 3 * 3600 + 59 * 60 + 23 },
+        { coin: 'ENA', name: 'ENA', tag: 'Ongoing', rewardTags: ['Fixed Rewards'], supply: '6,000,000 ENA', usdtVal: '≈ 123.34 USDT', taskTypes: ['Spot', 'Deposit'], participants: '4,500', winAmount: '4,500 ENA', countdownLabel: 'Ends In', countdownSeconds: 19330 },
+        { coin: 'RADAR', name: 'RADAR', tag: 'Ongoing', rewardTags: ['Share Rewards'], supply: '6,000,000 RADAR', usdtVal: '≈ 580,000 USDT', taskTypes: ['Spot', 'Futures', 'Invite Friends'], participants: '9,832', winAmount: '1,500 RADAR', countdownLabel: 'Ends In', countdownSeconds: 45900 },
+        { coin: 'MEW', name: 'MEW', tag: 'Ongoing', rewardTags: [], supply: '6,000,000 MEW', usdtVal: '≈ 123.34 USDT', taskTypes: ['Spot'], participants: '25,107', winAmount: '23,540 MEW', countdownLabel: 'Ends In', countdownSeconds: 65430 },
+        { coin: 'GT', name: 'GT', tag: 'Upcoming', rewardTags: ['Fixed Rewards'], supply: '3,000,000 GT', usdtVal: '≈ 123.34 USDT', taskTypes: ['Deposit'], participants: '0', winAmount: '2,000 GT', countdownLabel: 'Starts In', countdownSeconds: 32100 },
+        { coin: 'BTC', name: 'BTC', tag: 'Upcoming', rewardTags: ['Share Rewards'], supply: '500 BTC', usdtVal: '≈ 123.34 USDT', taskTypes: ['Futures'], participants: '0', winAmount: '0.05 BTC', countdownLabel: 'Starts In', countdownSeconds: 58200 },
+        { coin: 'XRP', name: 'XRP', tag: 'Ended', rewardTags: ['Fixed Rewards'], supply: '1,230,000 XRP', usdtVal: '≈ 200,000 USDT', taskTypes: ['Spot', 'First Futures', 'Deposit'], participants: '18,456', winAmount: '5,000 XRP', countdownLabel: 'Ended', countdownSeconds: 0, endTime: '2025-03-28 16:00:00', rewardStatus: 'Awaiting Airdrop' },
+        { coin: 'ENA', name: 'ENA', tag: 'Ended', rewardTags: ['Share Rewards'], supply: '4,000,000 ENA', usdtVal: '≈ 123.34 USDT', taskTypes: ['Spot'], participants: '14,780', winAmount: '3,200 ENA', countdownLabel: 'Ended', countdownSeconds: 0 },
+        { coin: 'GT', name: 'GT', tag: 'Ended', rewardTags: [], supply: '2,500,000 GT', usdtVal: '≈ 123.34 USDT', taskTypes: ['Invite Friends'], participants: '9,456', winAmount: '1,800 GT', countdownLabel: 'Ended', countdownSeconds: 0 },
+      ];
+      const filteredProjects = filterTab === 'all' ? projects : projects.filter((p) => p.tag.toLowerCase() === filterTab);
+      const INITIAL_DISPLAY = 10;
+      const [expanded, setExpanded] = useState(false);
+      const displayProjects = expanded ? filteredProjects : filteredProjects.slice(0, INITIAL_DISPLAY);
+      const hasMore = filteredProjects.length > 10;
+      return (
+        <>
+          <CandyDropHeroSection isDark={isDark} />
+          <main style={{ flex: 1, maxWidth: 1200, width: '100%', margin: '0 auto', padding: '0 0 140px', display: 'flex', flexDirection: 'column', gap: 32 }}>
+            <CandyDropActionBar filterTab={filterTab} onFilterTabChange={setFilterTab} projects={projects} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+              {displayProjects.map((p, i) => (
+                <CandyDropProjectCard key={`${p.coin}-${i}`} {...p} animationDelay={`${0.4 + i * 0.1}s`} />
+              ))}
+              {hasMore && (
+                <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 8 }}>
+                  <button type="button" className="text-btn text-btn--sm text-btn--black" onClick={() => setExpanded(true)} style={{ color: 'var(--text-primary)' }}>
+                    View more <Icon name="CEX_chevron_down" size={16} />
+                  </button>
+                </div>
+              )}
+            </div>
+          </main>
+        </>
+      );
+    }
+
+    function HodlerFaqSection() {
+      const [expandedIds, setExpandedIds] = useState(() => new Set(['per-gt']));
+      const toggleItem = (id) => {
+        setExpandedIds((prev) => {
+          const next = new Set(prev);
+          if (next.has(id)) next.delete(id);
+          else next.add(id);
+          return next;
+        });
+      };
+      const items = [
+        { id: 'participate', q: 'How to participate in the HODLer Airdrop？', a: '' },
+        { id: 'accounts', q: "Which accounts' GT holdings will be included in the calculation?", a: '' },
+        { id: 'calculated', q: 'How is your airdrop amount calculated?', a: '' },
+        { id: 'per-gt', q: 'What is "Per GT"?', a: '"Per GT" is an estimated value indicating the number of airdrop tokens you could receive by participating in the HODLer Airdrop project with 1 GT and holding it until the end of the project. Please note that "Per GT" will change based on the total airdrop amount and the GT holdings of all participants and is updated hourly.' },
+        { id: 'differently', q: 'Why are my holdings counted differently across projects?', a: '' },
+        { id: 'cap', q: 'What is the individual participation cap?', a: '' },
+        { id: 'multiple', q: 'Can I participate in multiple projects at the same time?', a: '' },
+        { id: 'distributed', q: 'How will the airdrop rewards be distributed?', a: '' },
+      ];
+      return (
+        <div className="faq-hodler section-module" style={{ display: 'flex', flexDirection: 'column', gap: 32, marginTop: 108, animationDelay: '0.8s' }}>
+          <h2 style={{ margin: 0, fontSize: 32, fontWeight: 600, lineHeight: 1.3, color: 'var(--text-primary)' }}>FAQ</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 40, alignItems: 'center', width: '100%' }}>
+            <ul className="faq-hodler__list" role="list" style={{ display: 'flex', flexDirection: 'column', gap: 24, width: '100%', margin: 0, padding: 0 }}>
+              {items.map((item) => {
+                const isExp = expandedIds.has(item.id);
+                return (
+                  <li key={item.id} style={{ margin: 0 }}>
+                    <div>
+                      <button type="button" className="faq-hodler__trigger" aria-expanded={isExp} onClick={() => toggleItem(item.id)} style={{ fontSize: 24, fontWeight: 600, lineHeight: 1.3, paddingBlock: 16, paddingInline: 0 }}>
+                        <span className="faq-hodler__question">{item.q}</span>
+                        <span className="faq-hodler__icon" style={{ width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <Icon name={isExp ? 'CEX_chevron_up' : 'CEX_chevron_down'} size={24} />
+                        </span>
+                      </button>
+                    </div>
+                    <div className="faq-hodler__content" role="region" data-expanded={isExp}>
+                      <div style={{ paddingTop: 8, paddingBottom: 0 }}>
+                        <p className="faq-hodler__answer" style={{ fontSize: 16, fontWeight: 400, lineHeight: 1.5 }}>{item.a}</p>
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+            <a href="#" className="faq-hodler__more" style={{ fontSize: 16 }}>More Details</a>
+          </div>
+        </div>
+      );
+    }
+
+    function HODLerAirdropPage({ isDark }) {
+      const [filterTab, setFilterTab] = useState('all');
+      const projects = [
+        { coin: 'RADAR', name: 'RADAR', subTag: 'Initial', tag: 'Ongoing', totalAirdrop: '250,000,000 RADAR', perGT: '0.1618 RADAR', cnyVal: '≈0.23450000 CNY', participants: '18,456', desc: 'Hold GT to get RADAR airdrops', countdownLabel: 'Ends In', countdownSeconds: 3 * 86400 + 3 * 3600 + 59 * 60 + 23, endTime: null },
+        { coin: 'RADAR', name: 'RADAR', subTag: 'Initial', tag: 'Ongoing', totalAirdrop: '250,000,000 RADAR', perGT: '0.1618 RADAR', cnyVal: '≈0.23450000 CNY', participants: '18,456', desc: 'No staking required. Hold GT and receive RADAE airdrops.', countdownLabel: 'Ends In', countdownSeconds: 3 * 86400 + 3 * 3600 + 59 * 60 + 23, endTime: null },
+        { coin: 'SHIB', name: 'GT', subTag: 'Initial', tag: 'Ongoing', totalAirdrop: '250,000,000 RADAR', perGT: '0.1618 RADAR', cnyVal: '≈0.23450000 CNY', participants: '18,456', desc: 'Subscribe to Simple Earn GT Fixed Term and get airdrop bonuses.', countdownLabel: 'Ends In', countdownSeconds: 3 * 86400 + 3 * 3600 + 59 * 60 + 23, endTime: null },
+        { coin: 'AVAX', name: 'GT', subTag: null, tag: 'Ongoing', totalAirdrop: '250,000,000 RADAR', perGT: '0.1618 RADAR', cnyVal: '≈0.23450000 CNY', participants: '18,456', desc: 'No staking required. Hold GT and receive RADAE airdrops.', countdownLabel: 'Ends In', countdownSeconds: 3 * 86400 + 3 * 3600 + 59 * 60 + 23, endTime: null },
+        { coin: 'XRP', name: 'XRP', subTag: 'Initial', tag: 'Ongoing', totalAirdrop: '250,000,000 RADAR', perGT: '0.1618 RADAR', cnyVal: '≈0.23450000 CNY', participants: '18,456', desc: 'Hold GT to get XRP airdrops', countdownLabel: 'Ends In', countdownSeconds: 3 * 86400 + 3 * 3600 + 59 * 60 + 23, endTime: null },
+        { coin: 'XRP', name: 'XRP', subTag: 'Initial', tag: 'Upcoming', totalAirdrop: '250,000,000 XRP', perGT: '0.1618 XRP', cnyVal: '≈0.23450000 CNY', participants: '0', desc: 'Hold GT to get XRP airdrops', countdownLabel: 'Starts In', countdownSeconds: 3 * 86400 + 3 * 3600 + 59 * 60 + 23, endTime: null, projectDesc: 'Calcify Tech is a decentralized compute marketplace that provides fair, Calcify Tech is a decentralized compute marketplace that provides fair, Calcify Tech is a decentralized compute marketplace that provides fair, Calcify Tech is a decentralized compute marketplace that provides fair, Calcify Tech is', links: [{ icon: 'CEX_Language', label: 'Website' }, { icon: 'CEX_Link', label: 'Announcements' }] },
+        { coin: 'DOGE', name: 'GT', subTag: 'Initial', tag: 'Ended', totalAirdrop: '250,000,000 RADAR', perGT: '0.1618 RADAR', cnyVal: '≈0.23450000 CNY', participants: '18,456', desc: 'Subscribe to Simple Earn GT Fixed Term and get airdrop bonuses.', countdownLabel: 'End Time', countdownSeconds: null, endTime: '2025-03-28 16:00:00' },
+        { coin: 'MEW', name: 'GT', subTag: 'Initial', tag: 'Ended', totalAirdrop: '250,000,000 RADAR', perGT: '0.1618 RADAR', cnyVal: '≈0.23450000 CNY', participants: '18,456', desc: 'No staking required. Hold GT and receive RADAE airdrops.', countdownLabel: 'End Time', countdownSeconds: null, endTime: '2025-03-28 16:00:00' },
+        { coin: 'SOL', name: 'GT', subTag: null, tag: 'Ended', totalAirdrop: '250,000,000 RADAR', perGT: '0.1618 RADAR', cnyVal: '≈0.23450000 CNY', participants: '18,456', desc: 'Subscribe to Simple Earn GT Fixed Term and get airdrop bonuses.', countdownLabel: 'End Time', countdownSeconds: null, endTime: '2025-03-28 16:00:00' },
+        { coin: 'DOT', name: 'GT', subTag: null, tag: 'Ended', totalAirdrop: '250,000,000 RADAR', perGT: '0.1618 RADAR', cnyVal: '≈0.23450000 CNY', participants: '18,456', desc: 'No staking required. Hold GT and receive RADAE airdrops.', countdownLabel: 'End Time', countdownSeconds: null, endTime: '2025-03-28 16:00:00' },
+      ];
+      const filteredProjects = filterTab === 'all' ? projects : projects.filter((p) => p.tag.toLowerCase() === filterTab);
+      const INITIAL_DISPLAY = 10;
+      const [expanded, setExpanded] = useState(false);
+      const displayProjects = expanded ? filteredProjects : filteredProjects.slice(0, INITIAL_DISPLAY);
+      const hasMore = filteredProjects.length > 10;
+      return (
+        <>
+          <HODLerAirdropHeroSection isDark={isDark} />
+          <main style={{ flex: 1, maxWidth: 1200, width: '100%', margin: '0 auto', padding: '0 0 140px', display: 'flex', flexDirection: 'column', gap: 32 }}>
+            <HODLerAirdropActionBar filterTab={filterTab} onFilterTabChange={setFilterTab} projects={projects} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+              {displayProjects.map((p, i) => (
+                <HODLerAirdropProjectCard key={`${p.coin}-${i}`} {...p} animationDelay={`${0.4 + i * 0.1}s`} />
+              ))}
+              {hasMore && (
+                <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 8 }}>
+                  <button type="button" className="text-btn text-btn--sm text-btn--black" onClick={() => setExpanded(true)} style={{ color: 'var(--text-primary)' }}>
+                    View more <Icon name="CEX_chevron_down" size={16} />
+                  </button>
+                </div>
+              )}
+            </div>
+            <HodlerFaqSection />
+          </main>
+        </>
+      );
+    }
+
+    /* ==================== HERO (Figma 134974:23359 1:1) ==================== */
+    function HeroSection({ isDark }) {
+      return (
+        <section className="section-module" style={{ animationDelay: '0.1s', background: 'var(--bg-primary)', padding: '80px 0', marginBottom: 40 }}>
+          <div className="resp-col" style={{
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            maxWidth: 1200, margin: '0 auto', padding: 0,
+          }}>
+            <div style={{ width: 714, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 40 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <h1 style={{ fontSize: 56, fontWeight: 600, lineHeight: 1.2, color: 'var(--text-primary)' }}>Launch</h1>
+                <p style={{ fontSize: 20, fontWeight: 500, color: 'var(--text-secondary)' }}>
+                  Unlock new token opportunities, embrace airdrop rewards.
+                </p>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 48 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ fontSize: 28, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>850,823,456.12</div>
+                  <div style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-secondary)' }}>Cumulative Airdrops</div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <div style={{ fontSize: 28, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>123,456.12</div>
+                  <div style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-secondary)' }}>Estimated Total Rewards</div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ fontSize: 28, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>89M+</div>
+                  <div style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-secondary)' }}>Participants</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <button className="btn-primary" style={{ height: 56, padding: '0 32px', fontSize: 18, fontWeight: 600, borderRadius: 99 }}>About Launch</button>
+                <button className="btn-secondary" style={{ width: 56, height: 56, padding: 0, borderRadius: 99, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon name="CEX_Notification" size={24} />
+                </button>
+              </div>
+            </div>
+            <div className="resp-hide" style={{ width: 435, height: 280, overflow: 'hidden', flexShrink: 0 }}>
+              <img src={isDark ? 'assets/Launch-dark.png' : 'assets/Launch-light.png'} alt="Launch" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    /* ==================== LAUNCHPAD PAGE (Figma 9922-29225 1:1) ==================== */
+    function LaunchpadHeroSection({ isDark }) {
+      return (
+        <section className="section-module" style={{ animationDelay: '0.1s', background: 'var(--bg-primary)', padding: '80px 0', marginBottom: 40 }}>
+          <div className="resp-col" style={{
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            maxWidth: 1200, margin: '0 auto', padding: 0,
+          }}>
+            <div style={{ width: 663, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 40 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <h1 style={{ fontSize: 56, fontWeight: 600, lineHeight: 1.2, color: 'var(--text-primary)' }}>Launchpad</h1>
+                <p style={{ fontSize: 20, fontWeight: 500, color: 'var(--text-secondary)' }}>
+                  Be Early to the Next Big Token Project
+                </p>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 48 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ fontSize: 32, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>$26.53M</div>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Amount</div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ fontSize: 32, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>8.89M</div>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Hidden participants</div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ fontSize: 32, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>56</div>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Projects</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <button className="btn-primary" style={{ height: 56, padding: '0 32px', fontSize: 18, fontWeight: 600, borderRadius: 99 }}>About Launchpad</button>
+                <button className="btn-secondary" style={{ width: 56, height: 56, padding: 0, borderRadius: 99, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon name="CEX_Notification" size={24} />
+                </button>
+              </div>
+            </div>
+            <div className="resp-hide" style={{ width: 280, height: 280, overflow: 'hidden', flexShrink: 0 }}>
+              <img src={isDark ? 'assets/Launchpad-dark.png' : 'assets/Launchpad-light.png'} alt="Launchpad" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function LaunchpadActionBar({ filterTab, onFilterTabChange }) {
+      return (
+        <div className="section-module" style={{ animationDelay: '0.3s', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+          <div className="launchpool-action-tabs">
+            {[
+              { key: 'launchpad', label: 'Launchpad' },
+              { key: 'web3', label: 'Web3 Launchpad' },
+            ].map((t) => (
+              <button key={t.key} className={filterTab === t.key ? 'active' : ''} onClick={() => onFilterTabChange(t.key)}>
+                {t.label}
+              </button>
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: 16 }}>
+            <button style={{ height: 40, padding: '0 8px', background: 'var(--cmpt-input)', borderRadius: 8, border: 'none', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', minWidth: 160 }}>
+              <span style={{ flex: 1, textAlign: 'left' }}>All Projects</span>
+              <Icon name="CEX_chevron_down" size={16} />
+            </button>
+            <button style={{ height: 40, padding: '0 8px', background: 'var(--cmpt-input)', borderRadius: 8, border: 'none', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontFamily: 'inherit', fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', minWidth: 160 }}>
+              <span style={{ flex: 1, textAlign: 'left' }}>All Coins</span>
+              <Icon name="CEX_chevron_down" size={16} />
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    function LaunchpadJoinSection({ isDark }) {
+      return (
+        <section className="section-module" style={{ animationDelay: '0.5s', marginTop: 80, marginBottom: 60, background: 'var(--bg-primary)' }}>
+          <div className="resp-col" style={{
+            display: 'flex', alignItems: 'center', gap: 40,
+            maxWidth: 1200, margin: '0 auto', padding: '60px 0 80px',
+          }}>
+            <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 40, alignItems: 'flex-start' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <h2 style={{ fontSize: 32, fontWeight: 600, color: 'var(--text-primary)', margin: 0, lineHeight: 1.3 }}>Join Launchpad</h2>
+                <p style={{ fontSize: 20, fontWeight: 400, lineHeight: 1.3, color: 'var(--text-secondary)', margin: 0 }}>
+                  Gate Launchpad is a globally leading project launch platform. Join now to give your project more exposure and growth opportunities
+                </p>
+              </div>
+              <button className="btn-primary" style={{ height: 48, padding: '0 24px', fontSize: 16, fontWeight: 500, borderRadius: 99 }}>Apply Now</button>
+            </div>
+            <div className="resp-hide" style={{ width: 220, height: 220, overflow: 'hidden', flexShrink: 0 }}>
+              <img src={isDark ? 'assets/LaunchpadJoin-dark.png' : 'assets/LaunchpadJoin-light.png'} alt="Join Launchpad" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function LaunchpadProjectCard({ coin, name, subTag, tag, subscriptionPrice, participants, countdownLabel, countdownSeconds, endTime, gtPanel, usdtPanel, animationDelay }) {
+      const labelStyle = { fontSize: 12, fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: 6 };
+      const valueStyle = { fontSize: 16, fontWeight: 600, color: 'var(--text-primary)' };
+      const rowStyle = { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 12 };
+      const boxStyle = { height: 40, borderRadius: 6, padding: '8px 12px', background: 'var(--cmpt-input)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' };
+      const sepStyle = { fontSize: 16, fontWeight: 600, color: 'var(--text-disabled)' };
+
+      function CommitPanel({ coin: c, title, allocation, commitment, capPerSub, myCommitment, price, participants: p, buttonText }) {
+        return (
+          <div style={{ flex: 1, padding: 24, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
+                <CoinIcon coin={c} size={32} />
+                <span style={{ fontSize: 20, fontWeight: 600 }}>{title}</span>
+              </div>
+              <div style={rowStyle}>
+                <div>
+                  <div style={labelStyle}>Allocation</div>
+                  <div style={valueStyle}>{allocation}</div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={labelStyle}>Current Subscription</div>
+                  <div style={valueStyle}>{commitment}</div>
+                </div>
+              </div>
+              <div style={{ ...rowStyle, marginBottom: 0 }}>
+                <div>
+                  <div style={labelStyle}>Cap per Subscriber</div>
+                  <div style={valueStyle}>{capPerSub}</div>
+                </div>
+                {myCommitment != null && (
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={labelStyle}>My Subscription</div>
+                    <div style={valueStyle}>{myCommitment}</div>
+                  </div>
+                )}
+              </div>
+              <div style={{ height: 1, background: 'var(--line-divider)', margin: '16px 0' }} />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Subscription Price</span>
+                  <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-primary)' }}>{price}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Number of Participants</span>
+                  <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-primary)' }}>{p}</span>
+                </div>
+              </div>
+            </div>
+            <button className="btn-primary btn-md" style={{ width: '100%', marginTop: 24 }}>{buttonText}</button>
+          </div>
+        );
+      }
+
+      return (
+        <div className="section-module" style={{ animationDelay: animationDelay || '0.4s' }}>
+          <div style={{ borderRadius: 16, background: 'var(--bg-secondary)', position: 'relative', padding: '28px 24px' }}>
+            <span style={{
+              position: 'absolute', top: 0, left: 0,
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              height: 24, fontSize: 14, fontWeight: 400,
+              color: tag === 'Ongoing' ? 'var(--text-success)' : tag === 'Upcoming' ? 'var(--text-warning)' : 'var(--text-secondary)',
+              background: tag === 'Ongoing' ? 'var(--cmpt-greenfunct-bg)' : tag === 'Upcoming' ? 'var(--cmpt-orange-bg)' : 'var(--cmpt-tag-gray)',
+              borderRadius: '16px 4px 4px 0',
+              padding: '3px 8px', zIndex: 1,
+            }}>
+              {tag}
+            </span>
+            <div className="resp-col" style={{ display: 'flex', gap: 24 }}>
+              <div style={{ flex: '0 0 280px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', paddingTop: 8 }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 32 }}>
+                    <ProjectIcon coin={coin} name={name} size={44} />
+                    <div>
+                      <h3 style={{ fontSize: 24, fontWeight: 600, margin: 0 }}>{name}</h3>
+                      {subTag && (
+                        <span className="tag tag-sm" style={{ background: '#89eff6', color: 'var(--text-always-black)', fontWeight: 500, marginTop: 4, display: 'inline-block' }}>{toLabelCase(subTag)}</span>
+                      )}
+                    </div>
+                  </div>
+                  <div style={{ marginBottom: 20 }}>
+                    <div style={labelStyle}>Subscription Price</div>
+                    <div style={{ fontSize: 18, fontWeight: 600 }}>{subscriptionPrice}</div>
+                  </div>
+                  <div style={{ marginBottom: 20 }}>
+                    <div style={labelStyle}>Number of Participants</div>
+                    <div style={{ fontSize: 18, fontWeight: 600 }}>{participants}</div>
+                  </div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)', marginBottom: 8 }}>{countdownLabel}</div>
+                  {countdownSeconds != null ? (
+                    (() => {
+                      const { days, hours, mins, secs } = useCountdown(countdownSeconds);
+                      return (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <span style={boxStyle}>{days}D</span>
+                          <span style={sepStyle}>:</span>
+                          <span style={boxStyle}>{String(hours).padStart(2, '0')}</span>
+                          <span style={sepStyle}>:</span>
+                          <span style={boxStyle}>{String(mins).padStart(2, '0')}</span>
+                          <span style={sepStyle}>:</span>
+                          <span style={boxStyle}>{String(secs).padStart(2, '0')}</span>
+                        </div>
+                      );
+                    })()
+                  ) : (
+                    <span style={{ fontSize: 18, fontWeight: 600, color: 'var(--text-primary)' }}>{endTime}</span>
+                  )}
+                </div>
+              </div>
+              <div style={{ flex: 1, display: 'flex', gap: 16, minWidth: 0 }}>
+                <div className="card-hover" style={{ flex: 1, background: 'var(--bg-primary)', borderRadius: 16, overflow: 'hidden' }}>
+                  <CommitPanel {...gtPanel} />
+                </div>
+                <div className="card-hover" style={{ flex: 1, background: 'var(--bg-primary)', borderRadius: 16, overflow: 'hidden' }}>
+                  <CommitPanel {...usdtPanel} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function LaunchpadPage({ isDark }) {
+      const [filterTab, setFilterTab] = useState('launchpad');
+      const projects = [
+        {
+          coin: 'ENA', name: 'ENA', subTag: 'Initial', tag: 'Ongoing',
+          subscriptionPrice: '1 ENA = 0.01177 GT, 0.01177 USDT',
+          participants: '5,453',
+          countdownLabel: 'Ends In',
+          countdownSeconds: 3 * 86400 + 3 * 3600 + 59 * 60 + 23,
+          endTime: null,
+          gtPanel: { coin: 'GT', title: 'Commit GT', allocation: '148,683,093.3 ENA', commitment: '27,882,046.94 GT', capPerSub: '1,486,830.94 ENA', price: '1 ENA = 0.01177 GT', participants: '3,958', buttonText: 'Commit' },
+          usdtPanel: { coin: 'USDT', title: 'Commit USDT', allocation: '63,721,325.7 ENA', commitment: '44,069,455.12 USDT', capPerSub: '637,213.26 ENA', myCommitment: '20,000', price: '1 ENA = 0.01177 USDT', participants: '1,495', buttonText: 'Add Fund' },
+        },
+        {
+          coin: 'PFVS', name: 'PFVS', subTag: 'Initial', tag: 'Upcoming',
+          subscriptionPrice: '1 PFVS = 0.1234 GT, 200 USDT',
+          participants: '36,912',
+          countdownLabel: 'Distance start',
+          countdownSeconds: 3 * 86400 + 3 * 3600 + 59 * 60 + 23,
+          endTime: null,
+          gtPanel: { coin: 'GT', title: 'Commit GT', allocation: '400,000 PFVS', commitment: '3,159,720 GT', capPerSub: '400,000 PFVS', price: '1 PFVS = 0.5 GT', participants: '15,456', buttonText: 'Notify Me' },
+          usdtPanel: { coin: 'USDT', title: 'Commit USDT', allocation: '400,000 PFVS', commitment: '3,159,720 USDT', capPerSub: '400,000 PFVS', myCommitment: '20,000 PFVS', price: '1 PFVS = 200 USDT', participants: '36,456', buttonText: 'Notify Me' },
+        },
+        {
+          coin: 'PFVS', name: 'PFVS', subTag: 'Initial', tag: 'Ended',
+          subscriptionPrice: '1 PFVS = 0.1234 GT, 200 USDT',
+          participants: '36,912',
+          countdownLabel: 'End Time',
+          countdownSeconds: null,
+          endTime: '2025-03-15 16:00:00',
+          gtPanel: { coin: 'GT', title: 'Commit GT', allocation: '400,000 PFVS', commitment: '3,159,720 GT', capPerSub: '400,000 PFVS', price: '1 PFVS = 0.1234 GT', participants: '15,456', buttonText: 'Trade' },
+          usdtPanel: { coin: 'USDT', title: 'Commit USDT', allocation: '400,000 PFVS', commitment: '3,159,720 USDT', capPerSub: '400,000 PFVS', myCommitment: '20,000 PFVS', price: '1 PFVS = 200 USDT', participants: '36,456', buttonText: 'Trade' },
+        },
+      ];
+      const ongoing = projects.filter((p) => p.tag === 'Ongoing');
+      const upcoming = projects.filter((p) => p.tag === 'Upcoming');
+      const past = projects.filter((p) => p.tag === 'Ended');
+      const INITIAL_PAST = 10;
+      const [pastExpanded, setPastExpanded] = useState(false);
+      const displayPast = pastExpanded ? past : past.slice(0, INITIAL_PAST);
+      const hasMorePast = past.length > 10;
+
+      return (
+        <>
+          <LaunchpadHeroSection isDark={isDark} />
+          <main style={{ flex: 1, maxWidth: 1200, width: '100%', margin: '0 auto', padding: 0, display: 'flex', flexDirection: 'column', gap: 32 }}>
+            <LaunchpadActionBar filterTab={filterTab} onFilterTabChange={setFilterTab} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 140 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+                {ongoing.map((p, i) => (
+                  <LaunchpadProjectCard key={`ongoing-${p.coin}-${i}`} {...p} animationDelay={`${0.4 + i * 0.1}s`} />
+                ))}
+                {upcoming.map((p, i) => (
+                  <LaunchpadProjectCard key={`upcoming-${p.coin}-${i}`} {...p} animationDelay={`${0.4 + (ongoing.length + i) * 0.1}s`} />
+                ))}
+              </div>
+              {past.length > 0 && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+                  <h3 style={{ fontSize: 24, fontWeight: 600, margin: 0, color: 'var(--text-primary)' }}>Past Projects</h3>
+                  {displayPast.map((p, i) => (
+                    <LaunchpadProjectCard key={`past-${p.coin}-${i}`} {...p} animationDelay={`${0.4 + (ongoing.length + upcoming.length + i) * 0.1}s`} />
+                  ))}
+                  {hasMorePast && (
+                    <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 8 }}>
+                      <button type="button" className="text-btn text-btn--sm text-btn--black" onClick={() => setPastExpanded(true)} style={{ color: 'var(--text-primary)' }}>
+                        View more <Icon name="CEX_chevron_down" size={16} />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            <LaunchpadJoinSection isDark={isDark} />
+          </main>
+        </>
+      );
+    }
+
+    /* ==================== LAUNCHPAD (Home Section) ==================== */
+    function LaunchpadSection() {
+      const labelStyle = { fontSize: 12, fontWeight: 400, color: 'var(--text-tertiary)', marginBottom: 6 };
+      const valueStyle = { fontSize: 16, fontWeight: 600, color: 'var(--text-primary)' };
+      const rowStyle = { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 12 };
+
+      function CommitPanel({ coin, title, allocation, commitment, capPerSub, myCommitment, price, participants, buttonText }) {
+        return (
+          <div style={{ flex: 1, padding: 24, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
+                <CoinIcon coin={coin} size={32} />
+                <span style={{ fontSize: 20, fontWeight: 600 }}>{title}</span>
+              </div>
+              <div style={rowStyle}>
+                <div>
+                  <div style={labelStyle}>Allocation</div>
+                  <div style={valueStyle}>{allocation}</div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={labelStyle}>Commitment</div>
+                  <div style={valueStyle}>{commitment}</div>
+                </div>
+              </div>
+              <div style={{ ...rowStyle, marginBottom: 0 }}>
+                <div>
+                  <div style={labelStyle}>Cap per Subscriber</div>
+                  <div style={valueStyle}>{capPerSub}</div>
+                </div>
+                {myCommitment && (
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={labelStyle}>My Commitment</div>
+                    <div style={valueStyle}>{myCommitment}</div>
+                  </div>
+                )}
+              </div>
+              <div style={{ height: 1, background: 'var(--line-divider)', margin: '16px 0' }} />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Subscription Price</span>
+                  <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-primary)' }}>{price}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Number of Participants</span>
+                  <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-primary)' }}>{participants}</span>
+                </div>
+              </div>
+            </div>
+            <button className="btn-primary btn-md" style={{ width: '100%', marginTop: 24 }}>{buttonText}</button>
+          </div>
+        );
+      }
+
+      return (
+        <section className="section-module" style={{ animationDelay: '0.2s' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 32 }}>
+            <h2 style={{ fontSize: 32, fontWeight: 600 }}>Launchpad</h2>
+            <button style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', fontFamily: 'inherit' }}>
+              More <Icon name="CEX_chevron_right" size={16} />
+            </button>
+          </div>
+
+          <div style={{ borderRadius: 16, background: 'var(--bg-secondary)', position: 'relative', padding: '28px 24px' }}>
+            <span style={{
+              position: 'absolute', top: 0, left: 0,
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              height: 24, fontSize: 14, fontWeight: 400,
+              color: 'var(--function-trade-buy)',
+              background: 'var(--cmpt-greenfunct-bg)',
+              borderRadius: '16px 4px 4px 0',
+              padding: '3px 6px', zIndex: 1,
+            }}>
+              Ongoing
+            </span>
+
+            <div className="resp-col" style={{ display: 'flex' }}>
+              {/* Left - Project Info */}
+              <div style={{ flex: '0 0 260px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 8, marginBottom: 32 }}>
+                    <CoinIcon coin="ENA" size={48} />
+                    <div>
+                      <h3 style={{ fontSize: 24, fontWeight: 600 }}>ENA</h3>
+                      <span className="tag tag-sm" style={{ background: '#89eff6', color: 'var(--text-always-black)', fontWeight: 500, marginTop: 4 }}>Initial</span>
+                    </div>
+                  </div>
+                  <div style={{ marginBottom: 20 }}>
+                    <div style={labelStyle}>Subscription Price</div>
+                    <div style={{ fontSize: 18, fontWeight: 600 }}>1 ENA = 0.01177 GT, 0.01177 USDT</div>
+                  </div>
+                  <div style={{ marginBottom: 20 }}>
+                    <div style={labelStyle}>Number of Participants</div>
+                    <div style={{ fontSize: 18, fontWeight: 600 }}>5,453</div>
+                  </div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)', marginBottom: 8 }}>Ends In</div>
+                  {(() => {
+                    const { days, hours, mins, secs } = useCountdown(3 * 86400 + 3 * 3600 + 59 * 60 + 23);
+                    const boxStyle = {
+                      height: 40, borderRadius: 6, padding: '8px 12px',
+                      background: 'var(--bg-tertiary)', display: 'inline-flex',
+                      alignItems: 'center', justifyContent: 'center',
+                      fontSize: 16, fontWeight: 600, color: 'var(--text-primary)',
+                      fontVariantNumeric: 'tabular-nums',
+                    };
+                    const sepStyle = { fontSize: 16, fontWeight: 600, color: 'var(--text-disabled)' };
+                    return (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={boxStyle}>{days}D</span>
+                        <span style={sepStyle}>:</span>
+                        <span style={boxStyle}>{hours}</span>
+                        <span style={sepStyle}>:</span>
+                        <span style={boxStyle}>{mins}</span>
+                        <span style={sepStyle}>:</span>
+                        <span style={boxStyle}>{secs}</span>
+                      </div>
+                    );
+                  })()}
+                </div>
+              </div>
+
+              {/* Right - Two white cards */}
+              <div style={{ flex: 1, display: 'flex', gap: 16, marginLeft: 24 }}>
+                <div className="card-hover" style={{ flex: 1, background: 'var(--bg-primary)', borderRadius: 16, overflow: 'hidden' }}>
+                  <CommitPanel
+                    coin="GT"
+                    title="Commit GT"
+                    allocation="148,683,093.3 ENA"
+                    commitment="27,882,046.94 GT"
+                    capPerSub="1,486,830.94 ENA"
+                    price="1 ENA = 0.01177 GT"
+                    participants="3,958"
+                    buttonText="Commit"
+                  />
+                </div>
+                <div className="card-hover" style={{ flex: 1, background: 'var(--bg-primary)', borderRadius: 16, overflow: 'hidden' }}>
+                  <CommitPanel
+                    coin="USDT"
+                    title="Commit USDT"
+                    allocation="63,721,325.7 ENA"
+                    commitment="44,069,455.12 USDT"
+                    capPerSub="637,213.26 ENA"
+                    myCommitment="20,000"
+                    price="1 ENA = 0.01177 USDT"
+                    participants="1,495"
+                    buttonText="Add Fund"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    /* ==================== CANDYDROP ==================== */
+    function CandyDropSection() {
+      const [activeTab, setActiveTab] = useState(0);
+      const tabs = ['Spot', 'Deposit', 'Futures', 'Invite Friends'];
+      const tabData = {
+        0: [
+          { coin: 'ENA', supply: '6,000,000 ENA', win: '4,500 ENA', participants: '18,456', time: 19330, tag: 'Fixed Rewards' },
+          { coin: 'RADAR', supply: '6,000,000 RADAR', win: '1,500 RADAR', participants: '9,832', time: 45900, tag: 'Share Rewards' },
+          { coin: 'MEW', supply: '6,000,000 MEW', win: '23,540 MEW', participants: '25,107', time: 65430, tag: null },
+        ],
+        1: [
+          { coin: 'GT', supply: '3,000,000 GT', win: '2,000 GT', participants: '12,340', time: 32100, tag: 'Fixed Rewards' },
+          { coin: 'BTC', supply: '500 BTC', win: '0.05 BTC', participants: '8,921', time: 58200, tag: 'Share Rewards' },
+        ],
+        2: [
+          { coin: 'USDT', supply: '10,000,000 USDT', win: '5,000 USDT', participants: '31,205', time: 72000, tag: 'Fixed Rewards' },
+          { coin: 'ENA', supply: '4,000,000 ENA', win: '3,200 ENA', participants: '14,780', time: 28800, tag: 'Share Rewards' },
+          { coin: 'GT', supply: '2,500,000 GT', win: '1,800 GT', participants: '9,456', time: 43200, tag: null },
+        ],
+        3: [
+          { coin: 'RADAR', supply: '8,000,000 RADAR', win: '6,000 RADAR', participants: '5,672', time: 86400, tag: 'Fixed Rewards' },
+        ],
+      };
+      const items = tabData[activeTab] || [];
+
+      return (
+        <section className="section-module" style={{ animationDelay: '0.3s' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 32 }}>
+            <h2 style={{ fontSize: 32, fontWeight: 600 }}>CandyDrop</h2>
+            <button style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', fontFamily: 'inherit' }}>
+              More <Icon name="CEX_chevron_right" size={16} />
+            </button>
+          </div>
+
+          <div style={{ display: 'inline-flex', gap: 4, marginBottom: 16 }}>
+            {tabs.map((tab, i) => (
+              <button key={tab} onClick={() => setActiveTab(i)} style={{
+                height: 36, padding: '0 16px', borderRadius: 6,
+                fontSize: 14, fontWeight: 500, border: 'none', cursor: 'pointer',
+                fontFamily: 'inherit',
+                background: activeTab === i ? 'var(--cmpt-button-soft)' : 'transparent',
+                color: activeTab === i ? 'var(--text-primary)' : 'var(--text-tertiary)',
+              }}>{tab}</button>
+            ))}
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '3fr 3fr 2fr 2fr 2fr', gap: '0 16px', padding: '0 8px' }}>
+            {/* Table Header */}
+            <div className="resp-hide" style={{ display: 'contents' }}>
+              <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-tertiary)', padding: '12px 0' }}>Project</div>
+              <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-tertiary)', padding: '12px 0' }}>Total Airdrop</div>
+              <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-tertiary)', padding: '12px 0' }}>Participants</div>
+              <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-tertiary)', padding: '12px 0' }}>Countdown</div>
+              <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-tertiary)', padding: '12px 0', textAlign: 'right' }}>Action</div>
+            </div>
+            <div style={{ gridColumn: '1 / -1', height: 1, background: 'var(--line-divider)' }} />
+
+            {/* Table Body */}
+            {items.map((item, i) => (
+              <div key={i} className="table-row-hover" style={{
+                display: 'grid', gridTemplateColumns: '3fr 3fr 2fr 2fr 2fr', gap: '0 16px', padding: '0 8px',
+                gridColumn: '1 / -1', borderRadius: 8, margin: '0 -8px',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, height: 80 }}>
+                  <CoinIcon coin={item.coin} size={36} />
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <span style={{ fontSize: 18, fontWeight: 600 }}>{item.coin}</span>
+                    </div>
+                    <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>Win Upto {item.win}</div>
+                  </div>
+                </div>
+                <div style={{ fontSize: 18, fontWeight: 500, display: 'flex', alignItems: 'center', height: 80 }}>{item.supply}</div>
+                <div style={{ fontSize: 18, fontWeight: 500, display: 'flex', alignItems: 'center', height: 80 }}>{item.participants}</div>
+                <div style={{ display: 'flex', alignItems: 'center', height: 80 }}><CountdownDisplay seconds={item.time} /></div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', height: 80 }}>
+                  <button className="btn-primary btn-sm">Participate</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    /* ==================== LAUNCHPOOL ==================== */
+    function LaunchpoolSection() {
+      const pools = [
+        { coin: 'ENA', name: 'Ethena', apr: '1.04% - 302.82%', supply: '6,004,200 ENA', tokens: ['USDT', 'GT', 'BTC'], duration: '14 Days', tag: 'New Delivery' },
+        { coin: 'RADAR', name: 'DappRadar', apr: '9.12% - 39.48%', supply: '6,000,000 RADAR', tokens: ['USDT', 'GT'], duration: '7 Days', tag: 'HOT' },
+        { coin: 'MEW', name: 'Cat in a dogs world', apr: '2.74%', supply: '6,000,000 MEW', tokens: ['USDT'], duration: '30 Days', tag: null },
+      ];
+
+      return (
+        <section className="section-module" style={{ animationDelay: '0.4s' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 32 }}>
+            <h2 style={{ fontSize: 32, fontWeight: 600 }}>Launchpool</h2>
+            <button style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', fontFamily: 'inherit' }}>
+              More <Icon name="CEX_chevron_right" size={16} />
+            </button>
+          </div>
+
+          <div className="resp-grid-1" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+            {pools.map((pool, i) => (
+              <div key={i} className="card-hover" style={{
+                borderRadius: 12, padding: 24, background: 'var(--bg-secondary)',
+                display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+              }}>
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <CoinIcon coin={pool.coin} size={40} />
+                      <div>
+                        <div style={{ fontSize: 20, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
+                          {pool.coin}
+                          {pool.tag === 'HOT' && <Icon name="CEX_hot_fill" size={14} />}
+                          {pool.tag === 'New Delivery' && <span className="tag tag-sm tag-green">New</span>}
+                        </div>
+                        <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)' }}>{pool.supply}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: 16 }}>
+                    <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)', marginBottom: 4 }}>{pool.tokens.length > 1 ? 'Est. APR' : 'APR'}</div>
+                    <div style={{ fontSize: 24, fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.3 }}>{pool.apr}</div>
+                  </div>
+                  <div style={{ height: 1, background: 'var(--line-divider)', marginBottom: 16 }} />
+
+                  <div style={{ marginBottom: 20 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
+                      <span style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-secondary)' }}>Total Pool</span>
+                      <span style={{ fontSize: 14, fontWeight: 500 }}>{pool.supply}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                      <span style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-secondary)' }}>Staking Tokens</span>
+                      <span className="coin-icon-stack-bg-secondary" style={{ display: 'flex' }}>
+                        {pool.tokens.map((t, idx) => (
+                          <span key={t} style={{ marginLeft: idx > 0 ? -4 : 0, position: 'relative', zIndex: pool.tokens.length - idx }}>
+                            <CoinIcon coin={t} size={20} />
+                          </span>
+                        ))}
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-secondary)' }}>Duration</span>
+                      <span style={{ fontSize: 14, fontWeight: 500 }}>{pool.duration}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <button className="btn-primary btn-md" style={{ width: '100%' }}>Participate</button>
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    /* ==================== POINTS TASK CENTER ==================== */
+    function PointsTaskCenterSection() {
+      const alphaItems = [
+        { coin: 'GT', address: '0x68...e338', minPoints: '180', consumption: '14', claimable: '0.05 GT' },
+        { coin: 'ENA', address: '0xA1...b74F', minPoints: '50', consumption: '8', claimable: '0.0001 ENA' },
+        { coin: 'RADAR', address: '0xF3...9c12', minPoints: '100', consumption: '20', claimable: '0.002 RADAR' },
+      ];
+      const futuresItems = [
+        { coin: 'BTC', minPoints: '200', consumed: '30', lastLabel: 'Claimable', lastValue: '0.00005 BTC' },
+        { coin: 'ETH', minPoints: '150', consumed: '25', lastLabel: 'Claimable', lastValue: '0.0005 ETH' },
+        { coin: 'USDT', minPoints: '80', consumed: '15', lastLabel: 'Claimable', lastValue: '50 USDT' },
+      ];
+      const ExchangeRow = ({ item, isAlpha }) => (
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16,
+          padding: '16px 0', borderRadius: 12, background: 'var(--bg-secondary)',
+          marginBottom: 12,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0 }}>
+            {item.coin
+              ? <CoinIcon coin={item.coin} size={40} />
+              : <div style={{
+                  width: 40, height: 40, borderRadius: '50%',
+                  background: 'var(--bg-inverse-primary)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                }}>
+                  <img src={`${ICON_BASE}/${item.icon}.svg`} width={24} height={24} style={{ width: 24, height: 24, filter: 'var(--icon-inverse-filter)' }} />
+                </div>
+            }
+            <div>
+              <div style={{ fontSize: 16, fontWeight: 600 }}>{item.coin || item.name}</div>
+              <div style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-secondary)', marginTop: 2 }}>
+                {isAlpha ? `Min. ${item.minPoints} pts · Consume ${item.consumption}` : `Min. ${item.minPoints} pts · Consume ${item.consumed}`}
+              </div>
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+            <span style={{ fontSize: 16, fontWeight: 600 }}>{isAlpha ? item.claimable : item.lastValue}</span>
+            <button className="btn-primary btn-sm" style={{ fontFamily: 'inherit' }}>Claim</button>
+          </div>
+        </div>
+      );
+      return (
+        <section className="section-module" style={{ animationDelay: '0.5s' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 32 }}>
+            <h2 style={{ fontSize: 32, fontWeight: 600 }}>Points Center</h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+              <span style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-secondary)' }}>Alpha Points: <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>15</span></span>
+              <span style={{ fontSize: 14, fontWeight: 400, color: 'var(--text-secondary)' }}>Futures Points: <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>15</span></span>
+            </div>
+          </div>
+          <div className="resp-grid-1" style={{
+            display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16,
+          }}>
+            <div style={{
+              borderRadius: 12, padding: 24, background: 'var(--bg-secondary)',
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+                <span style={{ fontSize: 20, fontWeight: 600 }}>Alpha Points</span>
+                <button style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', fontFamily: 'inherit' }}>
+                  More <Icon name="CEX_chevron_right" size={16} />
+                </button>
+              </div>
+              {alphaItems.map((item) => <ExchangeRow key={item.coin} item={item} isAlpha />)}
+            </div>
+            <div style={{
+              borderRadius: 12, padding: 24, background: 'var(--bg-secondary)',
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+                <span style={{ fontSize: 20, fontWeight: 600 }}>Futures Points</span>
+                <button style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', fontFamily: 'inherit' }}>
+                  More <Icon name="CEX_chevron_right" size={16} />
+                </button>
+              </div>
+              {futuresItems.map((item) => <ExchangeRow key={item.coin || item.name} item={item} isAlpha={false} />)}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    /* ==================== HODLER AIRDROP ==================== */
+    function HODLerAirdropSection() {
+      const tokens = [
+        { coin: 'ENA', supply: '6,000,000 Supply', ratio: '0.523', unit: 'Per GT' },
+        { coin: 'RADAR', supply: '6,000,000 Supply', ratio: '10.4', unit: 'Per GT', tag: 'HOT' },
+        { coin: 'MEW', supply: '6,000,000 Supply', ratio: '5.43', unit: 'Per GT' },
+      ];
+
+      return (
+        <section className="section-module" style={{ animationDelay: '0.6s', marginBottom: 108 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 32 }}>
+            <h2 style={{ fontSize: 32, fontWeight: 600 }}>HODLer Airdrop</h2>
+            <button style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', fontFamily: 'inherit' }}>
+              More <Icon name="CEX_chevron_right" size={16} />
+            </button>
+          </div>
+
+          <div className="hodler-card" style={{
+            borderRadius: 20, overflow: 'hidden',
+            background: 'var(--bg-inverse-secondary)',
+            padding: 32,
+          }}>
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 400, color: 'rgba(255,255,255,0.7)', marginBottom: 8, letterSpacing: '0.04em' }}>Total Airdrop</div>
+                  <div style={{ fontSize: 36, fontWeight: 700, color: '#fff', fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.02em' }}>1,234,567 GT</div>
+                </div>
+                <button className="btn-white btn-md">Quick claim</button>
+              </div>
+
+              <div className="resp-grid-1" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+                {tokens.map((t, i) => (
+                  <div key={i} className="hodler-token-card" style={{
+                    padding: '16px 20px', borderRadius: 12,
+                    background: 'rgba(255,255,255,0.06)',
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    cursor: 'pointer',
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <CoinIcon coin={t.coin} size={40} />
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                          <span style={{ fontSize: 18, fontWeight: 600, color: '#fff' }}>{t.coin}</span>
+                          {t.tag === 'HOT' && <Icon name="CEX_hot_fill" size={14} />}
+                        </div>
+                        <div style={{ fontSize: 12, fontWeight: 400, color: 'rgba(255,255,255,0.6)' }}>{t.supply}</div>
+                      </div>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: 20, fontWeight: 600, color: '#fff', fontVariantNumeric: 'tabular-nums' }}>{Number(t.ratio).toFixed(2)}</div>
+                      <div style={{ fontSize: 12, fontWeight: 400, color: 'rgba(255,255,255,0.6)' }}>{t.unit}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    /* ==================== FOOTER ==================== */
+    function Footer() {
+      const cols = [
+        { title: 'About', links: ['About Us', 'Careers', 'Partners', 'User Agreement', 'Risk Warning', 'Privacy Policy', 'Cookie Policy', 'Fees', 'Media Kit', '100% Proof of Reserves', 'License', 'Security', 'GT User Privileges', 'Gate Chain', 'Calendar', 'Law Enforcement', 'Summits', 'Gate Ventures'] },
+        { title: 'Products', links: ['Buy Crypto', 'Sell Crypto', 'Spot Trading', 'Futures Trading', 'Leveraged Tokens', 'Leveraged ETPs', 'NFT', 'Gate Pay', 'Gate Life', 'Gift Card', 'Gate OTC', 'Gate Charity', 'Gate Card', 'Gate Shop'] },
+        { title: 'Services', links: ['VIP Benefits', 'User Feedback', 'Announcement', 'Fees', 'Help Center', 'Submit a Request', 'Listing', 'Smart Contract Security', 'Developers', 'Verification Search', 'P2P Merchant Application', 'P2P Blue V Application', 'Affiliate Program'] },
+        { title: 'Learn', links: ['Gate Learn', 'Crypto Courses', 'Crypto Glossary', 'Cryptocurrency Prices', 'Big Data', 'Bitcoin Halving'], linksWithArrow: ['Crypto Prices', 'How to Buy Crypto', 'Crypto Price Prediction', 'Crypto to Fiat Converter'] },
+      ];
+      return (
+        <footer className="footer-web">
+          <div className="footer-web-inner">
+            <div className="footer-web-left resp-hide">
+              <p className="footer-web-title">Trade Crypto<br/>Anywhere Anytime</p>
+              <div className="footer-qr-box">
+                <img src={`${HEADER_BASE}/QR%20Code.svg`} alt="QR" width={116} height={116} style={{ display: 'block' }} />
+              </div>
+              <p className="footer-qr-caption">Scan to download Gate app</p>
+              <h4 className="footer-community-title">Community</h4>
+              <div className="footer-social-row">
+                <a href="#" aria-label="Email"><img className="icon" src={`${SOCIAL_ICON_BASE}/CEX_Email.svg`} alt="Email" /></a>
+                <a href="#" aria-label="Facebook"><img className="icon" src={`${SOCIAL_ICON_BASE}/CEX_Facebook.svg`} alt="Facebook" /></a>
+                <a href="#" aria-label="Twitter"><img className="icon" src={`${SOCIAL_ICON_BASE}/CEX_Twitter.svg`} alt="Twitter" /></a>
+                <a href="#" aria-label="Telegram"><img className="icon" src={`${SOCIAL_ICON_BASE}/CEX_Telegram.svg`} alt="Telegram" /></a>
+              </div>
+              <div className="footer-social-row">
+                <a href="#" aria-label="Discord"><img className="icon" src={`${SOCIAL_ICON_BASE}/CEX_Discord.svg`} alt="Discord" /></a>
+                <a href="#" aria-label="Instagram"><img className="icon" src={`${SOCIAL_ICON_BASE}/CEX_Instagram.svg`} alt="Instagram" /></a>
+                <a href="#" aria-label="Youtube"><img className="icon" src={`${SOCIAL_ICON_BASE}/CEX_Youtube.svg`} alt="Youtube" /></a>
+                <a href="#" aria-label="More"><img className="icon" src={`${ICON_BASE}/CEX_More_Horizontal.svg`} alt="More" /></a>
+              </div>
+              <div className="footer-select-wrap">
+                <button type="button" className="footer-select-trigger" aria-label="语言与货币">
+                  <span className="select-text">English/USD</span>
+                  <span className="select-suffix">
+                    <img src={`${ICON_BASE}/CEX_chevron_down.svg`} alt="" width={16} height={16} aria-hidden />
+                  </span>
+                </button>
+              </div>
+            </div>
+            <div className="resp-grid-1" style={{ flex: 1, display: 'flex', flexWrap: 'wrap', gap: 24 }}>
+              {cols.map((col, i) => (
+                <div key={i} className={`footer-col ${col.title === 'Services' ? 'footer-col-services' : ''} ${col.title === 'Learn' ? 'footer-col-learn' : ''}`}>
+                  <h4 className="footer-col-title">{col.title}</h4>
+                  <div className="footer-col-links">
+                    {col.links.map(link => (
+                      <a key={link} href="#">{link}</a>
+                    ))}
+                    {col.linksWithArrow && col.linksWithArrow.map(link => (
+                      <a key={link} href="#" className="footer-learn-item">
+                        {link} <img className="arrow" src={`${ICON_BASE}/CEX_down_fill.svg`} alt="" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="footer-bottom">
+            <p className="footer-copyright">Gate © 2013-2026.</p>
+          </div>
+        </footer>
+      );
+    }
+
+    /* ==================== MAIN APP ==================== */
+    function LaunchHub() {
+      const [isDark, setIsDark] = useState(document.documentElement.getAttribute('data-theme') === 'dark');
+      const [activeTab, setActiveTab] = useState(0);
+
+      const toggleTheme = useCallback(() => {
+        setIsDark(prev => {
+          const next = !prev;
+          document.documentElement.setAttribute('data-theme', next ? 'dark' : 'light');
+          return next;
+        });
+      }, []);
+
+      const isLaunchHome = activeTab === 0;
+      const isCandyDrop = activeTab === 1;
+      const isLaunchpool = activeTab === 2;
+      const isAlphaPoints = activeTab === 3;
+      const isFuturesPoints = activeTab === 4;
+      const isHODLerAirdrop = activeTab === 5;
+      const isLaunchpad = activeTab === 6;
+      return (
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+          <Header isDark={isDark} onToggleTheme={toggleTheme} />
+          <SubNav activeTab={activeTab} onTabChange={setActiveTab} />
+          {isLaunchHome ? (
+            <>
+              <HeroSection isDark={isDark} />
+              <main style={{ flex: 1, maxWidth: 1200, width: '100%', margin: '0 auto', padding: '0 0 32px', display: 'flex', flexDirection: 'column', gap: 140 }}>
+                <LaunchpadSection />
+                <CandyDropSection />
+                <LaunchpoolSection />
+                <PointsTaskCenterSection />
+                <HODLerAirdropSection />
+              </main>
+            </>
+          ) : isCandyDrop ? (
+            <CandyDropPage isDark={isDark} />
+          ) : isLaunchpool ? (
+            <LaunchpoolPage isDark={isDark} />
+          ) : isAlphaPoints ? (
+            <AlphaPointsPage isDark={isDark} />
+          ) : isFuturesPoints ? (
+            <FuturesPointsPage isDark={isDark} />
+          ) : isHODLerAirdrop ? (
+            <HODLerAirdropPage isDark={isDark} />
+          ) : isLaunchpad ? (
+            <LaunchpadPage isDark={isDark} />
+          ) : (
+            <EmptyProductPage title={TAB_ITEMS[activeTab]} />
+          )}
+          <Footer />
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<LaunchHub />);
+  </script>
+</body>
+</html>

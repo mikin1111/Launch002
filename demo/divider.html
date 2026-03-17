@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>分割线规范预览 · Divider Guidelines</title>
+  <!-- 颜色与字体遵循 Guidelines/Color.md、Guidelines/Font.md -->
+  <style>
+    :root {
+      /* 颜色均来自 Guidelines/Color.md，与 Color.html 一致 */
+      /* §1 Text */
+      --text-primary: #070808;
+      --text-secondary: #84888C;
+      --text-tertiary: #A0A3A7;
+      --text-error: #F7594B;
+      /* §2 Background */
+      --bg-primary: #FFFFFF;
+      --bg-secondary: #FAFAFA;
+      --bg-tertiary: #F2F3F4;
+      /* §3 Line */
+      --line-border-subtle: #F2F3F4;
+      --line-border-strong: #DFE0E2;
+      --line-divider: #F2F3F4;
+      --line-short-divider: #C4C7CA;
+      /* §5 Function */
+      --func-green: #2BC287;
+      --func-red: #F74B60;
+      /* Font.md */
+      --font-en: "Switzer", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-cn: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      --divider-height: 1px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 48px 24px 80px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-family: var(--font-cn);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page-title {
+      font-family: var(--font-en);
+      font-weight: 600;
+      font-size: 40px;
+      line-height: 1.3;
+      margin: 0 0 8px;
+    }
+
+    .page-meta {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+    }
+
+    .section {
+      background: var(--bg-primary);
+      border-radius: 16px;
+      padding: 32px 40px;
+      margin-bottom: 24px;
+      border: 1px solid var(--line-border-strong);
+    }
+
+    .section-title {
+      font-family: var(--font-en);
+      font-weight: 600;
+      font-size: 24px;
+      line-height: 1.3;
+      margin: 0 0 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line-border-strong);
+    }
+
+    .section-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-family: var(--font-en);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      margin-right: 8px;
+    }
+    .pill--ok {
+      background: rgba(43, 194, 135, 0.08);
+      color: var(--func-green);
+    }
+    .pill--bad {
+      background: rgba(247, 75, 96, 0.08);
+      color: var(--func-red);
+    }
+
+    /* Token 速查 */
+    .token-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+    }
+    .token-card {
+      border-radius: 8px;
+      border: 1px dashed var(--line-border-strong);
+      padding: 10px 12px;
+      font-size: 12px;
+    }
+    .token-name {
+      font-family: var(--font-en);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .token-meta {
+      color: var(--text-secondary);
+    }
+
+    /* 基础分割线展示 */
+    .divider-demo-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .divider-demo-label {
+      flex: 0 0 96px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .divider-box {
+      flex: 1;
+      min-width: 240px;
+      padding: 24px 32px;
+    }
+
+    .divider {
+      height: var(--divider-height);
+      background: var(--line-divider);
+    }
+    .divider--fixed-335 {
+      width: 335px;
+      margin-inline: auto;
+    }
+    .divider--full {
+      width: 100%;
+    }
+
+    .v-divider-wrapper {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px dashed var(--line-border-subtle);
+      background: var(--bg-primary);
+    }
+    .v-divider {
+      width: 1px;
+      height: 16px;
+      background: var(--line-short-divider);
+    }
+
+    .hint {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 8px;
+    }
+
+    /* 段落场景示例 */
+    .scene-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+    .scene-card {
+      padding: 20px 24px;
+    }
+    .scene-tagline {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .scene-title {
+      font-family: var(--font-en);
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 8px;
+    }
+    .scene-paragraph {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+    .scene-block {
+      margin-bottom: 24px;
+    }
+    .scene-block:last-child {
+      margin-bottom: 0;
+    }
+
+    /* 带文字分割线（Font.md B11 12px，Color.md --text-secondary） */
+    .text-divider-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+    .text-divider-line {
+      flex: 1;
+      height: var(--divider-height);
+      background: var(--line-divider);
+    }
+    .text-divider-label {
+      white-space: nowrap;
+      font-size: 12px;
+      padding: 0 8px;
+      color: var(--text-secondary);
+      /* 中间文字无背景色，与 Divider.md 一致 */
+    }
+    .text-divider-label--bad {
+      color: var(--text-error);
+    }
+
+    .hint-list {
+      margin: 8px 0 0;
+      padding-left: 18px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="page-title">分割线规范预览</h1>
+  <p class="page-meta">基于 Guidelines/Divider.md · 颜色见 <a href="../Color.html">Color.html</a>（<a href="../Guidelines/Color.md">Color.md</a>）、字阶见 <a href="../font.html">font.html</a> · 水平 = 分割线 · 垂直 = 小竖线 · 全部 1px</p>
+
+  <!-- Token 速查（Color.md §3 线条颜色） -->
+  <section class="section">
+    <h2 class="section-title">Token 速查</h2>
+    <p class="section-desc">
+      线宽与颜色源自 Divider.md，色值统一使用 <a href="../Guidelines/Color.md">Color.md</a> §1–3、§5 定义。全部为 1px 实线。水平「分割线」使用 <code>--line-divider</code>（§3 Line-Divider）；垂直「小竖线」使用 <code>--line-short-divider</code>（§3 Line-Short Divider）。
+    </p>
+    <div class="token-grid">
+      <div class="token-card">
+        <div class="token-name">Divider / Stroke</div>
+        <div class="token-meta">width: 1px · 实线 · 水平 &amp; 垂直共用</div>
+      </div>
+      <div class="token-card">
+        <div class="token-name">水平分割线</div>
+        <div class="token-meta">--line-divider · 默认示例宽 335/343px</div>
+      </div>
+      <div class="token-card">
+        <div class="token-name">小竖线</div>
+        <div class="token-meta">--line-short-divider · 1px×16px · 列表/导航</div>
+      </div>
+      <div class="token-card">
+        <div class="token-name">文案字阶</div>
+        <div class="token-meta">Font.md Body B11 12px · Color.md --text-secondary</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 基础样式 -->
+  <section class="section">
+    <h2 class="section-title">基础样式展示</h2>
+    <p class="section-desc">还原 Divider Guidelines 中的默认展示：1px 实线的水平分割线与 1px × 16px 的小竖线。</p>
+
+    <div class="divider-demo-row">
+      <div class="divider-demo-label">默认分割线</div>
+      <div class="divider-box">
+        <div class="divider divider--fixed-335"></div>
+        <div class="hint">宽度 335px（示例），居中展示，高度 1px。</div>
+      </div>
+    </div>
+
+    <div class="divider-demo-row">
+      <div class="divider-demo-label">内容区通栏</div>
+      <div class="divider-box">
+        <div class="divider divider--full"></div>
+        <div class="hint">宽度 100% 填满内容区，高度 1px。</div>
+      </div>
+    </div>
+
+    <div class="divider-demo-row">
+      <div class="divider-demo-label">小竖线</div>
+      <div class="divider-box">
+        <div class="v-divider-wrapper">
+          <span>标签 A</span>
+          <div class="v-divider"></div>
+          <span>标签 B</span>
+        </div>
+        <div class="hint">尺寸 1px × 16px，用于在同一行内对信息进行细分。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 段落场景：正确 / 错误 -->
+  <section class="section">
+    <h2 class="section-title">段落场景 · 正确与错误</h2>
+    <p class="section-desc">
+      分割线的核心用途是「对不同章节的文本段落进行分割，默认为水平分割线」。
+      下列示例一一对应 Divider.md 中的正确 / 错误结构。
+    </p>
+
+    <div class="scene-container">
+      <!-- 正确 -->
+      <div class="scene-card">
+        <div class="scene-tagline">
+          <span class="pill pill--ok">正确</span>
+          段落与段落之间使用分割线
+        </div>
+        <div class="scene-block">
+          <h3 class="scene-title">Default</h3>
+          <p class="scene-paragraph">
+            A design is a plan or specification for the construction of an object or system or for the
+            implementation of an activity or process, or the result of that plan or specification in the form
+            of a prototype, product or process.
+          </p>
+        </div>
+        <div class="divider divider--full"></div>
+        <div class="scene-block" style="margin-top: 24px;">
+          <h3 class="scene-title">Default</h3>
+          <p class="scene-paragraph">
+            The verb to design expresses the process of developing a design. In some cases, the direct
+            construction of an object without an explicit prior plan may also be considered to be a design
+            activity.
+          </p>
+        </div>
+        <p class="hint">分割线处于两个完整段落之间，上下各留出约 24px 间距。</p>
+      </div>
+
+      <!-- 错误 -->
+      <div class="scene-card">
+        <div class="scene-tagline">
+          <span class="pill pill--bad">错误</span>
+          标题与正文之间错误插入分割线
+        </div>
+        <div class="scene-block" style="margin-bottom: 12px;">
+          <h3 class="scene-title">Default</h3>
+          <div class="divider divider--full" style="margin-top: 4px;"></div>
+        </div>
+        <p class="scene-paragraph">
+          A design is a plan or specification for the construction of an object or system or for the
+          implementation of an activity or process, or the result of that plan or specification in the form
+          of a prototype, product or process.
+        </p>
+        <p class="hint">
+          这种「标题 → 分割线 → 正文」的布局会混淆层级，且与规范所述「段落间分割」不符，应避免使用。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 带文字分割线 · 极端原则 -->
+  <section class="section">
+    <h2 class="section-title">带文字分割线 · 极端原则</h2>
+    <p class="section-desc">
+      Divider.md 中要求：带文字的分割线中文案不能超出分割线长度，且建议控制在 3 个单词以内。
+      下方通过对比展示推荐写法与违反原则的写法。
+    </p>
+
+    <div class="scene-container">
+      <!-- 推荐写法 -->
+      <div class="scene-card">
+        <div class="scene-tagline">
+          <span class="pill pill--ok">推荐</span>
+          文案短、小于线长
+        </div>
+        <div class="text-divider-row" style="margin-bottom: 12px;">
+          <div class="text-divider-line"></div>
+          <span class="text-divider-label">或</span>
+          <div class="text-divider-line"></div>
+        </div>
+        <div class="text-divider-row">
+          <div class="text-divider-line"></div>
+          <span class="text-divider-label">更多选项</span>
+          <div class="text-divider-line"></div>
+        </div>
+        <ul class="hint-list">
+          <li>标签字符数较少，整体视觉仍以 1px 分割线为主。</li>
+          <li>左右两侧线段长度明显大于中间文字宽度。</li>
+        </ul>
+      </div>
+
+      <!-- 违反原则 -->
+      <div class="scene-card">
+        <div class="scene-tagline">
+          <span class="pill pill--bad">不推荐</span>
+          文案过长，超出分割线视觉平衡
+        </div>
+        <div class="text-divider-row" style="margin-bottom: 12px;">
+          <div class="text-divider-line"></div>
+          <span class="text-divider-label text-divider-label--bad">
+            这是一个非常非常长的带文案分割线示例
+          </span>
+          <div class="text-divider-line"></div>
+        </div>
+        <ul class="hint-list">
+          <li>文字宽度接近或超过两侧线段总和，弱化了分割线本身的作用。</li>
+          <li>难以作为「极简标签」，不符合「最好限制在 3 个单词内」的规范。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
+

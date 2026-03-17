@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>间距规范预览 · Spacing Guidelines</title>
+  <style>
+    :root {
+      /* 规范中的间距 Token */
+      --spacing-4: 4px;
+      --spacing-8: 8px;
+      --spacing-12: 12px;
+      --spacing-16: 16px;
+      --spacing-20: 20px;
+      --spacing-24: 24px;
+      --spacing-28: 28px;
+      --spacing-32: 32px;
+      --spacing-40: 40px;
+      --spacing-48: 48px;
+      --spacing-64: 64px;
+      --spacing-72: 72px;
+      --spacing-80: 80px;
+      --spacing-100: 100px;
+      --spacing-120: 120px;
+      --spacing-140: 140px;
+      --spacing-160: 160px;
+      --spacing-180: 180px;
+      --spacing-200: 200px;
+      --spacing-240: 240px;
+      /* 规范中的颜色 */
+      --color-horizontal: rgba(192, 215, 253, 0.5);
+      --color-vertical: #fcc;
+      --text-primary: #070808;
+      --text-muted: #596a7a;
+      --border: rgba(23, 34, 75, 0.08);
+      --font-en: 'Switzer', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-cn: 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: var(--spacing-48) var(--spacing-24) var(--spacing-80);
+      background: #f5f5f5;
+      color: var(--text-primary);
+      font-family: var(--font-cn);
+    }
+
+    .page-title {
+      font-family: var(--font-en);
+      font-weight: 600;
+      font-size: 40px;
+      line-height: 1.3;
+      margin: 0 0 var(--spacing-8);
+    }
+    .page-meta {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: var(--spacing-48);
+    }
+
+    .section {
+      background: #fff;
+      border-radius: 16px;
+      padding: var(--spacing-32) var(--spacing-40);
+      margin-bottom: var(--spacing-24);
+      border: 1px solid var(--border);
+    }
+    .section-title {
+      font-family: var(--font-en);
+      font-weight: 600;
+      font-size: 24px;
+      line-height: 1.3;
+      margin: 0 0 var(--spacing-24);
+      padding-bottom: var(--spacing-12);
+      border-bottom: 1px solid var(--border);
+    }
+    .section-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: var(--spacing-24);
+      line-height: 1.5;
+    }
+
+    /* 水平间距：浅蓝条 + 数值标签 */
+    .spacing-row {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-16);
+      margin-bottom: var(--spacing-12);
+      min-height: 48px;
+    }
+    .spacing-row:last-child { margin-bottom: 0; }
+    .spacing-token-label {
+      flex: 0 0 56px;
+      font-family: var(--font-en);
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    .bar-h {
+      background: var(--color-horizontal);
+      flex-shrink: 0;
+      border-radius: 4px;
+    }
+    .bar-h.tiny { height: 22px; }
+    .bar-h.small { height: 24px; }
+    .bar-h.medium { height: 48px; }
+    .bar-h-label {
+      font-size: 8px;
+      color: #fff;
+      font-weight: 500;
+      padding: 0 4px;
+      line-height: 1;
+      text-shadow: 0 0 1px rgba(0,0,0,0.3);
+    }
+
+    /* 垂直间距：红条，两列布局 */
+    .vertical-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: var(--spacing-24);
+    }
+    .vertical-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--spacing-8);
+    }
+    .bar-v {
+      background: var(--color-vertical);
+      flex-shrink: 0;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .bar-v.tiny { width: 22px; min-height: 0; }
+    .bar-v.small { width: 24px; min-height: 0; }
+    .bar-v.medium { width: 48px; min-height: 0; }
+    .vertical-item .token-value {
+      font-family: var(--font-en);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    /* 档位分组标题 */
+    .group-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin: var(--spacing-24) 0 var(--spacing-12);
+      padding-bottom: var(--spacing-4);
+    }
+    .group-title:first-child { margin-top: 0; }
+
+    /* 实际应用示例 */
+    .demo-row {
+      display: flex;
+      align-items: stretch;
+      gap: var(--spacing-24);
+      margin-bottom: var(--spacing-24);
+      flex-wrap: wrap;
+    }
+    .demo-row:last-child { margin-bottom: 0; }
+    .demo-card {
+      background: var(--color-horizontal);
+      border-radius: 8px;
+      padding: var(--spacing-16);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .demo-label {
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: var(--spacing-8);
+      color: var(--text-primary);
+    }
+    .demo-gap-row {
+      display: flex;
+      align-items: center;
+      background: #f0f0f0;
+      padding: var(--spacing-12);
+      border-radius: 8px;
+      margin-bottom: var(--spacing-8);
+    }
+    .demo-gap-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--color-vertical);
+    }
+
+    /* 速查表 */
+    .quick-table {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-8);
+      margin-top: var(--spacing-16);
+    }
+    .quick-cell {
+      padding: var(--spacing-4) var(--spacing-8);
+      background: #f8f9fa;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: var(--font-en);
+    }
+    .quick-cell .num { font-weight: 600; color: var(--text-primary); }
+    .quick-cell .tag { font-size: 10px; color: var(--text-muted); margin-left: 4px; }
+  </style>
+</head>
+<body>
+  <h1 class="page-title">间距规范预览</h1>
+  <p class="page-meta">基于 Guidelines/Spacing.md · 水平 = 浅蓝 · 垂直 = 红</p>
+
+  <!-- 速查 -->
+  <section class="section">
+    <h2 class="section-title">Token 速查</h2>
+    <p class="section-desc">共 21 档，单位 px。微=微间距 小=小间距 标=标准 中=中等 大=大间距 超=超大。</p>
+    <div class="quick-table" id="quick-table"></div>
+  </section>
+
+  <!-- 水平间距 -->
+  <section class="section">
+    <h2 class="section-title">水平间距 (Horizontal)</h2>
+    <p class="section-desc">浅蓝色块宽度 = token 数值。用于左右内边距、元素间横向空隙。</p>
+
+    <span class="group-title">微间距 (4, 8, 12)</span>
+    <div class="spacing-row" data-value="4"><span class="spacing-token-label">4</span><div class="bar-h tiny" style="width: 4px;"></div></div>
+    <div class="spacing-row" data-value="8"><span class="spacing-token-label">8</span><div class="bar-h tiny" style="width: 8px;"></div></div>
+    <div class="spacing-row" data-value="12"><span class="spacing-token-label">12</span><div class="bar-h tiny" style="width: 12px;"></div></div>
+
+    <span class="group-title">小间距 (16–32)</span>
+    <div class="spacing-row" data-value="16"><span class="spacing-token-label">16</span><div class="bar-h small" style="width: 16px;"></div></div>
+    <div class="spacing-row" data-value="20"><span class="spacing-token-label">20</span><div class="bar-h small" style="width: 20px;"></div></div>
+    <div class="spacing-row" data-value="24"><span class="spacing-token-label">24</span><div class="bar-h small" style="width: 24px;"></div></div>
+    <div class="spacing-row" data-value="28"><span class="spacing-token-label">28</span><div class="bar-h small" style="width: 28px;"></div></div>
+    <div class="spacing-row" data-value="32"><span class="spacing-token-label">32</span><div class="bar-h small" style="width: 32px;"></div></div>
+
+    <span class="group-title">标准 / 中等 / 大 / 超大 (40–240)</span>
+    <div class="spacing-row" data-value="40"><span class="spacing-token-label">40</span><div class="bar-h medium" style="width: 40px;"><span class="bar-h-label">40</span></div></div>
+    <div class="spacing-row" data-value="48"><span class="spacing-token-label">48</span><div class="bar-h medium" style="width: 48px;"><span class="bar-h-label">48</span></div></div>
+    <div class="spacing-row" data-value="64"><span class="spacing-token-label">64</span><div class="bar-h medium" style="width: 64px;"><span class="bar-h-label">64</span></div></div>
+    <div class="spacing-row" data-value="72"><span class="spacing-token-label">72</span><div class="bar-h medium" style="width: 72px;"><span class="bar-h-label">72</span></div></div>
+    <div class="spacing-row" data-value="80"><span class="spacing-token-label">80</span><div class="bar-h medium" style="width: 80px;"><span class="bar-h-label">80</span></div></div>
+    <div class="spacing-row" data-value="100"><span class="spacing-token-label">100</span><div class="bar-h medium" style="width: 100px;"><span class="bar-h-label">100</span></div></div>
+    <div class="spacing-row" data-value="120"><span class="spacing-token-label">120</span><div class="bar-h medium" style="width: 120px;"><span class="bar-h-label">120</span></div></div>
+    <div class="spacing-row" data-value="140"><span class="spacing-token-label">140</span><div class="bar-h medium" style="width: 140px;"><span class="bar-h-label">140</span></div></div>
+    <div class="spacing-row" data-value="160"><span class="spacing-token-label">160</span><div class="bar-h medium" style="width: 160px;"><span class="bar-h-label">160</span></div></div>
+    <div class="spacing-row" data-value="180"><span class="spacing-token-label">180</span><div class="bar-h medium" style="width: 180px;"><span class="bar-h-label">180</span></div></div>
+    <div class="spacing-row" data-value="200"><span class="spacing-token-label">200</span><div class="bar-h medium" style="width: 200px;"><span class="bar-h-label">200</span></div></div>
+    <div class="spacing-row" data-value="240"><span class="spacing-token-label">240</span><div class="bar-h medium" style="width: 240px;"><span class="bar-h-label">240</span></div></div>
+  </section>
+
+  <!-- 垂直间距 -->
+  <section class="section">
+    <h2 class="section-title">垂直间距 (Vertical)</h2>
+    <p class="section-desc">红色块高度 = token 数值。用于上下内边距、行距、区块间纵向空隙。</p>
+
+    <span class="group-title">微 / 小 (4–32)</span>
+    <div class="vertical-grid" id="vertical-tiny"></div>
+
+    <span class="group-title">标准及以上 (40–240)</span>
+    <div class="vertical-grid" id="vertical-large"></div>
+  </section>
+
+  <!-- 实际应用示例 -->
+  <section class="section">
+    <h2 class="section-title">实际应用示例</h2>
+    <p class="section-desc">用规范 Token 控制 padding、gap，感受真实比例。</p>
+
+    <div class="demo-label">padding: 16 / gap: 8（卡片内边距 + 元素间距）</div>
+    <div class="demo-row">
+      <div class="demo-card" style="padding: var(--spacing-16);">
+        <div class="demo-label">spacing-16</div>
+        <div class="demo-gap-row" style="gap: var(--spacing-8);">
+          <span class="demo-gap-dot"></span><span class="demo-gap-dot"></span><span class="demo-gap-dot"></span>
+        </div>
+        图标·文字 间距 8px
+      </div>
+      <div class="demo-card" style="padding: var(--spacing-24);">
+        <div class="demo-label">spacing-24</div>
+        <div class="demo-gap-row" style="gap: var(--spacing-12);">
+          <span class="demo-gap-dot"></span><span class="demo-gap-dot"></span>
+        </div>
+        卡片内块间距 12px
+      </div>
+      <div class="demo-card" style="padding: var(--spacing-32);">
+        <div class="demo-label">spacing-32</div>
+        <div class="demo-gap-row" style="gap: var(--spacing-16);">
+          <span class="demo-gap-dot"></span><span class="demo-gap-dot"></span>
+        </div>
+        模块内区块 16px
+      </div>
+    </div>
+
+    <div class="demo-label" style="margin-top: 24px;">gap: 24（列表项之间）</div>
+    <div class="demo-row" style="gap: var(--spacing-24);">
+      <div class="demo-card" style="padding: var(--spacing-12); min-width: 100px;">项 1</div>
+      <div class="demo-card" style="padding: var(--spacing-12); min-width: 100px;">项 2</div>
+      <div class="demo-card" style="padding: var(--spacing-12); min-width: 100px;">项 3</div>
+    </div>
+
+    <div class="demo-label" style="margin-top: 24px;">gap: 48（区块之间）</div>
+    <div class="demo-row" style="gap: var(--spacing-48); flex-wrap: wrap;">
+      <div class="demo-card" style="padding: var(--spacing-20); min-width: 120px;">区块 A</div>
+      <div class="demo-card" style="padding: var(--spacing-20); min-width: 120px;">区块 B</div>
+    </div>
+  </section>
+
+  <script>
+    const TOKENS = [4, 8, 12, 16, 20, 24, 28, 32, 40, 48, 64, 72, 80, 100, 120, 140, 160, 180, 200, 240];
+    const TAGS = {
+      4: '微', 8: '微', 12: '微',
+      16: '小', 20: '小', 24: '小', 28: '小', 32: '小',
+      40: '标', 48: '标',
+      64: '中', 72: '中', 80: '中',
+      100: '大', 120: '大', 140: '大', 160: '大',
+      180: '超', 200: '超', 240: '超'
+    };
+
+    const quickTable = document.getElementById('quick-table');
+    TOKENS.forEach(v => {
+      const cell = document.createElement('span');
+      cell.className = 'quick-cell';
+      cell.innerHTML = '<span class="num">' + v + 'px</span><span class="tag">' + (TAGS[v] || '') + '</span>';
+      quickTable.appendChild(cell);
+    });
+
+    const tinyContainer = document.getElementById('vertical-tiny');
+    const largeContainer = document.getElementById('vertical-large');
+    const tiny = TOKENS.filter(v => v <= 32);
+    const large = TOKENS.filter(v => v > 32);
+
+    function barClass(v) {
+      if (v <= 12) return 'tiny';
+      if (v <= 32) return 'small';
+      return 'medium';
+    }
+
+    tiny.forEach(v => {
+      const div = document.createElement('div');
+      div.className = 'vertical-item';
+      const bar = document.createElement('div');
+      bar.className = 'bar-v ' + barClass(v);
+      bar.style.height = v + 'px';
+      const label = document.createElement('span');
+      label.className = 'token-value';
+      label.textContent = v + 'px';
+      div.appendChild(bar);
+      div.appendChild(label);
+      tinyContainer.appendChild(div);
+    });
+
+    large.forEach(v => {
+      const div = document.createElement('div');
+      div.className = 'vertical-item';
+      const bar = document.createElement('div');
+      bar.className = 'bar-v medium';
+      bar.style.height = v + 'px';
+      const label = document.createElement('span');
+      label.className = 'token-value';
+      label.textContent = v + 'px';
+      div.appendChild(bar);
+      div.appendChild(label);
+      largeContainer.appendChild(div);
+    });
+  </script>
+</body>
+</html>

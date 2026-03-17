@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ Accordion</title>
+  <style>
+    /* 规范：Guidelines/FAQ.md · 颜色：Guidelines/Color.md · 字体：Guidelines/Font.md */
+    :root {
+      --text-primary: #070808;
+      --text-secondary: #84888C;
+      --bg-primary: #FFFFFF;
+      --bg-secondary: #FAFAFA;
+      --bg-inverse-primary: #070808;
+      --line-divider: #F2F3F4;
+      --link-default: #0068FF;
+      --color-text-inverse-primary: #FFFFFF;
+    }
+    [data-theme='dark'] {
+      --text-primary: #FFFFFF;
+      --text-secondary: #A0A3A7;
+      --bg-primary: #070808;
+      --bg-secondary: rgba(19, 21, 22, 1);
+      --bg-inverse-primary: #FFFFFF;
+      --line-divider: #1F2023;
+      --link-default: #247CFF;
+      --color-text-inverse-primary: #070808;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 32px;
+      font-family: Switzer, -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI", sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      transition: background 0.3s, color 0.3s;
+      min-height: 100vh;
+    }
+    .demo-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line-divider);
+    }
+    .demo-header h1 { margin: 0; font-size: 20px; font-weight: 600; }
+    .demo-controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .demo-controls .group {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+    .demo-controls label { font-size: 12px; color: var(--text-secondary); }
+    .demo-controls button {
+      padding: 6px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+    }
+    .demo-controls button.active {
+      background: var(--bg-inverse-primary);
+      color: var(--color-text-inverse-primary);
+    }
+    .demo-section {
+      margin-bottom: 48px;
+    }
+    .demo-section h2 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 16px 0;
+      color: var(--text-primary);
+    }
+
+    /* ========== FAQ 组件样式（Figma CollapseV5Web 7778:80294） ========== */
+    .faq {
+      width: 100%;
+      max-width: 1200px;
+      font-family: Switzer, -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI", sans-serif;
+    }
+    .faq__title { margin: 0; text-align: center; color: var(--text-primary); }
+    .faq__title--demo { display: none; }
+    .faq__list { margin: 0; padding: 0; list-style: none; }
+    .faq__trigger {
+      display: flex; align-items: center; justify-content: space-between; width: 100%;
+      padding: 0; margin: 0; border: none; background: transparent; color: var(--text-primary);
+      font-family: inherit; text-align: start; cursor: pointer; gap: 16px;
+    }
+    .faq__trigger:focus-visible { outline: 2px solid var(--link-default); outline-offset: 2px; }
+    .faq__question { flex: 1; min-width: 0; color: var(--text-primary); }
+    .faq__icon { flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: inherit; }
+    .faq__icon-svg { display: block; }
+    .faq__icon--down { display: block; }
+    .faq__icon--up { display: none; }
+    .faq__icon[data-expanded='true'] .faq__icon--down { display: none; }
+    .faq__icon[data-expanded='true'] .faq__icon--up { display: block; }
+    .faq[dir='rtl'] .faq__trigger { flex-direction: row; text-align: right; }
+    .faq[dir='rtl'] .faq__question { text-align: right; }
+    .faq__content { overflow: hidden; max-height: 0; transition: max-height 0.35s cubic-bezier(0, 0, 0.2, 1); }
+    .faq__content[data-expanded='true'] { max-height: 800px; }
+    .faq__answer { margin: 0; color: var(--text-secondary); }
+    .faq__footer { text-align: center; }
+    .faq__more { font-weight: 500; color: var(--text-primary); text-decoration: underline; }
+    .faq__more:hover { opacity: 0.8; }
+
+    /* Large (Web) — H2 40px, H7 24px, BM1 16px, icon 24px */
+    .faq--large { display: flex; flex-direction: column; align-items: center; gap: 40px; }
+    .faq--large .faq__title--demo { display: block; font-size: 40px; font-weight: 600; line-height: 1.3; margin-bottom: 0; }
+    .faq--large .faq__list { display: flex; flex-direction: column; gap: 24px; width: 100%; }
+    .faq--large .faq__item { margin: 0; }
+    .faq--large .faq__trigger { font-size: 24px; font-weight: 600; padding-block: 16px; padding-inline: 0; min-height: 64px; }
+    .faq--large .faq__question { font-size: 24px; line-height: 1.3; }
+    .faq--large .faq__icon { width: 24px; height: 24px; }
+    .faq--large .faq__icon-svg { width: 24px; height: 24px; }
+    .faq--large .faq__content-inner { padding-top: 8px; padding-bottom: 0; }
+    .faq--large .faq__answer { font-size: 16px; line-height: 1.5; font-weight: 400; }
+    .faq--large .faq__footer { padding-top: 0; }
+    .faq--large .faq__more { font-size: 16px; }
+
+    /* Medium (Web) — H4 32px, B3 16px, BM2 14px, icon 16px, 分割线 */
+    .faq--medium { max-width: 588px; display: flex; flex-direction: column; align-items: center; gap: 24px; }
+    .faq--medium .faq__title--demo { display: block; font-size: 32px; font-weight: 600; line-height: 1.3; margin-bottom: 0; }
+    .faq--medium .faq__list { display: flex; flex-direction: column; width: 100%; gap: 0; }
+    .faq--medium .faq__item { margin: 0; border-bottom: 1px solid var(--line-divider); }
+    .faq--medium .faq__item:first-child { border-top: 1px solid var(--line-divider); }
+    .faq--medium .faq__trigger { font-size: 16px; font-weight: 500; padding-block: 16px; padding-inline: 0; }
+    .faq--medium .faq__item:has(.faq__content[data-expanded="true"]) .faq__trigger { padding-bottom: 0; }
+    .faq--medium .faq__question { font-size: 16px; line-height: 1.3; }
+    .faq--medium .faq__icon { width: 16px; height: 16px; }
+    .faq--medium .faq__icon-svg { width: 16px; height: 16px; }
+    .faq--medium .faq__content-inner { padding-top: 12px; padding-bottom: 16px; }
+    .faq--medium .faq__answer { font-size: 14px; line-height: 1.5; font-weight: 400; }
+    .faq--medium .faq__footer { padding-top: 0; }
+    .faq--medium .faq__more { font-size: 16px; }
+
+    /* H5 — Figma CollapseV5H5 7778:80736 */
+    .faq--h5 { max-width: 375px; padding-inline: 16px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 24px; }
+    .faq--h5 .faq__title--demo { display: block; font-size: 28px; font-weight: 600; line-height: 1.3; margin-bottom: 0; }
+    .faq--h5 .faq__list { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+    .faq--h5 .faq__item { margin: 0; }
+    .faq--h5 .faq__trigger { font-size: 16px; font-weight: 600; padding-block: 0; padding-inline: 0; }
+    .faq--h5 .faq__question { font-size: 16px; font-weight: 600; line-height: 1.3; }
+    .faq--h5 .faq__icon { width: 16px; height: 16px; }
+    .faq--h5 .faq__icon-svg { width: 16px; height: 16px; }
+    .faq--h5 .faq__content-inner { padding-top: 12px; padding-bottom: 0; }
+    .faq--h5 .faq__answer { font-size: 14px; line-height: 1.5; font-weight: 400; }
+    .faq--h5 .faq__footer { padding-top: 0; }
+    .faq--h5 .faq__more { font-size: 14px; font-weight: 500; }
+  </style>
+</head>
+<body>
+  <div class="demo-header">
+    <h1>FAQ Accordion</h1>
+    <div class="demo-controls">
+      <div class="group">
+        <label>Theme</label>
+        <button id="btnLight" class="active">Light</button>
+        <button id="btnDark">Dark</button>
+      </div>
+      <div class="group">
+        <label>Size</label>
+        <button id="btnLarge" class="active">Large (Web)</button>
+        <button id="btnMedium">Medium</button>
+        <button id="btnH5">H5 (移动端)</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h2>LTR · English</h2>
+    <div class="faq faq--large" id="faqLtr">
+      <h2 class="faq__title faq__title--demo">FAQ</h2>
+      <ul class="faq__list" role="list">
+        <li class="faq__item">
+          <div class="faq__header">
+            <button type="button" class="faq__trigger" aria-expanded="false" aria-controls="faq-a1" id="faq-t1">
+              <span class="faq__question">This is a collapse title text</span>
+              <span class="faq__icon" aria-hidden data-expanded="false"><svg class="faq__icon-svg faq__icon--down" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="faq__icon-svg faq__icon--up" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 12l5-5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </button>
+          </div>
+          <div class="faq__content" id="faq-a1" role="region" aria-labelledby="faq-t1" data-expanded="false">
+            <div class="faq__content-inner">
+              <p class="faq__answer">Gate.io is a crypto exchange that supports registration, KYC, deposits, trading 1400+ cryptocurrencies, exchange wallets, and real-time market data. Complete email or SMS verification to create your account. Enable 2FA for enhanced security.</p>
+            </div>
+          </div>
+        </li>
+        <li class="faq__item">
+          <div class="faq__header">
+            <button type="button" class="faq__trigger" aria-expanded="false" aria-controls="faq-a2" id="faq-t2">
+              <span class="faq__question">This is a collapse title text. This is a longer multi-line title to demonstrate icon alignment with the first line of text.</span>
+              <span class="faq__icon" aria-hidden data-expanded="false"><svg class="faq__icon-svg faq__icon--down" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="faq__icon-svg faq__icon--up" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 12l5-5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </button>
+          </div>
+          <div class="faq__content" id="faq-a2" role="region" aria-labelledby="faq-t2" data-expanded="false">
+            <div class="faq__content-inner">
+              <p class="faq__answer">Enable 2FA, bind your email and phone, and change your password regularly. Never share your password, verification codes, or recovery phrase. Only access via official channels and beware of phishing sites.</p>
+            </div>
+          </div>
+        </li>
+        <li class="faq__item">
+          <div class="faq__header">
+            <button type="button" class="faq__trigger" aria-expanded="false" aria-controls="faq-a3" id="faq-t3">
+              <span class="faq__question">This is a collapse title text</span>
+              <span class="faq__icon" aria-hidden data-expanded="false"><svg class="faq__icon-svg faq__icon--down" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="faq__icon-svg faq__icon--up" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 12l5-5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </button>
+          </div>
+          <div class="faq__content" id="faq-a3" role="region" aria-labelledby="faq-t3" data-expanded="false">
+            <div class="faq__content-inner">
+              <p class="faq__answer">2FA requires a one-time code from SMS or an authenticator app after entering your password. Enable it in Settings → Security Center → Two-Factor Authentication.</p>
+            </div>
+          </div>
+        </li>
+        <li class="faq__item">
+          <div class="faq__header">
+            <button type="button" class="faq__trigger" aria-expanded="false" aria-controls="faq-a4" id="faq-t4">
+              <span class="faq__question">This is a collapse title text</span>
+              <span class="faq__icon" aria-hidden data-expanded="false"><svg class="faq__icon-svg faq__icon--down" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="faq__icon-svg faq__icon--up" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 12l5-5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </button>
+          </div>
+          <div class="faq__content" id="faq-a4" role="region" aria-labelledby="faq-t4" data-expanded="false">
+            <div class="faq__content-inner">
+              <p class="faq__answer">Per AML and KYC regulations, identity verification is required before withdrawal. Provide a valid ID and complete face verification—approval typically takes minutes.</p>
+            </div>
+          </div>
+        </li>
+        <li class="faq__item">
+          <div class="faq__header">
+            <button type="button" class="faq__trigger" aria-expanded="false" aria-controls="faq-a5" id="faq-t5">
+              <span class="faq__question">This is a collapse title text</span>
+              <span class="faq__icon" aria-hidden data-expanded="false"><svg class="faq__icon-svg faq__icon--down" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="faq__icon-svg faq__icon--up" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 12l5-5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </button>
+          </div>
+          <div class="faq__content" id="faq-a5" role="region" aria-labelledby="faq-t5" data-expanded="false">
+            <div class="faq__content-inner">
+              <p class="faq__answer">Yes. We notify you via app push, SMS, or email when we detect new device login, remote login, or unusual activity. If you did not authorize it, change your password immediately and contact support.</p>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div class="faq__footer">
+        <a href="#" class="faq__more">More Details</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h2>RTL · Arabic</h2>
+    <div class="faq faq--large" id="faqRtl" dir="rtl" style="font-family: Switzer, -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Segoe UI', sans-serif;">
+      <h2 class="faq__title faq__title--demo">FAQ</h2>
+      <ul class="faq__list" role="list">
+        <li class="faq__item">
+          <div class="faq__header">
+            <button type="button" class="faq__trigger" aria-expanded="false" aria-controls="faq-ar1" id="faq-tr1">
+              <span class="faq__question">كيفية إدارة حسابي على Gate.io بأمان؟</span>
+              <span class="faq__icon" aria-hidden data-expanded="false"><svg class="faq__icon-svg faq__icon--down" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="faq__icon-svg faq__icon--up" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 12l5-5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </button>
+          </div>
+          <div class="faq__content" id="faq-ar1" role="region" aria-labelledby="faq-tr1" data-expanded="false">
+            <div class="faq__content-inner">
+              <p class="faq__answer">يُنصح بتفعيل التحقق الثنائي (2FA) وربط البريد الإلكتروني والهاتف وتغيير كلمة المرور بانتظام. لا تشارك كلمة المرور أو رمز التحقق أو عبارة الاسترداد مع أي شخص.</p>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div class="faq__footer">
+        <a href="#" class="faq__more">More Details</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function initAccordion(container) {
+      if (!container) return;
+      const triggers = container.querySelectorAll('.faq__trigger');
+      triggers.forEach((btn) => {
+        btn.replaceWith(btn.cloneNode(true));
+      });
+      container.querySelectorAll('.faq__trigger').forEach((btn) => {
+        btn.onclick = () => {
+          const contentId = btn.getAttribute('aria-controls');
+          const content = document.getElementById(contentId);
+          const icon = btn.querySelector('.faq__icon');
+          const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+          if (isExpanded) {
+            btn.setAttribute('aria-expanded', 'false');
+            content.setAttribute('data-expanded', 'false');
+            icon.setAttribute('data-expanded', 'false');
+          } else {
+            btn.setAttribute('aria-expanded', 'true');
+            content.setAttribute('data-expanded', 'true');
+            icon.setAttribute('data-expanded', 'true');
+          }
+        };
+        btn.onkeydown = (e) => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
+        };
+      });
+    }
+
+    initAccordion(document.getElementById('faqLtr'));
+    initAccordion(document.getElementById('faqRtl'));
+
+    document.getElementById('btnLight').onclick = () => {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('btnLight').classList.add('active');
+      document.getElementById('btnDark').classList.remove('active');
+    };
+    document.getElementById('btnDark').onclick = () => {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.getElementById('btnDark').classList.add('active');
+      document.getElementById('btnLight').classList.remove('active');
+    };
+
+    document.getElementById('btnLarge').onclick = () => {
+      document.getElementById('faqLtr').className = 'faq faq--large';
+      document.getElementById('faqRtl').className = 'faq faq--large';
+      document.getElementById('btnLarge').classList.add('active');
+      document.getElementById('btnMedium').classList.remove('active');
+      document.getElementById('btnH5').classList.remove('active');
+    };
+    document.getElementById('btnMedium').onclick = () => {
+      document.getElementById('faqLtr').className = 'faq faq--medium';
+      document.getElementById('faqRtl').className = 'faq faq--medium';
+      document.getElementById('btnMedium').classList.add('active');
+      document.getElementById('btnLarge').classList.remove('active');
+      document.getElementById('btnH5').classList.remove('active');
+    };
+    document.getElementById('btnH5').onclick = () => {
+      document.getElementById('faqLtr').className = 'faq faq--h5';
+      document.getElementById('faqRtl').className = 'faq faq--h5';
+      document.getElementById('btnH5').classList.add('active');
+      document.getElementById('btnLarge').classList.remove('active');
+      document.getElementById('btnMedium').classList.remove('active');
+    };
+  </script>
+</body>
+</html>

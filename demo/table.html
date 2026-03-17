@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Table 组件 · Gate 设计规范</title>
+  <style>
+    /*
+      规范：Guidelines/Table.md
+      引用组件与 Token：
+      - Color.md（颜色 Token）
+      - Font.md（字阶）
+      - Spacing.md（模块/列间距）
+      - Button / Checkbox / CoinTitle / Divider / Icon / Search / Select / Tabs / Tag 见 Table.md §引用组件
+    */
+    :root {
+      --text-primary: #070808;
+      --text-secondary: #84888C;
+      --text-tertiary: #A0A3A7;
+      --bg-primary: #FFFFFF;
+      --bg-secondary: #FAFAFA;
+      --bg-inverse-primary: #070808;
+      --bg-brand: #0068FF;
+      --bg-always-black: #070808;
+      --line-divider: #F2F3F4;
+      --link-default: #0068FF;
+      --link-pressed: #004FD9;
+      --text-success: #2BC235;
+      --text-error: #F7594B;
+      --color-text-inverse-primary: #FFFFFF;
+      --checkbox-active-fill: #303236;
+      --checkbox-focus-ring: var(--link-pressed);
+    }
+    [data-theme='dark'] {
+      --text-primary: #FFFFFF;
+      --text-secondary: #A0A3A7;
+      --text-tertiary: #84888C;
+      --bg-primary: #070808;
+      --bg-secondary: #131516;
+      --bg-inverse-primary: #FFFFFF;
+      --bg-brand: #247CFF;
+      --bg-always-black: #070808;
+      --line-divider: #1F2023;
+      --link-default: #247CFF;
+      --link-pressed: #004FD9;
+      --color-text-inverse-primary: #070808;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 32px;
+      font-family: Switzer, -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI", sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      transition: background 0.2s, color 0.2s;
+      min-height: 100vh;
+    }
+
+    .demo-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line-divider);
+    }
+    .demo-header h1 { margin: 0; font-size: 20px; font-weight: 600; }
+    .demo-controls { display: flex; gap: 12px; flex-wrap: wrap; }
+    .demo-controls .group { display: flex; gap: 4px; align-items: center; }
+    .demo-controls label { font-size: 12px; color: var(--text-secondary); }
+    .demo-controls button {
+      padding: 6px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+    }
+    .demo-controls button.active {
+      background: var(--bg-inverse-primary);
+      color: var(--color-text-inverse-primary);
+    }
+
+    .demo-section { margin-bottom: 48px; }
+    .demo-section h2 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 16px 0;
+      color: var(--text-primary);
+    }
+    .demo-section__desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin: 0 0 24px 0;
+    }
+
+    /* ---------- 1. 表头 模块：真实表头 UI（与 Figma 一致） ---------- */
+    .header-spec-block { margin-bottom: 32px; }
+    .header-spec-block h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0 0 12px 0;
+      color: var(--text-primary);
+    }
+    /* 表头 UI 行：与 g-table thead 同视觉 */
+    .th-ui {
+      display: flex;
+      align-items: stretch;
+      width: 100%;
+      max-width: 900px;
+      background: var(--bg-primary);
+      border: 1px solid var(--line-divider);
+      border-bottom: none;
+    }
+    .th-ui__row {
+      display: flex;
+      width: 100%;
+      border-bottom: 1px solid var(--line-divider);
+    }
+    .th-ui__cell {
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--line-divider);
+    }
+    .th-ui__cell:first-child { padding-left: 12px; }
+    .th-ui__cell:last-child { padding-right: 16px; justify-content: flex-end; text-align: right; }
+    .th-ui__cell--12 { font-size: 12px; height: 32px; min-height: 32px; }
+    .th-ui__cell--12.h-40 { height: 40px; min-height: 40px; }
+    .th-ui__cell--14 { font-size: 14px; height: 40px; min-height: 40px; }
+    .th-ui__cell--56 {
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      height: 56px;
+      min-height: 56px;
+      font-size: 12px;
+    }
+    .th-ui__cell--56 .th-ui__main { color: var(--text-primary); }
+    .th-ui__cell--56 .th-ui__sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+    .th-ui__cell--divider { border-bottom: 1px solid var(--line-divider); }
+    /* 表头 Underline：Figma decoration-dotted，装饰色 #a0a3a7 (Text/tertiary) */
+    .th-ui__cell--underline {
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-decoration-color: var(--text-tertiary);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 2px;
+    }
+    .th-ui__cell--sort { cursor: pointer; }
+    .th-ui__cell--sort .sort-icon { margin-left: 4px; display: inline-flex; align-items: center; color: var(--text-tertiary); }
+    .th-ui__cell--sort .sort-icon svg { display: block; }
+    /* 名词解释：下划虚线 Text/3，与 Figma Table Header Underline 一致 (dotted + tertiary) */
+    .th-ui__cell--term {
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-decoration-color: var(--text-tertiary);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 2px;
+      color: var(--text-tertiary);
+    }
+    .th-ui__cell--checkbox { display: flex; align-items: center; gap: 8px; }
+    /* 勾选组件库样式（Checkbox.md / demo/checkbox.html）：表头内使用 CheckboxV5-Web 16×16 */
+    .checkbox {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1.3;
+      user-select: none;
+    }
+    .checkbox__input {
+      position: absolute;
+      width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); border: 0;
+    }
+    .checkbox__box {
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .checkbox__box img { display: block; width: 100%; height: 100%; vertical-align: middle; }
+    .checkbox__input:focus-visible + .checkbox__box { outline: 2px solid var(--checkbox-focus-ring); outline-offset: 2px; }
+    .checkbox__label { font-size: inherit; font-weight: inherit; color: inherit; }
+    .th-ui__ellipsis { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .th-ui-table { width: 100%; max-width: 900px; border-collapse: collapse; border: 1px solid var(--line-divider); }
+    .th-ui-table th {
+      padding: 0 8px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      text-align: left;
+      border-bottom: 1px solid var(--line-divider);
+      background: var(--bg-primary);
+    }
+    .th-ui-table th:first-child { padding-left: 12px; }
+    .th-ui-table th:last-child { padding-right: 16px; text-align: right; }
+    .th-ui-table th.th--12 { font-size: 12px; height: 32px; }
+    .th-ui-table th.th--12.h40 { height: 40px; }
+    .th-ui-table th.th--14 { font-size: 14px; height: 40px; }
+    .th-ui-table th.th--56 { height: 56px; vertical-align: middle; }
+    .th-ui-table th.th--56 .th-double { display: block; line-height: 1.3; }
+    .th-ui-table th.th--56 .th-double .main { color: var(--text-primary); font-size: 12px; }
+    .th-ui-table th.th--56 .th-double .sub { color: var(--text-secondary); font-size: 12px; margin-top: 2px; display: block; }
+    .th-ui-table th.th-ui__cell--checkbox { display: flex; align-items: center; gap: 8px; }
+    .th-ui-table th.th-ui__cell--sort { cursor: pointer; }
+    .th-ui-table th.th-ui__cell--sort .sort-icon { margin-left: 4px; font-size: 10px; color: var(--text-tertiary); }
+    .th-ui-table th .th-ui__ellipsis { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* ---------- 模块间距：标题 12px Tabs 24px 筛选 24px Table 24px 分页 ---------- */
+    .table-demo-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .table-demo-wrap .page-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 12px 0;
+    }
+    .table-demo-wrap .tabs-row {
+      margin-bottom: 24px;
+    }
+    .table-demo-wrap .filter-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .table-demo-wrap .filter-row input {
+      width: 200px;
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid var(--line-divider);
+      border-radius: 6px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+    .table-demo-wrap .table-container {
+      margin-bottom: 24px;
+      overflow-x: auto;
+    }
+    .table-demo-wrap .pagination-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 28px;
+    }
+
+    /* ---------- Table 规范：表头 12px/400 或 14px/400，高度 40px，首列 12px 尾列 16px ---------- */
+    .g-table {
+      width: 100%;
+      min-width: 900px;
+      border-collapse: collapse;
+      border-spacing: 0;
+      font-size: 14px;
+    }
+    .g-table thead {
+      background: var(--bg-primary);
+    }
+    .g-table th {
+      height: 40px;
+      padding: 0;
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      text-align: left;
+      border-bottom: 1px solid var(--line-divider);
+      white-space: nowrap;
+    }
+    .g-table th:first-child { padding-left: 12px; }
+    .g-table th:first-child .th-inner { padding-left: 0; }
+    .g-table th:last-child { padding-right: 16px; text-align: right; }
+    .g-table th:last-child .th-inner { padding-right: 0; }
+    .g-table th .th-inner { padding: 0 8px; }
+
+    /* 表头样式：Divider（默认）、Sort 使用 Icon 组件库 CEX_sort.svg（Figma node 9005-5896，Icon.md §2） */
+    .g-table th.sortable { cursor: pointer; }
+    .g-table th.sortable .sort-icon { margin-left: 2px; display: inline-flex; align-items: center; vertical-align: middle; color: var(--text-tertiary); }
+    .g-table th.sortable .sort-icon img,
+    .g-table th.sortable .sort-icon svg { display: block; }
+
+    /* ---------- 内容行：行高 80px，默认 bg1 Hover bg2，圆角 0 ---------- */
+    .g-table tbody tr {
+      background: var(--bg-primary);
+      transition: background 0.15s;
+    }
+    .g-table tbody tr:hover {
+      background: var(--bg-secondary);
+    }
+    .g-table td {
+      height: 80px;
+      padding: 0;
+      vertical-align: middle;
+      border-bottom: none;
+    }
+    /* 无分割线样式：首尾列 Padding 16px（仅 td 提供，cell-inner 首尾不再叠加） */
+    .g-table.g-table--no-divider td:first-child { padding-left: 16px; }
+    .g-table.g-table--no-divider td:first-child .cell-inner { padding-left: 0; }
+    .g-table.g-table--no-divider td:last-child { padding-right: 16px; }
+    .g-table.g-table--no-divider td:last-child .cell-inner { padding-right: 0; }
+    .g-table.g-table--no-divider tbody tr { border-bottom: none; }
+    /* 有分割线样式：首尾列 0px，行底分割线 */
+    .g-table.g-table--divider td:first-child { padding-left: 0; }
+    .g-table.g-table--divider td:last-child { padding-right: 0; }
+    .g-table.g-table--divider tbody tr { border-bottom: 1px solid var(--line-divider); }
+
+    .g-table .cell-inner {
+      padding: 0 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 80px;
+    }
+    .g-table td.align-right .cell-inner { justify-content: flex-end; }
+    .g-table td.align-right { text-align: right; }
+
+    /* 币种/头像：28px 图标，16px 标题，12px 副标题，间距 16px */
+    .cell-coin {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .cell-coin__icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      flex-shrink: 0;
+    }
+    .cell-coin__text { display: flex; flex-direction: column; gap: 2px; }
+    .cell-coin__title { font-size: 16px; font-weight: 500; color: var(--text-primary); }
+    .cell-coin__sub { font-size: 12px; color: var(--text-secondary); }
+
+    /* 文字 + Tag：Tag 20px，Icon 16px，与文字间距 8px；首列操作与字段 16px */
+    .cell-tag { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; }
+    .cell-tag .tag {
+      display: inline-flex;
+      align-items: center;
+      height: 20px;
+      padding: 0 6px;
+      font-size: 12px;
+      border-radius: 4px;
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+    }
+    .cell-tag .icon-16 { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* 链接：下划线 */
+    .cell-link {
+      color: var(--link-default);
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .cell-link:hover { opacity: 0.85; }
+
+    /* 极限：最多 2 行，超出省略，Hover 气泡（用 title 模拟） */
+    .cell-ellipsis {
+      max-width: 160px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 14px;
+    }
+
+    /* Mini 走势图占位：高度 40px */
+    .cell-chart {
+      width: 80px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--line-divider) 100%);
+      border-radius: 4px;
+    }
+
+    /* 操作列：面性按钮 → Button.md §2 XSmall 32px；文字按钮 → Button.md §10 Text Button Medium 16px */
+    .cell-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    /* 文字按钮（买入/卖出）：Button.md §10 Text Button，Medium 16px、Type Blue、无背景无边框 */
+    .cell-actions .btn-text {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--link-default);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0 4px;
+      line-height: 1.3;
+    }
+    .cell-actions .btn-text:hover { color: var(--link-pressed); }
+    /* 面性按钮（交易/操作）：Button.md §2 XSmall 32px、padding 12px、14px 字号、圆角 99px */
+    .cell-actions .btn-primary {
+      height: 32px;
+      padding: 0 12px;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 99px;
+      border: none;
+      cursor: pointer;
+      background: var(--bg-brand);
+      color: var(--color-text-inverse-primary);
+    }
+    .cell-actions .btn-default {
+      height: 32px;
+      padding: 0 12px;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 99px;
+      border: 1px solid var(--line-divider);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+    .cell-actions .icon-more {
+      width: 16px;
+      height: 16px;
+      opacity: 0.7;
+      cursor: pointer;
+    }
+
+    /* 复选框 16px */
+    .cell-checkbox input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    /* 涨跌色 */
+    .text-up { color: var(--text-success); }
+    .text-down { color: var(--text-error); }
+
+    /* 分页占位 */
+    .pagination-demo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    .pagination-demo button {
+      padding: 4px 10px;
+      border: 1px solid var(--line-divider);
+      border-radius: 4px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .pagination-demo button:hover {
+      background: var(--bg-secondary);
+    }
+    .pagination-demo .current {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* 强引导：一级 Blue 按钮 */
+    .btn-expand {
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: var(--bg-brand);
+      color: var(--color-text-inverse-primary);
+    }
+
+    .demo-ref-block {
+      margin: 0 0 24px 0;
+      padding: 16px 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--line-divider);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .demo-ref-block__title { font-weight: 600; margin: 0 0 8px 0; color: var(--text-primary); }
+    .demo-ref-block__desc { margin: 0 0 12px 0; line-height: 1.5; }
+    .demo-ref-block__list { margin: 0; padding-left: 20px; line-height: 1.8; }
+    .demo-ref-block__list a { color: var(--link-default); text-decoration: none; }
+    .demo-ref-block__list a:hover { text-decoration: underline; }
+    .demo-ref-block__list code { font-size: 12px; background: var(--bg-primary); padding: 1px 4px; border-radius: 4px; }
+
+    .demo-footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line-divider);
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .demo-footer__title { font-weight: 600; margin: 0 0 4px 0; color: var(--text-primary); }
+    .demo-footer__desc { margin: 0 0 8px 0; }
+    .demo-footer__list {
+      margin: 0;
+      padding-left: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+    }
+    .demo-footer__list a { color: var(--link-default); text-decoration: none; }
+    .demo-footer__list a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="demo-header">
+    <h1>Table 组件 · 规范演示</h1>
+    <div class="demo-controls">
+      <div class="group">
+        <label>主题</label>
+        <button id="btnLight" class="active">浅色</button>
+        <button id="btnDark">深色</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-ref-block">
+    <p class="demo-ref-block__title">本页与各组件规范连通说明</p>
+    <p class="demo-ref-block__desc">下表组件样式与交互均引用对应规范与演示页，Token 与各 demo 一致（本仓库无独立 CSS 引用，样式在本页内联实现）：</p>
+    <ul class="demo-ref-block__list">
+      <li><strong>颜色</strong> <a href="../Guidelines/Color.md">Color.md</a> · <a href="color.html">color.html</a> — <code>--text-*</code>、<code>--bg-*</code>、<code>--line-divider</code> 等与 Color 规范一致</li>
+      <li><strong>字阶</strong> <a href="../Guidelines/Font.md">Font.md</a> · <a href="font.html">font.html</a> — 表头 12/14px、正文 14/16px、字重 400/500</li>
+      <li><strong>勾选</strong> <a href="../Guidelines/Checkbox.md">Checkbox.md</a> · <a href="checkbox.html">checkbox.html</a> — 表头/行内/筛选区均使用 CheckboxV5-Web 16×16 与 <code>Guidelines/Slicing/Checkbox</code> 切图</li>
+      <li><strong>按钮</strong> <a href="../Guidelines/Button.md">Button.md</a> · <a href="button.html">button.html</a> — 操作列面性 XSmall 32px、文字按钮 16px（§2 / §10）</li>
+      <li><strong>间距</strong> <a href="../Guidelines/Spacing.md">Spacing.md</a> · <a href="spacing.html">spacing.html</a> — 首尾列 12/16px、模块 12/24px</li>
+      <li><strong>分割线</strong> <a href="../Guidelines/Divider.md">Divider.md</a> · <a href="divider.html">divider.html</a> — 表头/行间 <code>--line-divider</code></li>
+      <li><strong>图标</strong> <a href="../Guidelines/Icon.md">Icon.md</a> · <a href="icon.html">icon.html</a> — 表头排序使用 <code>CEX_sort.svg</code>（§2 表头排序图标，Figma node 9005-5896），12×12 px</li>
+      <li><strong>Tabs / Tag / 币种</strong> <a href="../Guidelines/Tabs.md">Tabs.md</a> · <a href="tabs.html">tabs.html</a>；<a href="../Guidelines/Tag.md">Tag.md</a> · <a href="tag.html">tag.html</a>；<a href="../Guidelines/CoinTitle.md">CoinTitle.md</a> · <a href="cointitle.html">cointitle.html</a> — 完整样式见各 demo</li>
+    </ul>
+  </div>
+
+  <div class="demo-section">
+    <h2>1. 表头</h2>
+    <p class="demo-section__desc">尺寸、高度、样式、各场景展示（规范来源：<a href="https://www.figma.com/design/yyvB1Mer7aG8cJx9JVTVZL/%E6%B5%8B%E8%AF%95V5.1-Web-H5%E7%BB%84%E4%BB%B6%E5%BA%93?node-id=8999-17002" target="_blank" rel="noopener">Figma node-id=8999-17002</a>）</p>
+
+    <div class="header-spec-block">
+      <h3>1.1 尺寸</h3>
+      <p style="margin:0 0 12px 0; font-size:14px; color: var(--text-secondary);">字号 12px/400、14px/400，色值 Text/Secondary</p>
+      <div class="th-ui__row">
+        <div class="th-ui__cell th-ui__cell--12" style="flex:1;">12px/400</div>
+        <div class="th-ui__cell th-ui__cell--14" style="flex:1;">14px/400</div>
+      </div>
+    </div>
+
+    <div class="header-spec-block">
+      <h3>1.2 高度</h3>
+      <p style="margin:0 0 12px 0; font-size:14px; color: var(--text-secondary);">32px、40px、56px（与字号搭配）</p>
+      <table class="th-ui-table">
+        <thead>
+          <tr>
+            <th class="th--12" style="width:22%;">字12px/400 · 高度32px</th>
+            <th class="th--12 h40" style="width:26%;">字12px/400 · 高度40px</th>
+            <th class="th--14" style="width:26%;">字14px/400 · 高度40px</th>
+            <th class="th--56" style="width:26%;">
+              <span class="th-double"><span class="main">Header</span><span class="sub">Subtitle</span></span>
+            </th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+
+    <div class="header-spec-block">
+      <h3>1.3 样式</h3>
+      <p style="margin:0 0 12px 0; font-size:14px; color: var(--text-secondary);">Divider、Underline、Checkbox（<a href="../Guidelines/Checkbox.md">Checkbox.md</a> 勾选组件库样式与交互）、Sort、Action</p>
+      <table class="th-ui-table">
+        <thead>
+          <tr>
+            <th class="th--14 th-ui__cell--divider" style="width:18%;">Divider</th>
+            <th class="th--14 th-ui__cell--underline" style="width:18%;">Underline</th>
+            <th class="th--14 th-ui__cell--checkbox" style="width:22%;">
+              <label class="checkbox">
+                <input type="checkbox" class="checkbox__input" checked />
+                <span class="checkbox__box" aria-hidden="true"><img src="../Guidelines/Slicing/Checkbox/Checkbox16-Active.svg" alt="" /></span>
+                <span class="checkbox__label">Checkbox</span>
+              </label>
+            </th>
+            <th class="th--14 th-ui__cell--sort" style="width:18%;">Sort <span class="sort-icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-sort"><path d="M11.3067 3.24433C11.657 2.78932 12.3432 2.78932 12.6934 3.24433L16.9779 8.80996C17.4208 9.38534 17.0106 10.2187 16.2845 10.2187H7.71566C6.98954 10.2187 6.57937 9.38534 7.0223 8.80996L11.3067 3.24433Z" fill="currentColor"/><path d="M11.3067 20.7559C11.657 21.2109 12.3432 21.2109 12.6934 20.7559L16.9779 15.1903C17.4208 14.6149 17.0106 13.7815 16.2845 13.7815H7.71566C6.98954 13.7815 6.57937 14.6149 7.0223 15.1903L11.3067 20.7559Z" fill="currentColor"/></svg></span></th>
+            <th class="th--14" style="width:18%;">Action</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+
+    <div class="header-spec-block">
+      <h3>1.4 各场景展示</h3>
+      <p style="margin:0 0 8px 0; font-size:14px; color: var(--text-secondary);">常规展示：首列 12px、尾列 16px，默认左对齐、末列右对齐</p>
+      <table class="th-ui-table" style="margin-bottom: 24px;">
+        <thead>
+          <tr>
+            <th class="th--14" style="width:30%;">交易对</th>
+            <th class="th--14" style="width:30%;">价格</th>
+            <th class="th--14" style="width:40%;">操作</th>
+          </tr>
+        </thead>
+      </table>
+      <p style="margin:0 0 8px 0; font-size:14px; color: var(--text-secondary);">极限说明：超出显示「...」，Hover 气泡展示全部</p>
+      <table class="th-ui-table" style="margin-bottom: 24px;">
+        <thead>
+          <tr>
+            <th class="th--14"><span class="th-ui__ellipsis" title="Moremoremoremoremoremoremore">Moremoremoremoremoremoremore</span></th>
+          </tr>
+        </thead>
+      </table>
+      <p style="margin:0 0 8px 0; font-size:14px; color: var(--text-secondary);">排序：名词解释（下划虚线 Text/3）、多选 16px</p>
+      <table class="th-ui-table" style="margin-bottom: 24px;">
+        <thead>
+          <tr>
+            <th class="th--14 th-ui__cell--sort" style="width:25%;">名称 <span class="sort-icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-sort"><path d="M11.3067 3.24433C11.657 2.78932 12.3432 2.78932 12.6934 3.24433L16.9779 8.80996C17.4208 9.38534 17.0106 10.2187 16.2845 10.2187H7.71566C6.98954 10.2187 6.57937 9.38534 7.0223 8.80996L11.3067 3.24433Z" fill="currentColor"/><path d="M11.3067 20.7559C11.657 21.2109 12.3432 21.2109 12.6934 20.7559L16.9779 15.1903C17.4208 14.6149 17.0106 13.7815 16.2845 13.7815H7.71566C6.98954 13.7815 6.57937 14.6149 7.0223 15.1903L11.3067 20.7559Z" fill="currentColor"/></svg></span></th>
+            <th class="th--14 th-ui__cell--term" style="width:25%;" title="名词解释说明">名词解释</th>
+            <th class="th--14 th-ui__cell--checkbox" style="width:25%;">
+              <label class="checkbox">
+                <input type="checkbox" class="checkbox__input" />
+                <span class="checkbox__box" aria-hidden="true"><img src="../Guidelines/Slicing/Checkbox/Checkbox16-Inactive.svg" alt="" /></span>
+                <span class="checkbox__label">多选</span>
+              </label>
+            </th>
+            <th class="th--14" style="width:25%;">操作</th>
+          </tr>
+        </thead>
+      </table>
+      <p style="margin:0 0 8px 0; font-size:14px; color: var(--text-secondary);">特殊情况：垂直双字段 12px、垂直间距 12px</p>
+      <table class="th-ui-table">
+        <thead>
+          <tr>
+            <th class="th--56" style="width:100%;">
+              <span class="th-double"><span class="main">Flexible loan interest rate</span><span class="sub">Hourly/annualized rate</span></span>
+            </th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h2>2. 无分割线表格（首尾列 Padding 16px）</h2>
+    <p class="demo-section__desc">表头 12px/400、高度 40px；行高 80px；默认 bg1、Hover bg2；首列 12px、尾列 16px。</p>
+    <div class="table-demo-wrap">
+      <div class="table-container">
+        <table class="g-table g-table--no-divider">
+          <thead>
+            <tr>
+              <th><span class="th-inner">交易对</span></th>
+              <th><span class="th-inner">价格</span></th>
+              <th><span class="th-inner">涨跌幅</span></th>
+              <th><span class="th-inner">24h 成交量</span></th>
+              <th><span class="th-inner">操作</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="cell-inner">
+                  <div class="cell-coin">
+                    <div class="cell-coin__icon"></div>
+                    <div class="cell-coin__text">
+                      <span class="cell-coin__title">BTC/USDT</span>
+                      <span class="cell-coin__sub">Bitcoin</span>
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td class="align-right">67,234.50</td>
+              <td class="align-right text-up">+2.35%</td>
+              <td class="align-right">1.2M</td>
+              <td>
+                <div class="cell-inner cell-actions">
+                  <button type="button" class="btn-text">买入</button>
+                  <button type="button" class="btn-text">卖出</button>
+                  <button type="button" class="btn-primary">交易</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="cell-inner">
+                  <div class="cell-coin">
+                    <div class="cell-coin__icon"></div>
+                    <div class="cell-coin__text">
+                      <span class="cell-coin__title">ETH/USDT</span>
+                      <span class="cell-coin__sub">Ethereum</span>
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td class="align-right">3,456.78</td>
+              <td class="align-right text-down">-0.82%</td>
+              <td class="align-right">580K</td>
+              <td>
+                <div class="cell-inner cell-actions">
+                  <button type="button" class="btn-text">买入</button>
+                  <button type="button" class="btn-text">卖出</button>
+                  <button type="button" class="btn-primary">交易</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="cell-inner">
+                  <div class="cell-tag">
+                    <span class="tag">新</span>
+                    <span>SOL/USDT</span>
+                  </div>
+                </div>
+              </td>
+              <td class="align-right">142.30</td>
+              <td class="align-right text-up">+5.12%</td>
+              <td class="align-right">320K</td>
+              <td>
+                <div class="cell-inner cell-actions">
+                  <button type="button" class="btn-text">买入</button>
+                  <button type="button" class="btn-primary">交易</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h2>3. 有分割线表格（首尾列 Padding 0）</h2>
+    <p class="demo-section__desc">行间分割线；Hover 仍为 bg2。</p>
+    <div class="table-demo-wrap">
+      <div class="table-container">
+        <table class="g-table g-table--divider">
+          <thead>
+            <tr>
+              <th><span class="th-inner">名称</span></th>
+              <th><span class="th-inner">链接</span></th>
+              <th><span class="th-inner">长文本（极限 2 行）</span></th>
+              <th class="sortable"><span class="th-inner">数量<span class="sort-icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-sort"><path d="M11.3067 3.24433C11.657 2.78932 12.3432 2.78932 12.6934 3.24433L16.9779 8.80996C17.4208 9.38534 17.0106 10.2187 16.2845 10.2187H7.71566C6.98954 10.2187 6.57937 9.38534 7.0223 8.80996L11.3067 3.24433Z" fill="currentColor"/><path d="M11.3067 20.7559C11.657 21.2109 12.3432 21.2109 12.6934 20.7559L16.9779 15.1903C17.4208 14.6149 17.0106 13.7815 16.2845 13.7815H7.71566C6.98954 13.7815 6.57937 14.6149 7.0223 15.1903L11.3067 20.7559Z" fill="currentColor"/></svg></span></span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Arbitrum One</td>
+              <td><a href="#" class="cell-link">查看详情</a></td>
+              <td><span class="cell-ellipsis" title="这是一段很长的描述内容，用于测试超出两行时的省略与 Hover 气泡展示全部内容。">这是一段很长的描述内容，用于测试超出两行时的省略与 Hover 气泡展示全部内容。</span></td>
+              <td class="align-right">1,234.56</td>
+            </tr>
+            <tr>
+              <td>Base</td>
+              <td><a href="#" class="cell-link">文档</a></td>
+              <td><span class="cell-ellipsis" title="短内容">短内容</span></td>
+              <td class="align-right">89.00</td>
+            </tr>
+            <tr>
+              <td>Polygon</td>
+              <td><a href="#" class="cell-link">合约</a></td>
+              <td><span class="cell-ellipsis">正常长度一行</span></td>
+              <td class="align-right">456.78</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h2>4. 完整场景：标题 + Tabs + 筛选 + Table + 分页</h2>
+    <p class="demo-section__desc">模块间距：标题→Tabs 12px，Tabs→筛选 24px，筛选→Table 24px，Table→分页 24px；筛选区内 16px。</p>
+    <div class="table-demo-wrap">
+      <p class="page-title">All products</p>
+      <div class="tabs-row">
+        <button type="button" class="btn-default">现货</button>
+        <button type="button" class="btn-primary">合约</button>
+        <button type="button" class="btn-default">理财</button>
+      </div>
+      <div class="filter-row">
+        <input type="text" placeholder="搜索" />
+        <input type="text" placeholder="筛选" />
+        <label class="checkbox">
+          <input type="checkbox" class="checkbox__input" />
+          <span class="checkbox__box"><img src="../Guidelines/Slicing/Checkbox/Checkbox16-Inactive.svg" alt="" width="16" height="16" /></span>
+          <span class="checkbox__label">仅显示自选</span>
+        </label>
+      </div>
+      <div class="table-container">
+        <table class="g-table g-table--no-divider">
+          <thead>
+            <tr>
+              <th><span class="th-inner"><label class="checkbox"><input type="checkbox" class="checkbox__input" /><span class="checkbox__box"><img src="../Guidelines/Slicing/Checkbox/Checkbox16-Inactive.svg" alt="" width="16" height="16" /></span></label></span></th>
+              <th><span class="th-inner">交易对</span></th>
+              <th><span class="th-inner">价格</span></th>
+              <th><span class="th-inner">涨跌幅</span></th>
+              <th><span class="th-inner">Mini 走势</span></th>
+              <th><span class="th-inner">操作</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="cell-inner cell-checkbox"><label class="checkbox"><input type="checkbox" class="checkbox__input" /><span class="checkbox__box"><img src="../Guidelines/Slicing/Checkbox/Checkbox16-Inactive.svg" alt="" width="16" height="16" /></span></label></div></td>
+              <td>
+                <div class="cell-inner">
+                  <div class="cell-coin">
+                    <div class="cell-coin__icon"></div>
+                    <div class="cell-coin__text">
+                      <span class="cell-coin__title">BTC/USDT</span>
+                      <span class="cell-coin__sub">Bitcoin</span>
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td class="align-right">67,234.50</td>
+              <td class="align-right text-up">+2.35%</td>
+              <td><div class="cell-inner"><div class="cell-chart"></div></div></td>
+              <td>
+                <div class="cell-inner cell-actions">
+                  <button type="button" class="btn-default">操作</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><div class="cell-inner cell-checkbox"><label class="checkbox"><input type="checkbox" class="checkbox__input" /><span class="checkbox__box"><img src="../Guidelines/Slicing/Checkbox/Checkbox16-Inactive.svg" alt="" width="16" height="16" /></span></label></div></td>
+              <td>
+                <div class="cell-inner">
+                  <div class="cell-coin">
+                    <div class="cell-coin__icon"></div>
+                    <div class="cell-coin__text">
+                      <span class="cell-coin__title">ETH/USDT</span>
+                      <span class="cell-coin__sub">Ethereum</span>
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td class="align-right">3,456.78</td>
+              <td class="align-right text-down">-0.82%</td>
+              <td><div class="cell-inner"><div class="cell-chart"></div></div></td>
+              <td>
+                <div class="cell-inner cell-actions">
+                  <button type="button" class="btn-default">操作</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination-row">
+        <div class="pagination-demo">
+          <button type="button">上一页</button>
+          <span class="current">1</span>
+          <button type="button">2</button>
+          <button type="button">3</button>
+          <button type="button">下一页</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h2>5. 展开收起 + 固定操作列（规范示意）</h2>
+    <p class="demo-section__desc">强引导：一级 Blue 按钮；重要操作：一级 Black 按钮。</p>
+    <div class="table-demo-wrap">
+      <div class="filter-row" style="margin-bottom: 16px;">
+        <button type="button" class="btn-expand">展开全部</button>
+      </div>
+      <div class="table-container">
+        <table class="g-table g-table--no-divider">
+          <thead>
+            <tr>
+              <th><span class="th-inner">名称</span></th>
+              <th><span class="th-inner">类型</span></th>
+              <th><span class="th-inner">操作</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>策略 A</td>
+              <td>网格</td>
+              <td>
+                <div class="cell-inner cell-actions">
+                  <button type="button" class="btn-primary" style="background: var(--bg-always-black);">编辑</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>策略 B</td>
+              <td>定投</td>
+              <td>
+                <div class="cell-inner cell-actions">
+                  <button type="button" class="btn-primary" style="background: var(--bg-always-black);">编辑</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <footer class="demo-footer">
+    <p class="demo-footer__title">引用规范</p>
+    <p class="demo-footer__desc">本页按 <strong>Table.md</strong> 实现；样式与各组件规范一致（Token、勾选、按钮等见上方「本页与各组件规范连通说明」）。规范文档：</p>
+    <ul class="demo-footer__list">
+      <li><a href="../Guidelines/Table.md">Table.md</a></li>
+      <li><a href="../Guidelines/Button.md">Button.md</a></li>
+      <li><a href="../Guidelines/Checkbox.md">Checkbox.md</a></li>
+      <li><a href="../Guidelines/CoinTitle.md">CoinTitle.md</a></li>
+      <li><a href="../Guidelines/Divider.md">Divider.md</a></li>
+      <li><a href="../Guidelines/Color.md">Color.md</a></li>
+      <li><a href="../Guidelines/Font.md">Font.md</a></li>
+      <li><a href="../Guidelines/Icon.md">Icon.md</a></li>
+      <li><a href="../Guidelines/Search.md">Search.md</a></li>
+      <li><a href="../Guidelines/Select.md">Select.md</a></li>
+      <li><a href="../Guidelines/Spacing.md">Spacing.md</a></li>
+      <li><a href="../Guidelines/Tabs.md">Tabs.md</a></li>
+      <li><a href="../Guidelines/Tag.md">Tag.md</a></li>
+    </ul>
+  </footer>
+
+  <script>
+    (function () {
+      var btnLight = document.getElementById('btnLight');
+      var btnDark = document.getElementById('btnDark');
+      var html = document.documentElement;
+
+      function setTheme(theme) {
+        html.setAttribute('data-theme', theme);
+        btnLight.classList.toggle('active', theme === 'light');
+        btnDark.classList.toggle('active', theme === 'dark');
+      }
+
+      btnLight.addEventListener('click', function () { setTheme('light'); });
+      btnDark.addEventListener('click', function () { setTheme('dark'); });
+    })();
+
+    (function () {
+      var SLICE_BASE = '../Guidelines/Slicing/Checkbox/';
+      function getAssetName(label) {
+        var input = label.querySelector('.checkbox__input');
+        if (!input) return 'Checkbox16-Inactive.svg';
+        var active = input.checked;
+        var disabled = input.disabled;
+        var hover = label.classList.contains('is-hover');
+        var state = disabled ? (active ? 'Active-Disable' : 'Inactive-Disable') : (hover ? (active ? 'Active-Hover' : 'Inactive-Hover') : (active ? 'Active' : 'Inactive'));
+        return 'Checkbox16-' + state + '.svg';
+      }
+      function updateCheckboxImg(label) {
+        var box = label.querySelector('.checkbox__box');
+        var img = box && box.querySelector('img');
+        if (img) img.src = SLICE_BASE + getAssetName(label);
+      }
+      document.querySelectorAll('label.checkbox').forEach(function (label) {
+        var input = label.querySelector('.checkbox__input');
+        if (!input) return;
+        updateCheckboxImg(label);
+        input.addEventListener('change', function () { updateCheckboxImg(label); });
+        label.addEventListener('mouseenter', function () { label.classList.add('is-hover'); updateCheckboxImg(label); });
+        label.addEventListener('mouseleave', function () { label.classList.remove('is-hover'); updateCheckboxImg(label); });
+      });
+    })();
+  </script>
+</body>
+</html>

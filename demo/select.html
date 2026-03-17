@@ -1,0 +1,2705 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Select 组件规范预览 · Select Guidelines</title>
+  <style>
+    /* 颜色 Token 与 Guidelines/Color.md 对齐；字阶与 Guidelines/Font.md 对齐 */
+    :root {
+      --color-cmpt-input: #f5f6f7;
+      --color-cmpt-component-active: #303236;
+      --color-cmpt-component-hover: #f5f6f7;
+      --color-text-text-primary: #070808;
+      --color-text-text-secondary: #84888c;
+      --color-text-text-tertiary: #a0a3a7;
+      --color-text-text-disable: #c4c7ca;
+      --color-text-text-tips: #c4c7ca;
+      --color-icon-quaternary: #A0A3A7;
+      --color-layer-1: #ffffff;
+      --color-line-divider-strong: #f2f3f4;
+      --color-line-border-strong: #dfe0e2;
+      --color-link-default: #0068ff;
+      --color-error: #f74b60;
+      --font-select: Switzer, -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI", sans-serif;
+      --select-transition: 100ms ease-out;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 48px 24px 80px;
+      background: #f5f5f5;
+      color: var(--color-text-text-primary);
+      font-family: var(--font-select);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page-title {
+      font-weight: 600;
+      font-size: 28px;
+      line-height: 1.3;
+      margin: 0 0 8px;
+    }
+
+    .page-meta {
+      font-size: 14px;
+      color: var(--color-text-text-secondary);
+      margin-bottom: 40px;
+    }
+
+    .section {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .section-title {
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 1.3;
+      margin: 0 0 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--color-line-divider-strong);
+    }
+
+    .section-desc {
+      font-size: 13px;
+      color: var(--color-text-text-secondary);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .row:last-child { margin-bottom: 0; }
+
+    .label {
+      font-size: 12px;
+      color: var(--color-text-text-tertiary);
+      min-width: 80px;
+    }
+
+    /* ========== DropdownV5-web（标准触发器） ========== */
+    .select-wrap {
+      position: relative;
+      display: inline-flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .select-wrap.has-label .select-label {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--color-text-text-primary);
+      line-height: 1.3;
+      margin-bottom: 0;
+    }
+
+    .select-wrap.has-helper .select-helper {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--color-text-text-tertiary);
+      line-height: 1.3;
+    }
+
+    .select-trigger {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 7px;
+      background: var(--color-cmpt-input);
+      border: 1px solid var(--color-cmpt-component-active);
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+      line-height: 1.3;
+      color: var(--color-text-text-primary);
+      transition: background var(--select-transition), border-color var(--select-transition);
+      min-width: 0;
+    }
+
+    .select-trigger.is-open {
+      border-color: var(--color-cmpt-component-active);
+    }
+
+    .select-trigger.is-disabled {
+      cursor: not-allowed;
+      color: var(--color-text-text-disable);
+      border-color: var(--color-text-text-disable);
+      background: var(--color-cmpt-input);
+    }
+
+    .select-trigger.is-error {
+      border-color: var(--color-error);
+    }
+
+    .select-trigger .select-text {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .select-trigger .select-text.placeholder {
+      color: var(--color-text-text-tertiary);
+    }
+    /* 单行极端原则：文本与右侧 icon 间距 12px（Figma 9163:79881） */
+    .select-trigger--text-gap-12 {
+      gap: 12px;
+    }
+
+    /* 变量：Prefix Icon（第5项占位）、Info Icon；第6项为国家 icon */
+    .select-trigger .select-prefix-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      opacity: 0.6;
+    }
+    .select-trigger .select-prefix-icon--country {
+      opacity: 1;
+    }
+    /* 提示 icon 紧挨左侧文字，间距 4px，颜色 Icon-Quaternary */
+    .select-trigger .select-text-group {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .select-trigger .select-text-group .select-text {
+      flex: 0 1 auto;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    /* 提示 icon 颜色 #A0A3A7（Icon/Icon-Quaternary） */
+    .select-trigger .select-info-icon {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      display: block;
+    }
+    .select-trigger .select-info-icon img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: brightness(3.2);
+    }
+
+    .select-trigger .select-suffix {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      width: 24px;
+      height: 24px;
+    }
+
+    .select-trigger .select-suffix img {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Dropdown 尺寸 */
+    .select-trigger--xxs { height: 24px; width: 240px; font-size: 12px; }
+    .select-trigger--xs  { height: 28px; width: 240px; font-size: 14px; }
+    .select-trigger--sm  { height: 32px; width: 240px; font-size: 14px; }
+    .select-trigger--md  { height: 40px; width: 240px; font-size: 14px; }
+    .select-trigger--lg  { height: 48px; width: 240px; font-size: 16px; }
+    .select-trigger--lg .select-suffix { padding: 4px; }
+
+    .select-trigger--w64  { width: 64px; }
+    .select-trigger--w100 { width: 100px; }
+    .select-trigger--w400 { width: 400px; }
+    .select-trigger--w480 { width: 480px; }
+    .select-trigger--w240 { width: 240px; }
+
+    /* ========== Dropdown Text_V5（Coin Text 型） ========== */
+    .select-trigger--coin {
+      background: transparent;
+      border: none;
+      padding: 0;
+      gap: 8px;
+    }
+
+    .select-trigger--coin:hover:not(.is-disabled) {
+      background: transparent;
+    }
+
+    .select-trigger--coin .select-coin {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f7931a 0%, #f0b90b 100%);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .select-trigger--coin .select-text {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .select-trigger--coin .select-arrow {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    /* 触发器+菜单定位容器：下拉面板始终距选择器 4px，有 Helper 时压住灰色文字 */
+    .select-trigger-area {
+      position: relative;
+      display: inline-flex;
+      flex-direction: column;
+    }
+    .select-trigger-area .select-menu {
+      top: calc(100% + 4px);
+    }
+
+    /* ========== Select Menu（下拉面板） ========== */
+    .select-menu {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      min-width: 100%;
+      background: var(--color-layer-1);
+      border: 1px solid var(--color-line-divider-strong);
+      border-radius: 8px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+      z-index: 100;
+      overflow: hidden;
+      display: none;
+    }
+
+    .select-menu.is-open {
+      display: block;
+    }
+
+    /* 搜索框引用 Search 组件（见 Guidelines/Search.md） */
+    .select-menu__search,
+    .select-menu-preview__search {
+      padding: 8px;
+      border-bottom: none;
+    }
+    .select-menu__search .search,
+    .select-menu-preview__search .search {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      width: 100%;
+    }
+    .select-menu__search .search__input-wrap,
+    .select-menu-preview__search .search__input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--color-cmpt-input);
+      border: 1px solid transparent;
+      border-radius: 6px;
+      width: 100%;
+      padding: 10px 12px;
+      height: 40px;
+      transition: border-color 100ms ease-out;
+    }
+    /* Medium 面板内搜索框：32px 高（Search Small 规格） */
+    .select-menu-preview--md .select-menu-preview__search .search__input-wrap {
+      height: 32px;
+      padding: 7px 12px;
+      gap: 6px;
+    }
+    .select-menu-preview--md .select-menu-preview__search .search__icon {
+      width: 16px;
+      height: 16px;
+    }
+    .select-menu-preview--md .select-menu-preview__search .search__input {
+      font-size: 14px;
+    }
+    .select-menu__search .search__input-wrap:focus-within,
+    .select-menu-preview__search .search__input-wrap:focus-within {
+      border-color: var(--color-cmpt-component-active);
+    }
+    .select-menu__search .search__icon,
+    .select-menu-preview__search .search__icon {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      color: var(--color-text-text-tertiary);
+    }
+    .select-menu__search .search__icon img,
+    .select-menu-preview__search .search__icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: brightness(0) saturate(100%) invert(70%);
+    }
+    .select-menu__search .search__input,
+    .select-menu-preview__search .search__input {
+      flex: 1;
+      min-width: 0;
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 1.3;
+      color: var(--color-text-text-primary);
+    }
+    .select-menu__search .search__input::placeholder,
+    .select-menu-preview__search .search__input::placeholder {
+      color: var(--color-text-text-tertiary);
+    }
+    .select-menu__search .search__input:focus,
+    .select-menu-preview__search .search__input:focus {
+      outline: none;
+    }
+    /* 面板内搜索框：有内容时显示关闭 icon（引用 Search 组件） */
+    .select-menu__search .search__clear,
+    .select-menu-preview__search .search__clear {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .select-menu__search .search__input-wrap.has-value .search__clear,
+    .select-menu-preview__search .search__input-wrap.has-value .search__clear {
+      display: flex;
+    }
+    .select-menu__search .search__clear img,
+    .select-menu-preview__search .search__clear img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: brightness(0) saturate(100%) invert(70%);
+    }
+    .select-menu__search .search__clear:hover img,
+    .select-menu-preview__search .search__clear:hover img {
+      filter: brightness(0) saturate(100%) invert(50%);
+    }
+
+    /* 下拉面板列表：上下间距 8px（与 Select.md §6 一致） */
+    .select-menu__list {
+      max-height: 240px;
+      overflow-y: auto;
+      padding: 8px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-text-text-tips) transparent;
+    }
+
+    /* 滑动条样式（设计稿：滑块 3px、99px 圆角、--color-text-text-tips；8px 容器+左右间距在部分系统/浏览器下可能不生效，此处用 3px 宽保证各系统可见） */
+    .select-menu__list::-webkit-scrollbar {
+      width: 3px;
+    }
+    .select-menu__list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .select-menu__list::-webkit-scrollbar-thumb {
+      background: var(--color-text-text-tips);
+      border-radius: 99px;
+      min-height: 28px;
+    }
+    .select-menu__list::-webkit-scrollbar-thumb:hover {
+      background: var(--color-text-text-tertiary);
+    }
+
+    /* 预览面板列表同款滑动条 */
+    .select-menu-preview__list {
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-text-text-tips) transparent;
+    }
+    .select-menu-preview__list::-webkit-scrollbar {
+      width: 3px;
+    }
+    .select-menu-preview__list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .select-menu-preview__list::-webkit-scrollbar-thumb {
+      background: var(--color-text-text-tips);
+      border-radius: 99px;
+      min-height: 28px;
+    }
+    .select-menu-preview__list::-webkit-scrollbar-thumb:hover {
+      background: var(--color-text-text-tertiary);
+    }
+
+    /* 列表内小标题分类（第 16 个变体，Figma 9255:198209） */
+    .select-list-category {
+      padding: 8px 0;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.3;
+      color: var(--color-text-text-secondary);
+    }
+    .select-list-divider {
+      height: 0;
+      margin: 8px 0;
+      border: none;
+      border-top: 1px solid var(--color-line-divider-strong, #f2f3f4);
+    }
+
+    .select-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.3;
+      color: var(--color-text-text-primary);
+      transition: background var(--select-transition);
+    }
+
+    .select-option:hover {
+      background: var(--color-cmpt-component-hover);
+    }
+
+    .select-option.is-active {
+      background: transparent;
+    }
+
+    .select-option.is-disabled {
+      color: var(--color-text-text-disable);
+      cursor: default;
+      pointer-events: none;
+    }
+    .select-option.is-disabled:hover {
+      background: transparent;
+    }
+
+    .select-option .option-text {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    /* 选项主标题+副标题（Figma 9255:197189，Select subtext=True） */
+    .select-option .option-content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .select-option .option-content .option-text {
+      flex: none;
+    }
+    .select-option .option-subtitle {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.3;
+      color: var(--color-text-text-secondary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .select-option .option-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      color: #2bc287;
+    }
+    /* 选项右侧文字展示（无勾选 icon 时用，如第 15 个变体） */
+    .select-option .option-suffix-text {
+      flex-shrink: 0;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.3;
+      color: var(--color-text-text-primary, #070808);
+    }
+    /* 选项右侧 Hot Icon（Figma 9163:78378，引用 Icon 组件 CEX_hot_fill） */
+    .select-option .option-hot-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      display: block;
+    }
+    /* 第 8 个变体：文字 + hot icon 成组，间距 6px，文字宽度自适应 */
+    .select-menu-preview--variant-8 .select-option .option-primary {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 0 1 auto;
+      min-width: 0;
+    }
+    .select-menu-preview--variant-8 .select-option .option-primary .option-text {
+      flex: none;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .select-menu-preview--variant-8 .select-option .option-icon {
+      margin-left: auto;
+    }
+
+    /* 第 9 个变体：标题后跟标签（Figma 9255:197263），无搜索框，布局同第 8 个，引用 Tag 组件） */
+    .select-menu-preview--variant-9 .select-option .option-primary {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 0 1 auto;
+      min-width: 0;
+    }
+    .select-menu-preview--variant-9 .select-option .option-primary .option-text {
+      flex: none;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .select-menu-preview--variant-9 .select-option .option-icon {
+      margin-left: auto;
+    }
+    /* 选项内 Tag（与 tag.html / Tag.md 一致：16px 档、灰色 Primary） */
+    .select-menu-preview--variant-9 .select-option .option-tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      padding: 0 4px;
+      height: 16px;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.3;
+      white-space: nowrap;
+      border-radius: 2px;
+      background: var(--color-cmpt-tag-gray, #f5f6f7);
+      color: var(--color-text-text-secondary, #84888c);
+    }
+
+    /* 选项项尺寸 */
+    .select-option--sm { padding: 6px 8px; font-size: 12px; }
+    .select-option--lg { padding: 12px 8px; font-size: 14px; }
+
+    /* 二级选项缩进 8px（相对一级，Select.md §4.5） */
+    .select-option--sub {
+      padding-left: 16px;
+    }
+
+    /* 选项右侧展开/收起箭头（Suffix Dropdown 类型，Figma 9239:196054 / 9255:198541） */
+    .select-option .option-expand {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+    }
+    .select-option .option-expand img {
+      width: 100%;
+      height: 100%;
+    }
+    .select-option .option-expand .option-expand-up { display: none; }
+    .select-option .option-expand .option-expand-down { display: block; }
+    .select-option.is-expanded .option-expand .option-expand-up { display: block; }
+    .select-option.is-expanded .option-expand .option-expand-down { display: none; }
+    .select-option-sublist {
+      display: none;
+    }
+    .select-option.is-expanded + .select-option-sublist {
+      display: block;
+    }
+
+    /* 选项左侧勾选组件（Figma 9255:197017，Select type=Checkbox，无右侧选中图标） */
+    .select-option .option-checkbox {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .select-option .option-checkbox img {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 选项带前置 Icon/Coin（Dropdown 类型 Icon/Coin） */
+    .select-option .option-prefix {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      display: block;
+      object-fit: contain;
+    }
+    /* 选项左侧蓝色竖线（Figma：3×12px，--color-link-default） */
+    .select-option .option-accent-line {
+      width: 3px;
+      height: 12px;
+      flex-shrink: 0;
+      background: var(--color-link-default);
+      border-radius: 2px;
+    }
+    /* 选项前置 icon 与文字颜色一致（与 --color-text-text-primary 一致） */
+    .select-option .option-prefix--placeholder {
+      opacity: 1;
+      filter: brightness(0) saturate(100%);
+    }
+
+    /* 空状态：插画 96px，文案黑色、字重 500、16px，与插画间距 4px */
+    .select-menu__empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 40px 16px 96px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--color-text-text-primary);
+    }
+    .select-menu__empty .select-menu__empty-img {
+      width: 96px;
+      height: 96px;
+      object-fit: contain;
+    }
+    /* 480px 宽度、面板四周边距 12px，列表左右内边距 12px，选项高度 48px（Figma 9163:79791） */
+    .select-wrap--w480 .select-menu {
+      width: 480px;
+      min-width: 480px;
+      padding: 12px;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .select-wrap--w480 .select-menu.is-open {
+      display: flex;
+    }
+    .select-wrap--w480 .select-menu .select-menu__list {
+      padding: 8px 0 0 0;
+    }
+    .select-wrap--w480 .select-menu .select-option {
+      height: 48px;
+      min-height: 48px;
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+    .select-wrap--w480 .select-menu .select-menu__search {
+      padding: 0;
+    }
+    /* 240px 多选：选择器与下拉 240px，面板四周 8px，搜索框 32px 高（Figma 12487:364157） */
+    .select-wrap--w240 .select-menu {
+      width: 240px;
+      min-width: 240px;
+      padding: 8px;
+    }
+    .select-wrap--w240 .select-menu .select-menu__search { padding: 0; }
+    .select-wrap--w240 .select-menu .select-menu__search .search__input-wrap {
+      height: 32px;
+      padding: 7px 12px;
+      gap: 6px;
+    }
+    .select-wrap--w240 .select-menu .select-menu__search .search__icon img { width: 16px; height: 16px; }
+    /* 列表基于变量6：内边距；选项高度 40px；滚动条容器紧贴右侧边缘，滚动条距右侧 4px；滚动条样式与现有规范一致 */
+    .select-wrap--w240 .select-menu .select-menu__list {
+      padding: 8px 4px 0 0;
+      max-height: 240px;
+      overflow-y: auto;
+      margin-right: -4px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-text-text-tips) transparent;
+    }
+    .select-wrap--w240 .select-menu .select-menu__list::-webkit-scrollbar { width: 3px; }
+    .select-wrap--w240 .select-menu .select-menu__list::-webkit-scrollbar-track { background: transparent; }
+    .select-wrap--w240 .select-menu .select-menu__list::-webkit-scrollbar-thumb {
+      background: var(--color-text-text-tips);
+      border-radius: 99px;
+      min-height: 28px;
+    }
+    .select-wrap--w240 .select-menu .select-menu__list::-webkit-scrollbar-thumb:hover {
+      background: var(--color-text-text-tertiary);
+    }
+    .select-wrap--w240 .select-menu .select-option { height: 40px; min-height: 40px; }
+    .select-wrap--w240 .select-menu .select-option[data-option-checkbox] { cursor: pointer; }
+    /* 搜索结果高亮：匹配片段使用链接色（Figma 14778:29577） */
+    .select-option .option-text .option-text--highlight {
+      color: var(--color-link-default, #0068ff);
+    }
+
+    /* 静态展示用（无交互），带线框时内间距 8px 含边框 */
+    .select-static {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 7px;
+      background: var(--color-cmpt-input);
+      border: 1px solid var(--color-cmpt-component-active);
+      border-radius: 6px;
+      font-family: inherit;
+      font-weight: 500;
+      line-height: 1.3;
+      color: var(--color-text-text-primary);
+    }
+
+    .select-static .select-text {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .select-static .select-text.placeholder {
+      color: var(--color-text-text-tertiary);
+    }
+
+    .select-static .select-suffix {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .select-static .select-suffix svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .select-static--xxs { height: 24px; width: 240px; font-size: 12px; }
+    .select-static--xs  { height: 28px; width: 240px; font-size: 14px; }
+    .select-static--sm  { height: 32px; width: 240px; font-size: 14px; }
+    .select-static--md  { height: 40px; width: 240px; font-size: 14px; }
+    .select-static--lg  { height: 48px; width: 240px; font-size: 16px; }
+
+    .select-static.is-pressed .select-suffix { transform: rotate(180deg); }
+    .select-static.is-disabled {
+      color: var(--color-text-text-disable);
+      border-color: var(--color-text-text-disable);
+    }
+    .select-static.is-error { border-color: var(--color-error); }
+
+    /* 独立 Select Menu 展示 */
+    .select-menu-preview {
+      display: inline-block;
+      background: var(--color-layer-1);
+      border: 1px solid var(--color-line-divider-strong);
+      border-radius: 8px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+      width: 240px;
+      overflow: hidden;
+    }
+
+    .select-menu-preview .select-option {
+      cursor: default;
+    }
+    .select-menu-preview--variant-6 .select-option[data-option-checkbox] {
+      cursor: pointer;
+    }
+
+    /* 默认样式展示块 */
+    .select-default-preview {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: flex-start;
+    }
+
+    /* 默认样式遵循状态模块的交互规则：Inactive 无描边 8px 内间距，Hover/Active 有描边 8px 含边框 */
+    .select-default-preview .select-trigger {
+      width: 240px;
+      border: none;
+      padding: 0 8px;
+    }
+    .select-default-preview .select-trigger:hover,
+    .select-default-preview .select-trigger.is-open {
+      border: 1px solid var(--color-cmpt-component-active);
+      padding: 0 7px;
+    }
+    .select-default-preview .select-trigger .select-text,
+    .select-default-preview .select-trigger .select-text.placeholder {
+      color: var(--color-text-text-primary);
+    }
+    .select-default-preview .select-menu {
+      width: 240px;
+      min-width: 240px;
+    }
+
+    /* 默认样式卡片：收起时紧凑，展开时灰色文字同步下移、卡片高度展开 */
+    .section-default-style .select-default-preview:has(.select-menu.is-open) {
+      margin-bottom: 260px;
+      transition: margin-bottom 150ms ease-out;
+    }
+
+    /* ========== 状态模块（Figma 7844:45242） ========== */
+    .select-state-section {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .select-state-cols {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 80px 120px;
+      align-items: flex-start;
+    }
+
+    .select-state-group {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .select-state-label {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      background: var(--color-text-text-primary);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 4px;
+      width: fit-content;
+    }
+
+    .select-state-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* 展开态为下方留出空间，避免下拉框遮挡后续选择器 */
+    .select-state-row:has(.select-menu.is-open) {
+      margin-bottom: 200px;
+    }
+
+    .select-state-row .select-static {
+      width: 240px;
+    }
+
+    /* Coin Text 静态展示 */
+    .select-state-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      background: var(--color-text-text-primary);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 400;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    /* Inactive：默认态，无描边，文字 Text-Secondary，内间距 8px（无边框） */
+    .select-state-inactive .select-static,
+    .select-state-inactive .select-trigger {
+      border: none;
+      padding: 0 8px;
+    }
+    .select-state-inactive .select-static .select-text.placeholder,
+    .select-state-inactive .select-trigger .select-text.placeholder {
+      color: var(--color-text-text-secondary);
+    }
+    .select-state-inactive .select-trigger:hover,
+    .select-state-inactive .select-trigger.is-open {
+      border: 1px solid var(--color-cmpt-component-active);
+      padding: 0 7px;
+    }
+
+    /* Active：展开态，深色边框，箭头向上，文字黑色 */
+    .select-state-active .select-static,
+    .select-state-active .select-trigger {
+      border-color: var(--color-cmpt-component-active);
+    }
+    .select-state-active .select-static .select-text.placeholder,
+    .select-state-active .select-trigger .select-text.placeholder {
+      color: var(--color-text-text-primary);
+    }
+    .select-state-active .select-static .select-suffix {
+      transform: none;
+    }
+
+    /* Disabled：禁用态，不可交互 */
+    .select-state-disabled .select-static,
+    .select-state-disabled .select-trigger {
+      background: var(--color-cmpt-input);
+      border-color: var(--color-line-border-strong);
+      color: var(--color-text-text-disable);
+      pointer-events: none;
+    }
+    .select-state-disabled .select-static .select-text,
+    .select-state-disabled .select-trigger .select-text {
+      color: var(--color-text-text-disable);
+    }
+    .select-state-disabled .select-static .select-suffix img,
+    .select-state-disabled .select-trigger .select-suffix img {
+      opacity: 0.5;
+    }
+
+    /* Hover：悬停态，深色边框，文字黑色 */
+    .select-state-hover .select-static,
+    .select-state-hover .select-trigger {
+      border-color: var(--color-cmpt-component-active);
+    }
+    .select-state-hover .select-static .select-text.placeholder,
+    .select-state-hover .select-trigger .select-text.placeholder {
+      color: var(--color-text-text-primary);
+    }
+
+    /* Coin Text 交互触发器 */
+    .coin-text-trigger {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-text-text-primary);
+      font-family: inherit;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+    }
+    .coin-text-trigger .coin-text-coin {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      display: block;
+      object-fit: contain;
+    }
+    .coin-text-trigger .coin-text-value {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .coin-text-trigger .coin-text-arrow {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    /* ========== 尺寸模块（Figma 7844:47719） ========== */
+    .select-size-section {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .select-size-section .select-state-cols {
+      gap: 80px 120px;
+    }
+
+    .select-size-section .select-state-group {
+      gap: 32px;
+    }
+
+    /* Select 尺寸变体：XXSmall 圆角 4px，Large 圆角 8px、内边距 12px */
+    .select-size-section .select-trigger--xxs,
+    .select-size-section .select-static--xxs {
+      border-radius: 4px;
+    }
+    .select-size-section .select-trigger--xxs .select-suffix img,
+    .select-size-section .select-static--xxs .select-suffix img {
+      width: 12px;
+      height: 12px;
+    }
+    .select-size-section .select-trigger--xs .select-suffix img,
+    .select-size-section .select-static--xs .select-suffix img {
+      width: 14px;
+      height: 14px;
+    }
+    .select-size-section .select-trigger--lg .select-suffix img,
+    .select-size-section .select-static--lg .select-suffix img {
+      width: 16px;
+      height: 16px;
+    }
+    .select-size-section .select-trigger--lg,
+    .select-size-section .select-static--lg {
+      border-radius: 8px;
+      padding: 0 12px;
+    }
+    /* 48px 选择器：所有状态保持文字左右 12px、箭头四周 4px */
+    .select-state-inactive .select-trigger--lg:hover,
+    .select-state-inactive .select-trigger--lg.is-open,
+    .select-default-preview .select-trigger--lg:hover,
+    .select-default-preview .select-trigger--lg.is-open {
+      padding: 0 11px;
+    }
+
+    /* Coin Text 尺寸变体 */
+    .coin-text-size-10 {
+      font-size: 12px;
+      font-weight: 400;
+      gap: 4px;
+    }
+    .coin-text-size-10 .coin-text-coin { width: 16px; height: 16px; }
+    .coin-text-size-10 .coin-text-arrow { width: 10px; height: 10px; }
+
+    .coin-text-size-12 {
+      font-size: 12px;
+      font-weight: 500;
+      gap: 6px;
+    }
+    .coin-text-size-12 .coin-text-coin { width: 20px; height: 20px; }
+    .coin-text-size-12 .coin-text-arrow { width: 12px; height: 12px; }
+
+    .coin-text-size-14 {
+      font-size: 14px;
+      font-weight: 500;
+      gap: 8px;
+    }
+    .coin-text-size-14 .coin-text-coin { width: 20px; height: 20px; }
+    .coin-text-size-14 .coin-text-arrow { width: 14px; height: 14px; }
+
+    .coin-text-size-16 {
+      font-size: 16px;
+      font-weight: 500;
+      gap: 8px;
+    }
+    .coin-text-size-16 .coin-text-coin { width: 24px; height: 24px; }
+    .coin-text-size-16 .coin-text-arrow { width: 16px; height: 16px; }
+
+    /* ========== 变量模块（Figma 7844:48020） ========== */
+    .select-variant-section {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+    .select-variant-section .select-state-cols {
+      gap: 80px 120px;
+    }
+    .select-variant-section .select-state-group {
+      gap: 32px;
+    }
+    .select-variant-section .select-state-row {
+      align-items: flex-start;
+    }
+
+    /* ========== Dropdown 类型模块（Figma 9163:75934） ========== */
+    .select-type-section {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+    .select-type-cols {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 80px 120px;
+      align-items: flex-start;
+    }
+    .select-type-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .select-type-item .select-menu-preview {
+      margin: 0;
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+    /* 每个选项高度 40px，hover 灰色卡片距离左右 8px */
+    .select-type-section .select-option {
+      height: 40px;
+      margin-left: 8px;
+      margin-right: 8px;
+    }
+
+    /* ========== 7. 下拉面板状态（Figma 9163:79387） ========== */
+    .select-panel-state-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .select-menu-preview--state {
+      width: 240px;
+    }
+    .select-menu-preview--state .select-menu-preview__list {
+      padding: 8px;
+    }
+    .select-menu-preview--state .select-option {
+      height: 40px;
+      min-height: 40px;
+      margin-left: 0;
+      margin-right: 0;
+    }
+    .select-panel-state-badges {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 216px;
+      flex-shrink: 0;
+    }
+
+    /* ========== 8. 下拉面板变量（Figma 134900:15114）16 个变体 ========== */
+    .select-panel-variant-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px 40px;
+      align-items: start;
+    }
+    .select-panel-variant-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .select-panel-variant-item .select-menu-preview {
+      margin: 0;
+    }
+    .select-menu-preview--w400 {
+      width: 400px;
+    }
+    .select-menu-preview--w400 .select-menu-preview__search {
+      padding: 12px 12px 0;
+    }
+    .select-menu-preview--w400 .select-menu-preview__list {
+      padding: 12px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    /* 第 16 个变体：面板列表更高 */
+    .select-menu-preview--variant-16 .select-menu-preview__list {
+      max-height: 320px;
+    }
+    /* 400 尺寸下拉框：列表项高度统一 48px，左右内间距统一 12px */
+    .select-menu-preview--w400 .select-option {
+      height: 48px;
+      min-height: 48px;
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+
+    /* ========== 6. 下拉面板尺寸（Figma 9163:76514） ========== */
+    .select-dropdown-size-section {
+      display: flex;
+      flex-direction: column;
+      gap: 80px;
+    }
+    .select-dropdown-size-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 80px;
+    }
+    .select-dropdown-size-row .select-state-badge {
+      flex-shrink: 0;
+    }
+    /* 尺寸模块：下拉面板三种宽度 */
+    .select-menu-preview--sm {
+      width: 100px;
+    }
+    .select-menu-preview--sm .select-menu-preview__list {
+      padding: 4px;
+      max-height: none;
+    }
+    .select-menu-preview--sm .select-option {
+      height: 32px;
+      min-height: 32px;
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 400;
+    }
+    .select-menu-preview--sm .select-option .option-icon {
+      width: 14px;
+      height: 14px;
+    }
+    .select-menu-preview--sm .select-option .option-prefix {
+      width: 16px;
+      height: 16px;
+    }
+    .select-menu-preview--md {
+      width: 240px;
+    }
+    .select-menu-preview--md .select-menu-preview__search {
+      padding: 8px 8px 0;
+    }
+    .select-menu-preview--md .select-menu-preview__list {
+      padding: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .select-menu-preview--md .select-option {
+      height: 40px;
+      min-height: 40px;
+      margin-left: 0;
+      margin-right: 0;
+    }
+    /* 带副标题（variant-7）：每项 56px，弹窗更高以展示 */
+    .select-menu-preview--variant-7 .select-option {
+      height: 56px;
+      min-height: 56px;
+    }
+    .select-menu-preview--variant-7 .select-menu-preview__list {
+      max-height: 320px;
+    }
+    .select-menu-preview--lg {
+      width: 480px;
+    }
+    .select-menu-preview--lg .select-menu-preview__search {
+      padding: 12px 12px 4px;
+    }
+    /* Large 面板内搜索框：40px 高（Search Medium 规格） */
+    .select-menu-preview--lg .select-menu-preview__search .search__input-wrap {
+      height: 40px;
+      padding: 10px 12px;
+      gap: 6px;
+      border-radius: 6px;
+    }
+    .select-menu-preview--lg .select-menu-preview__search .search__icon {
+      width: 20px;
+      height: 20px;
+    }
+    .select-menu-preview--lg .select-menu-preview__search .search__input {
+      font-size: 14px;
+    }
+    .select-menu-preview--lg .select-menu-preview__list {
+      padding: 8px 12px 12px;
+      max-height: 240px;
+      overflow-y: auto;
+    }
+    .select-menu-preview--lg .select-option {
+      height: 48px;
+      min-height: 48px;
+      padding: 14px 8px;
+      margin-left: 0;
+      margin-right: 0;
+    }
+    .select-menu-preview--lg .select-option .option-prefix {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* ========== 9. 搜索与回显状态 ========== */
+    .select-search-display-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 48px 80px;
+      margin-top: 24px;
+    }
+    .select-search-display-item {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .select-search-display-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text-text-primary);
+    }
+    /* 下拉展开时当前格子增加下边距，撑开底部模块避免被遮挡 */
+    #search-and-display-states .select-search-display-item:has(.select-menu.is-open) {
+      margin-bottom: 400px;
+      transition: margin-bottom 150ms ease-out;
+    }
+    .select-extreme-note {
+      font-size: 12px;
+      color: var(--color-text-text-tertiary);
+      margin: 4px 0 0 0;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="page-title">Select 组件规范预览</h1>
+  <p class="page-meta">依据 <a href="Guidelines/Select.md">Select.md</a> · 字体规范 <a href="Guidelines/Font.md">Font.md</a>、颜色规范 <a href="Guidelines/Color.md">Color.md</a> · DropdownV5-web + Select_V5 + Dropdown Text_V5</p>
+
+  <!-- 0. 默认样式 -->
+  <section class="section section-default-style">
+    <h2 class="section-title">1. 默认样式</h2>
+    <p class="section-desc">Default-Medium-40px_Hug · 设计稿节点 7844:45230（组件属性）</p>
+    <div class="row default-style-demo">
+      <div class="select-default-preview">
+        <div class="select-wrap">
+          <div class="select-trigger select-trigger--md is-open" data-select>
+            <span class="select-text" data-value>Finish</span>
+            <span class="select-suffix">
+              <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="16" height="16" aria-hidden="true" style="display:none" />
+              <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="16" height="16" aria-hidden="true" />
+            </span>
+          </div>
+          <div class="select-menu is-open" data-menu>
+            <div class="select-menu__list" data-list>
+              <div class="select-option is-active" data-opt="Finish"><span class="option-text">Finish</span><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="16" height="16" aria-hidden="true" /></div>
+              <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+              <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+              <div class="select-option" data-opt="Option" style="background: var(--color-cmpt-component-hover);"><span class="option-text">Option</span></div>
+              <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="section-desc" style="margin-top: 12px; font-size: 12px; color: var(--color-text-text-tertiary);">DropdownV5-web（40px 高、240px 宽）+ Select_V5（无搜索、选项列表）。默认样式第一项「Finish」选中，展开态 chevron 向上；第四项悬停。图标引用 <a href="Guidelines/Icon.md">Icon 规范</a>：展开箭头 <code>CEX_chevron_up</code>（16×16px），选中图标 <code>CEX_circlefilled_success</code>（16×16px）。</p>
+  </section>
+
+  <!-- 2. 状态 -->
+  <section class="section">
+    <h2 class="section-title">2. 状态</h2>
+    <p class="section-desc">Select 与 Coin Text 触发器状态 · 设计稿节点 7844:45242</p>
+    <div class="select-state-section">
+      <div class="select-state-cols">
+        <div class="select-state-group">
+          <span class="select-state-label">Select</span>
+          <div class="select-state-row select-state-inactive">
+            <div class="select-wrap">
+              <div class="select-trigger select-trigger--md" data-select>
+                <span class="select-text placeholder" data-value>Text field</span>
+                <span class="select-suffix">
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="16" height="16" aria-hidden="true" />
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="16" height="16" aria-hidden="true" style="display:none" />
+                </span>
+              </div>
+              <div class="select-menu" data-menu>
+                <div class="select-menu__list" data-list>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                </div>
+              </div>
+            </div>
+            <span class="select-state-badge">1</span>
+          </div>
+          <div class="select-state-row select-state-active">
+            <div class="select-wrap">
+              <div class="select-trigger select-trigger--md is-open" data-select>
+                <span class="select-text placeholder" data-value>Text field</span>
+                <span class="select-suffix">
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="16" height="16" aria-hidden="true" style="display:none" />
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="16" height="16" aria-hidden="true" />
+                </span>
+              </div>
+              <div class="select-menu is-open" data-menu>
+                <div class="select-menu__list" data-list>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                </div>
+              </div>
+            </div>
+            <span class="select-state-badge">2</span>
+          </div>
+          <div class="select-state-row select-state-disabled">
+            <div class="select-wrap">
+              <div class="select-trigger select-trigger--md is-disabled">
+                <span class="select-text placeholder">Text field</span>
+                <span class="select-suffix">
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="16" height="16" aria-hidden="true" />
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="16" height="16" aria-hidden="true" style="display:none" />
+                </span>
+              </div>
+            </div>
+            <span class="select-state-badge">3</span>
+          </div>
+          <div class="select-state-row select-state-hover">
+            <div class="select-wrap">
+              <div class="select-trigger select-trigger--md" data-select>
+                <span class="select-text placeholder" data-value>Text field</span>
+                <span class="select-suffix">
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="16" height="16" aria-hidden="true" />
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="16" height="16" aria-hidden="true" style="display:none" />
+                </span>
+              </div>
+              <div class="select-menu" data-menu>
+                <div class="select-menu__list" data-list>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                </div>
+              </div>
+            </div>
+            <span class="select-state-badge">4</span>
+          </div>
+          <div class="select-state-row select-state-inactive select-state-finish">
+            <div class="select-wrap">
+              <div class="select-trigger select-trigger--md" data-select>
+                <span class="select-text" data-value>Finish</span>
+                <span class="select-suffix">
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="16" height="16" aria-hidden="true" />
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="16" height="16" aria-hidden="true" style="display:none" />
+                </span>
+              </div>
+              <div class="select-menu" data-menu>
+                <div class="select-menu__list" data-list>
+                  <div class="select-option is-active" data-opt="Finish"><span class="option-text">Finish</span><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="16" height="16" aria-hidden="true" /></div>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                </div>
+              </div>
+            </div>
+            <span class="select-state-badge">5</span>
+          </div>
+        </div>
+        <div class="select-state-group">
+          <span class="select-state-label">Coin Text</span>
+          <div class="select-state-row">
+            <button type="button" class="coin-text-trigger" data-coin-text aria-label="Coin Text Inactive">
+              <img src="Guidelines/icons/Currency%20Icons/Crypto_BTC.svg" alt="" class="coin-text-coin" width="20" height="20" aria-hidden="true" />
+              <span class="coin-text-value">
+                <span>BTC</span>
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" class="coin-text-arrow coin-text-arrow-down" width="14" height="14" aria-hidden="true" />
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_up_fill.svg" alt="" class="coin-text-arrow coin-text-arrow-up" width="14" height="14" aria-hidden="true" style="display:none" />
+              </span>
+            </button>
+            <span class="select-state-badge">1</span>
+          </div>
+          <div class="select-state-row">
+            <button type="button" class="coin-text-trigger is-active" data-coin-text aria-label="Coin Text Active">
+              <img src="Guidelines/icons/Currency%20Icons/Crypto_BTC.svg" alt="" class="coin-text-coin" width="20" height="20" aria-hidden="true" />
+              <span class="coin-text-value">
+                <span>BTC</span>
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" class="coin-text-arrow coin-text-arrow-down" width="14" height="14" aria-hidden="true" style="display:none" />
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_up_fill.svg" alt="" class="coin-text-arrow coin-text-arrow-up" width="14" height="14" aria-hidden="true" />
+              </span>
+            </button>
+            <span class="select-state-badge">2</span>
+          </div>
+        </div>
+      </div>
+      <div class="section-desc" style="margin-top: 0;">
+        <strong>State</strong>
+        <ul style="margin: 8px 0 0 0; padding-left: 1.2em;">
+          <li><strong>Select</strong>：1 Inactive（文字 Text-Secondary）· 2 Active · 3 Disable · 4 Hover · 5 Finish（已选「Finish」）</li>
+          <li><strong>Coin Text</strong>：1 Inactive（箭头向下）· 2 Active（箭头向上）。币种图标引用 <a href="Guidelines/Icon.md">Icon 规范</a> <code>Currency Icons/Crypto_BTC.svg</code></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 尺寸 -->
+  <section class="section">
+    <h2 class="section-title">3. 尺寸</h2>
+    <p class="section-desc">Select 与 Coin Text 不同尺寸 · 设计稿节点 7844:47719</p>
+    <div class="select-size-section">
+      <div class="select-state-cols">
+        <div class="select-state-group">
+          <span class="select-state-label">Select</span>
+          <div class="select-state-row select-state-inactive">
+            <div class="select-wrap">
+              <div class="select-trigger select-trigger--xxs" data-select>
+                <span class="select-text placeholder" data-value>Text field</span>
+                <span class="select-suffix">
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="12" height="12" aria-hidden="true" />
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="12" height="12" aria-hidden="true" style="display:none" />
+                </span>
+              </div>
+              <div class="select-menu" data-menu>
+                <div class="select-menu__list" data-list>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                </div>
+              </div>
+            </div>
+            <span class="select-state-badge">1</span>
+          </div>
+          <div class="select-state-row select-state-inactive">
+            <div class="select-wrap">
+              <div class="select-trigger select-trigger--xs" data-select>
+                <span class="select-text placeholder" data-value>Text field</span>
+                <span class="select-suffix">
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="14" height="14" aria-hidden="true" />
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="14" height="14" aria-hidden="true" style="display:none" />
+                </span>
+              </div>
+              <div class="select-menu" data-menu>
+                <div class="select-menu__list" data-list>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                </div>
+              </div>
+            </div>
+            <span class="select-state-badge">2</span>
+          </div>
+          <div class="select-state-row select-state-inactive">
+            <div class="select-wrap">
+              <div class="select-trigger select-trigger--sm" data-select>
+                <span class="select-text placeholder" data-value>Text field</span>
+                <span class="select-suffix">
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="16" height="16" aria-hidden="true" />
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="16" height="16" aria-hidden="true" style="display:none" />
+                </span>
+              </div>
+              <div class="select-menu" data-menu>
+                <div class="select-menu__list" data-list>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                </div>
+              </div>
+            </div>
+            <span class="select-state-badge">3</span>
+          </div>
+          <div class="select-state-row select-state-inactive">
+            <div class="select-wrap">
+              <div class="select-trigger select-trigger--md" data-select>
+                <span class="select-text placeholder" data-value>Text field</span>
+                <span class="select-suffix">
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="16" height="16" aria-hidden="true" />
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="16" height="16" aria-hidden="true" style="display:none" />
+                </span>
+              </div>
+              <div class="select-menu" data-menu>
+                <div class="select-menu__list" data-list>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                </div>
+              </div>
+            </div>
+            <span class="select-state-badge">4</span>
+          </div>
+          <div class="select-state-row select-state-inactive">
+            <div class="select-wrap">
+              <div class="select-trigger select-trigger--lg" data-select>
+                <span class="select-text placeholder" data-value>Text field</span>
+                <span class="select-suffix">
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="16" height="16" aria-hidden="true" />
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="16" height="16" aria-hidden="true" style="display:none" />
+                </span>
+              </div>
+              <div class="select-menu" data-menu>
+                <div class="select-menu__list" data-list>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                </div>
+              </div>
+            </div>
+            <span class="select-state-badge">5</span>
+          </div>
+        </div>
+        <div class="select-state-group">
+          <span class="select-state-label">Coin Text</span>
+          <div class="select-state-row">
+            <button type="button" class="coin-text-trigger coin-text-size-10" data-coin-text aria-label="Coin Text 400-10px">
+              <img src="Guidelines/icons/Currency%20Icons/Crypto_BTC.svg" alt="" class="coin-text-coin" width="20" height="20" aria-hidden="true" />
+              <span class="coin-text-value">
+                <span>BTC</span>
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" class="coin-text-arrow coin-text-arrow-down" width="10" height="10" aria-hidden="true" />
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_up_fill.svg" alt="" class="coin-text-arrow coin-text-arrow-up" width="10" height="10" aria-hidden="true" style="display:none" />
+              </span>
+            </button>
+            <span class="select-state-badge">1</span>
+          </div>
+          <div class="select-state-row">
+            <button type="button" class="coin-text-trigger coin-text-size-12" data-coin-text aria-label="Coin Text 500-12px">
+              <img src="Guidelines/icons/Currency%20Icons/Crypto_BTC.svg" alt="" class="coin-text-coin" width="20" height="20" aria-hidden="true" />
+              <span class="coin-text-value">
+                <span>BTC</span>
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" class="coin-text-arrow coin-text-arrow-down" width="12" height="12" aria-hidden="true" />
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_up_fill.svg" alt="" class="coin-text-arrow coin-text-arrow-up" width="12" height="12" aria-hidden="true" style="display:none" />
+              </span>
+            </button>
+            <span class="select-state-badge">2</span>
+          </div>
+          <div class="select-state-row">
+            <button type="button" class="coin-text-trigger coin-text-size-14" data-coin-text aria-label="Coin Text 500-14px">
+              <img src="Guidelines/icons/Currency%20Icons/Crypto_BTC.svg" alt="" class="coin-text-coin" width="20" height="20" aria-hidden="true" />
+              <span class="coin-text-value">
+                <span>BTC</span>
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" class="coin-text-arrow coin-text-arrow-down" width="14" height="14" aria-hidden="true" />
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_up_fill.svg" alt="" class="coin-text-arrow coin-text-arrow-up" width="14" height="14" aria-hidden="true" style="display:none" />
+              </span>
+            </button>
+            <span class="select-state-badge">3</span>
+          </div>
+          <div class="select-state-row">
+            <button type="button" class="coin-text-trigger coin-text-size-16" data-coin-text aria-label="Coin Text 500-16px">
+              <img src="Guidelines/icons/Currency%20Icons/Crypto_BTC.svg" alt="" class="coin-text-coin" width="20" height="20" aria-hidden="true" />
+              <span class="coin-text-value">
+                <span>BTC</span>
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" class="coin-text-arrow coin-text-arrow-down" width="16" height="16" aria-hidden="true" />
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_up_fill.svg" alt="" class="coin-text-arrow coin-text-arrow-up" width="16" height="16" aria-hidden="true" style="display:none" />
+              </span>
+            </button>
+            <span class="select-state-badge">4</span>
+          </div>
+        </div>
+      </div>
+      <div class="section-desc" style="margin-top: 0;">
+        <strong>Size</strong>
+        <ul style="margin: 8px 0 0 0; padding-left: 1.2em;">
+          <li><strong>Select</strong>：1 XXSmall-24px · 2 XSmall-28px · 3 Small-32px · 4 Medium-40px · 5 Large-48px</li>
+          <li><strong>Coin Text</strong>：1 400-10px · 2 500-12px · 3 500-14px · 4 500-16px。币种图标 <code>Crypto_BTC.svg</code></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. 变量 -->
+  <section class="section">
+    <h2 class="section-title">4. 变量</h2>
+    <p class="section-desc">Select 与 Coin Text 选择器变量 · 设计稿节点 7844:48020</p>
+    <div class="select-variant-section">
+      <div class="select-state-cols">
+        <div class="select-state-group">
+          <span class="select-state-label">Select</span>
+          <div class="select-state-row select-state-inactive">
+            <div class="select-wrap">
+              <div class="select-trigger select-trigger--md" data-select>
+                <span class="select-text placeholder" data-value>Text field</span>
+                <span class="select-suffix">
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="16" height="16" aria-hidden="true" />
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="16" height="16" aria-hidden="true" style="display:none" />
+                </span>
+              </div>
+              <div class="select-menu" data-menu>
+                <div class="select-menu__list" data-list>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                </div>
+              </div>
+            </div>
+            <span class="select-state-badge">1</span>
+          </div>
+          <div class="select-state-row select-state-inactive">
+            <div class="select-wrap">
+              <div class="select-trigger select-trigger--md" data-select>
+                <span class="select-text-group">
+                  <span class="select-text placeholder" data-value>Text field</span>
+                  <span class="select-info-icon"><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_info.svg" alt="" width="14" height="14" aria-hidden="true" /></span>
+                </span>
+                <span class="select-suffix">
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="16" height="16" aria-hidden="true" />
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="16" height="16" aria-hidden="true" style="display:none" />
+                </span>
+              </div>
+              <div class="select-menu" data-menu>
+                <div class="select-menu__list" data-list>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                </div>
+              </div>
+            </div>
+            <span class="select-state-badge">2</span>
+          </div>
+          <div class="select-state-row select-state-inactive">
+            <div class="select-wrap has-label">
+              <label class="select-label">Label</label>
+              <div class="select-trigger select-trigger--md" data-select>
+                <span class="select-text placeholder" data-value>Text field</span>
+                <span class="select-suffix">
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="16" height="16" aria-hidden="true" />
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="16" height="16" aria-hidden="true" style="display:none" />
+                </span>
+              </div>
+              <div class="select-menu" data-menu>
+                <div class="select-menu__list" data-list>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                  <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                </div>
+              </div>
+            </div>
+            <span class="select-state-badge">3</span>
+          </div>
+          <div class="select-state-row select-state-inactive">
+            <div class="select-wrap has-helper">
+              <div class="select-trigger-area">
+                <div class="select-trigger select-trigger--md" data-select>
+                  <span class="select-text placeholder" data-value>Text field</span>
+                  <span class="select-suffix">
+                    <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="16" height="16" aria-hidden="true" />
+                    <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="16" height="16" aria-hidden="true" style="display:none" />
+                  </span>
+                </div>
+                <div class="select-menu" data-menu>
+                  <div class="select-menu__list" data-list>
+                    <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                    <div class="select-option" data-opt="Option"><span class="option-text">Option</span></div>
+                  </div>
+                </div>
+              </div>
+              <span class="select-helper">Helper text</span>
+            </div>
+            <span class="select-state-badge">4</span>
+          </div>
+          <div class="select-state-row select-state-inactive">
+            <div class="select-wrap">
+              <div class="select-trigger select-trigger--md" data-select>
+                <img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="select-prefix-icon" width="20" height="20" aria-hidden="true" />
+                <span class="select-text placeholder" data-value>Text field</span>
+                <span class="select-suffix">
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="16" height="16" aria-hidden="true" />
+                  <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="16" height="16" aria-hidden="true" style="display:none" />
+                </span>
+              </div>
+              <div class="select-menu" data-menu>
+                <div class="select-menu__list" data-list>
+                  <div class="select-option" data-opt="Option"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="option-prefix option-prefix--placeholder" width="20" height="20" /><span class="option-text">Option</span></div>
+                  <div class="select-option" data-opt="Option"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="option-prefix option-prefix--placeholder" width="20" height="20" /><span class="option-text">Option</span></div>
+                </div>
+              </div>
+            </div>
+            <span class="select-state-badge">5</span>
+          </div>
+          <div class="select-state-row select-state-inactive">
+            <div class="select-wrap has-label has-helper">
+              <label class="select-label">Label</label>
+              <div class="select-trigger-area">
+                <div class="select-trigger select-trigger--md" data-select>
+                  <img src="Guidelines/icons/National%20Flag%20Icons/cn.svg" alt="" class="select-prefix-icon select-prefix-icon--country" width="20" height="20" aria-hidden="true" />
+                  <span class="select-text-group">
+                    <span class="select-text placeholder" data-value>Text field</span>
+                    <span class="select-info-icon"><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_info.svg" alt="" width="14" height="14" aria-hidden="true" /></span>
+                  </span>
+                  <span class="select-suffix">
+                    <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="16" height="16" aria-hidden="true" />
+                    <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="16" height="16" aria-hidden="true" style="display:none" />
+                  </span>
+                </div>
+                <div class="select-menu" data-menu>
+                  <div class="select-menu__list" data-list>
+                    <div class="select-option" data-opt="Option"><img src="Guidelines/icons/National%20Flag%20Icons/cn.svg" alt="" class="option-prefix option-prefix--country" width="20" height="20" /><span class="option-text">Option</span></div>
+                    <div class="select-option" data-opt="Option"><img src="Guidelines/icons/National%20Flag%20Icons/cn.svg" alt="" class="option-prefix option-prefix--country" width="20" height="20" /><span class="option-text">Option</span></div>
+                  </div>
+                </div>
+              </div>
+              <span class="select-helper">Helper text</span>
+            </div>
+            <span class="select-state-badge">6</span>
+          </div>
+        </div>
+        <div class="select-state-group">
+          <span class="select-state-label">Coin Text</span>
+          <div class="select-state-row">
+            <button type="button" class="coin-text-trigger" data-coin-text aria-label="Coin Text Coin">
+              <img src="Guidelines/icons/Currency%20Icons/Crypto_BTC.svg" alt="" class="coin-text-coin" width="20" height="20" aria-hidden="true" />
+              <span class="coin-text-value">
+                <span>BTC</span>
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" class="coin-text-arrow coin-text-arrow-down" width="14" height="14" aria-hidden="true" />
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_up_fill.svg" alt="" class="coin-text-arrow coin-text-arrow-up" width="14" height="14" aria-hidden="true" style="display:none" />
+              </span>
+            </button>
+            <span class="select-state-badge">1</span>
+          </div>
+          <div class="select-state-row">
+            <button type="button" class="coin-text-trigger coin-text-no-coin" data-coin-text aria-label="Coin Text No Coin">
+              <span class="coin-text-value">
+                <span>BTC</span>
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_down_fill.svg" alt="" class="coin-text-arrow coin-text-arrow-down" width="14" height="14" aria-hidden="true" />
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_up_fill.svg" alt="" class="coin-text-arrow coin-text-arrow-up" width="14" height="14" aria-hidden="true" style="display:none" />
+              </span>
+            </button>
+            <span class="select-state-badge">2</span>
+          </div>
+        </div>
+      </div>
+      <div class="section-desc" style="margin-top: 0;">
+        <strong>Variants</strong>
+        <ul style="margin: 8px 0 0 0; padding-left: 1.2em;">
+          <li><strong>Select</strong>：1 default · 2 info · 3 label · 4 helper · 5 Prefix icon · 6 all</li>
+          <li><strong>Coin Text</strong>：1 Coin · 2 No Coin</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Dropdown 类型 -->
+  <section class="section">
+    <h2 class="section-title">5. Dropdown 类型</h2>
+    <p class="section-desc">Select 下拉面板类型 · 设计稿节点 9163:75934</p>
+    <div class="select-type-section">
+      <div class="select-type-cols">
+        <div class="select-type-item">
+          <div class="select-menu-preview">
+            <div class="select-option is-active"><span class="option-text">Option</span><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="16" height="16" aria-hidden="true" /></div>
+            <div class="select-option"><span class="option-text">Option</span></div>
+            <div class="select-option"><span class="option-text">Option</span></div>
+            <div class="select-option" style="background: var(--color-cmpt-component-hover);"><span class="option-text">Option</span></div>
+            <div class="select-option"><span class="option-text">Option</span></div>
+          </div>
+          <span class="select-state-badge">1</span>
+        </div>
+        <div class="select-type-item">
+          <div class="select-menu-preview">
+            <div class="select-option"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="option-prefix option-prefix--placeholder" width="20" height="20" /><span class="option-text">Option</span></div>
+            <div class="select-option is-active"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="option-prefix option-prefix--placeholder" width="20" height="20" /><span class="option-text">Option</span><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="16" height="16" aria-hidden="true" /></div>
+            <div class="select-option"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="option-prefix option-prefix--placeholder" width="20" height="20" /><span class="option-text">Option</span></div>
+            <div class="select-option" style="background: var(--color-cmpt-component-hover);"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="option-prefix option-prefix--placeholder" width="20" height="20" /><span class="option-text">Option</span></div>
+            <div class="select-option"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="option-prefix option-prefix--placeholder" width="20" height="20" /><span class="option-text">Option</span></div>
+          </div>
+          <span class="select-state-badge">2</span>
+        </div>
+      </div>
+      <div class="section-desc" style="margin-top: 0;">
+        <strong>Type</strong>
+        <ul style="margin: 8px 0 0 0; padding-left: 1.2em;">
+          <li><strong>1 Default</strong>：纯文案选项，第一项选中、第四项悬停</li>
+          <li><strong>2 Icon/Coin</strong>：选项带前置币种图标，第二项选中、第四项悬停</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. 下拉面板尺寸 -->
+  <section class="section">
+    <h2 class="section-title">6. 下拉面板尺寸</h2>
+    <p class="section-desc">Select 下拉面板三种尺寸 · 设计稿节点 9163:76514</p>
+    <div class="select-dropdown-size-section">
+      <div class="select-dropdown-size-row">
+        <div class="select-menu-preview select-menu-preview--sm">
+          <div class="select-menu-preview__list">
+            <div class="select-option is-active"><span class="option-text">Option</span><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="14" height="14" aria-hidden="true" /></div>
+            <div class="select-option"><span class="option-text">Option</span></div>
+            <div class="select-option"><span class="option-text">Option</span></div>
+            <div class="select-option" style="background: var(--color-cmpt-component-hover);"><span class="option-text">Option</span></div>
+            <div class="select-option"><span class="option-text">Option</span></div>
+          </div>
+        </div>
+        <div class="select-menu-preview select-menu-preview--sm">
+          <div class="select-menu-preview__list">
+            <div class="select-option"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="option-prefix option-prefix--placeholder" width="16" height="16" /><span class="option-text">Option</span></div>
+            <div class="select-option is-active"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="option-prefix option-prefix--placeholder" width="16" height="16" /><span class="option-text">Option</span><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="14" height="14" aria-hidden="true" /></div>
+            <div class="select-option"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="option-prefix option-prefix--placeholder" width="16" height="16" /><span class="option-text">Option</span></div>
+            <div class="select-option" style="background: var(--color-cmpt-component-hover);"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="option-prefix option-prefix--placeholder" width="16" height="16" /><span class="option-text">Option</span></div>
+            <div class="select-option"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="option-prefix option-prefix--placeholder" width="16" height="16" /><span class="option-text">Option</span></div>
+          </div>
+        </div>
+        <span class="select-state-badge">1</span>
+      </div>
+      <div class="select-dropdown-size-row">
+        <div class="select-menu-preview select-menu-preview--md">
+          <div class="select-menu-preview__search">
+            <div class="search search--md">
+              <div class="search__input-wrap">
+                <span class="search__icon"><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_Search.svg" alt="" width="16" height="16" /></span>
+                <input type="text" class="search__input" placeholder="Search" readonly aria-label="搜索" />
+              </div>
+            </div>
+          </div>
+          <div class="select-menu-preview__list">
+            <div class="select-option is-active"><span class="option-text">Option</span><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="16" height="16" aria-hidden="true" /></div>
+            <div class="select-option"><span class="option-text">Option</span></div>
+            <div class="select-option"><span class="option-text">Option</span></div>
+            <div class="select-option" style="background: var(--color-cmpt-component-hover);"><span class="option-text">Option</span></div>
+            <div class="select-option"><span class="option-text">Option</span></div>
+          </div>
+        </div>
+        <div class="select-menu-preview select-menu-preview--md">
+          <div class="select-menu-preview__search">
+            <div class="search search--md">
+              <div class="search__input-wrap">
+                <span class="search__icon"><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_Search.svg" alt="" width="16" height="16" /></span>
+                <input type="text" class="search__input" placeholder="Search" readonly aria-label="搜索" />
+              </div>
+            </div>
+          </div>
+          <div class="select-menu-preview__list">
+            <div class="select-option"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="option-prefix option-prefix--placeholder" width="20" height="20" /><span class="option-text">Option</span></div>
+            <div class="select-option is-active"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="option-prefix option-prefix--placeholder" width="20" height="20" /><span class="option-text">Option</span><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="16" height="16" aria-hidden="true" /></div>
+            <div class="select-option"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="option-prefix option-prefix--placeholder" width="20" height="20" /><span class="option-text">Option</span></div>
+            <div class="select-option" style="background: var(--color-cmpt-component-hover);"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="option-prefix option-prefix--placeholder" width="20" height="20" /><span class="option-text">Option</span></div>
+            <div class="select-option"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="option-prefix option-prefix--placeholder" width="20" height="20" /><span class="option-text">Option</span></div>
+          </div>
+        </div>
+        <span class="select-state-badge">2</span>
+      </div>
+      <div class="select-dropdown-size-row">
+        <div class="select-menu-preview select-menu-preview--lg">
+          <div class="select-menu-preview__search">
+            <div class="search">
+              <div class="search__input-wrap">
+                <span class="search__icon"><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_Search.svg" alt="" width="20" height="20" /></span>
+                <input type="text" class="search__input" placeholder="Search" readonly aria-label="搜索" />
+              </div>
+            </div>
+          </div>
+          <div class="select-menu-preview__list">
+            <div class="select-option is-active"><span class="option-text">Option</span><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="16" height="16" aria-hidden="true" /></div>
+            <div class="select-option"><span class="option-text">Option</span></div>
+            <div class="select-option"><span class="option-text">Option</span></div>
+            <div class="select-option" style="background: var(--color-cmpt-component-hover);"><span class="option-text">Option</span></div>
+            <div class="select-option"><span class="option-text">Option</span></div>
+          </div>
+        </div>
+        <div class="select-menu-preview select-menu-preview--lg">
+          <div class="select-menu-preview__search">
+            <div class="search">
+              <div class="search__input-wrap">
+                <span class="search__icon"><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_Search.svg" alt="" width="20" height="20" /></span>
+                <input type="text" class="search__input" placeholder="Search" readonly aria-label="搜索" />
+              </div>
+            </div>
+          </div>
+          <div class="select-menu-preview__list">
+            <div class="select-option"><img src="Guidelines/icons/National%20Flag%20Icons/cn.svg" alt="" class="option-prefix option-prefix--country" width="20" height="20" /><span class="option-text">China</span></div>
+            <div class="select-option"><img src="Guidelines/icons/National%20Flag%20Icons/cn.svg" alt="" class="option-prefix option-prefix--country" width="20" height="20" /><span class="option-text">China</span></div>
+            <div class="select-option"><img src="Guidelines/icons/National%20Flag%20Icons/cn.svg" alt="" class="option-prefix option-prefix--country" width="20" height="20" /><span class="option-text">China</span></div>
+            <div class="select-option is-active" style="background: var(--color-cmpt-component-hover);"><img src="Guidelines/icons/National%20Flag%20Icons/cn.svg" alt="" class="option-prefix option-prefix--country" width="20" height="20" /><span class="option-text">China</span><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="16" height="16" aria-hidden="true" /></div>
+            <div class="select-option"><img src="Guidelines/icons/National%20Flag%20Icons/cn.svg" alt="" class="option-prefix option-prefix--country" width="20" height="20" /><span class="option-text">China</span></div>
+          </div>
+        </div>
+        <span class="select-state-badge">3</span>
+      </div>
+    </div>
+    <div class="section-desc" style="margin-top: 24px;">
+      <strong>Size</strong>
+      <ul style="margin: 8px 0 0 0; padding-left: 1.2em;">
+        <li><strong>1 Small</strong>：面板宽 100px，选项高 32px，无搜索；Default / Icon 各一</li>
+        <li><strong>2 Medium</strong>：面板宽 240px，选项高 40px，含搜索；Default / Icon 各一</li>
+        <li><strong>3 Large</strong>：面板宽 480px，选项高 48px，含搜索；Default / Icon·Coin（国家图标）各一</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 7. 下拉面板状态 -->
+  <section class="section">
+    <h2 class="section-title">7. 下拉面板状态</h2>
+    <p class="section-desc">Select 下拉选项五种状态 · 设计稿节点 9163:79387</p>
+    <div class="select-panel-state-wrap">
+      <div class="select-menu-preview select-menu-preview--state">
+        <div class="select-menu-preview__list">
+          <div class="select-option"><span class="option-text">Option</span></div>
+          <div class="select-option" style="background: var(--color-cmpt-component-hover);"><span class="option-text">Option</span></div>
+          <div class="select-option is-active"><span class="option-text">Option</span><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="16" height="16" aria-hidden="true" /></div>
+          <div class="select-option is-active" style="background: var(--color-cmpt-component-hover);"><span class="option-text">Option</span><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="16" height="16" aria-hidden="true" /></div>
+          <div class="select-option is-disabled"><span class="option-text">Option</span></div>
+        </div>
+      </div>
+      <div class="select-panel-state-badges">
+        <span class="select-state-badge">1</span>
+        <span class="select-state-badge">2</span>
+        <span class="select-state-badge">3</span>
+        <span class="select-state-badge">4</span>
+        <span class="select-state-badge">5</span>
+      </div>
+    </div>
+    <div class="section-desc" style="margin-top: 24px;">
+      <strong>State</strong>
+      <ul style="margin: 8px 0 0 0; padding-left: 1.2em;">
+        <li><strong>1 Inactive</strong>：默认，无选中图标</li>
+        <li><strong>2 Inactive Hover</strong>：悬停，背景 <code>--color-cmpt-component-hover</code></li>
+        <li><strong>3 Active</strong>：选中，右侧 CEX_circlefilled_success 图标</li>
+        <li><strong>4 Active Hover</strong>：选中且悬停，背景 hover + 选中图标</li>
+        <li><strong>5 Disabled</strong>：禁用，文字 <code>--color-text-text-disable</code>，无图标</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 8. 下拉面板变量 -->
+  <section class="section">
+    <h2 class="section-title">8. 下拉面板变量</h2>
+    <p class="section-desc">Select 下拉面板 16 个变体（尺寸 × 类型等）· 设计稿节点 134900:15114</p>
+    <div class="select-panel-variant-grid">
+      <div class="select-panel-variant-item">
+        <div class="select-menu-preview select-menu-preview--sm">
+          <div class="select-menu-preview__list">
+            <div class="select-option is-active"><span class="option-text">Option</span><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="14" height="14" aria-hidden="true" /></div>
+            <div class="select-option"><span class="option-text">Option</span></div>
+            <div class="select-option"><span class="option-text">Option</span></div>
+            <div class="select-option"><span class="option-text">Option</span></div>
+          </div>
+        </div>
+        <span class="select-state-badge">1</span>
+      </div>
+      <div class="select-panel-variant-item">
+        <div class="select-menu-preview select-menu-preview--md">
+          <div class="select-menu-preview__list">
+            <div class="select-option is-active"><span class="option-text">Option</span><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="16" height="16" aria-hidden="true" /></div>
+            <div class="select-option"><span class="option-text">Option</span></div>
+            <div class="select-option"><span class="option-text">Option</span></div>
+            <div class="select-option"><span class="option-text">Option</span></div>
+          </div>
+        </div>
+        <span class="select-state-badge">2</span>
+      </div>
+      <div class="select-panel-variant-item">
+        <div class="select-menu-preview select-menu-preview--md">
+          <div class="select-menu-preview__search">
+            <div class="search search--md">
+              <div class="search__input-wrap">
+                <span class="search__icon"><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_Search.svg" alt="" width="16" height="16" /></span>
+                <input type="text" class="search__input" placeholder="Search" readonly aria-label="搜索" />
+              </div>
+            </div>
+          </div>
+          <div class="select-menu-preview__list">
+            <div class="select-option"><span class="option-text">Option</span></div>
+            <div class="select-option is-active"><span class="option-text">Option</span><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="16" height="16" aria-hidden="true" /></div>
+            <div class="select-option"><span class="option-text">Option</span></div>
+            <div class="select-option"><span class="option-text">Option</span></div>
+          </div>
+        </div>
+        <span class="select-state-badge">3</span>
+      </div>
+      <div class="select-panel-variant-item">
+        <div class="select-menu-preview select-menu-preview--md">
+          <div class="select-menu-preview__list">
+            <div class="select-option"><span class="option-accent-line" aria-hidden="true"></span><span class="option-text">Option</span></div>
+            <div class="select-option is-active"><span class="option-accent-line" aria-hidden="true"></span><span class="option-text">Option</span><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="16" height="16" aria-hidden="true" /></div>
+            <div class="select-option"><span class="option-accent-line" aria-hidden="true"></span><span class="option-text">Option</span></div>
+          </div>
+        </div>
+        <span class="select-state-badge">4</span>
+      </div>
+      <div class="select-panel-variant-item">
+        <div class="select-menu-preview select-menu-preview--md select-menu-preview--variant-5">
+          <div class="select-menu-preview__list">
+            <div class="select-option" data-expand role="button" tabindex="0" aria-expanded="false" aria-label="展开二级选项">
+              <span class="option-text">Option</span>
+              <span class="option-expand">
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="option-expand-down" width="16" height="16" aria-hidden="true" />
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="option-expand-up" width="16" height="16" aria-hidden="true" />
+              </span>
+            </div>
+            <div class="select-option-sublist">
+              <div class="select-option select-option--sub"><span class="option-text">Option</span></div>
+              <div class="select-option select-option--sub"><span class="option-text">Option</span></div>
+            </div>
+            <div class="select-option" data-expand role="button" tabindex="0" aria-expanded="false" aria-label="展开二级选项">
+              <span class="option-text">Option</span>
+              <span class="option-expand">
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="option-expand-down" width="16" height="16" aria-hidden="true" />
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="option-expand-up" width="16" height="16" aria-hidden="true" />
+              </span>
+            </div>
+            <div class="select-option-sublist">
+              <div class="select-option select-option--sub"><span class="option-text">Option</span></div>
+              <div class="select-option select-option--sub"><span class="option-text">Option</span></div>
+            </div>
+            <div class="select-option" data-expand role="button" tabindex="0" aria-expanded="false" aria-label="展开二级选项">
+              <span class="option-text">Option</span>
+              <span class="option-expand">
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="option-expand-down" width="16" height="16" aria-hidden="true" />
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="option-expand-up" width="16" height="16" aria-hidden="true" />
+              </span>
+            </div>
+            <div class="select-option-sublist">
+              <div class="select-option select-option--sub"><span class="option-text">Option</span></div>
+              <div class="select-option select-option--sub"><span class="option-text">Option</span></div>
+            </div>
+            <div class="select-option" data-expand role="button" tabindex="0" aria-expanded="false" aria-label="展开二级选项">
+              <span class="option-text">Option</span>
+              <span class="option-expand">
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="option-expand-down" width="16" height="16" aria-hidden="true" />
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="option-expand-up" width="16" height="16" aria-hidden="true" />
+              </span>
+            </div>
+            <div class="select-option-sublist">
+              <div class="select-option select-option--sub"><span class="option-text">Option</span></div>
+              <div class="select-option select-option--sub"><span class="option-text">Option</span></div>
+            </div>
+          </div>
+        </div>
+        <span class="select-state-badge">5</span>
+      </div>
+      <div class="select-panel-variant-item">
+        <div class="select-menu-preview select-menu-preview--md select-menu-preview--variant-6">
+          <div class="select-menu-preview__list">
+            <div class="select-option" data-option-checkbox role="button" tabindex="0" aria-checked="false">
+              <span class="option-checkbox" aria-hidden="true"><img src="Guidelines/Slicing/Checkbox/Checkbox16-Inactive.svg" alt="" width="16" height="16" /></span>
+              <span class="option-text">Option</span>
+            </div>
+            <div class="select-option is-active" data-option-checkbox role="button" tabindex="0" aria-checked="true">
+              <span class="option-checkbox" aria-hidden="true"><img src="Guidelines/Slicing/Checkbox/Checkbox16-Active.svg" alt="" width="16" height="16" /></span>
+              <span class="option-text">Option</span>
+            </div>
+            <div class="select-option" data-option-checkbox role="button" tabindex="0" aria-checked="false">
+              <span class="option-checkbox" aria-hidden="true"><img src="Guidelines/Slicing/Checkbox/Checkbox16-Inactive.svg" alt="" width="16" height="16" /></span>
+              <span class="option-text">Option</span>
+            </div>
+          </div>
+        </div>
+        <span class="select-state-badge">6</span>
+      </div>
+      <div class="select-panel-variant-item">
+        <div class="select-menu-preview select-menu-preview--md select-menu-preview--variant-7">
+          <div class="select-menu-preview__list">
+            <div class="select-option">
+              <div class="option-content">
+                <span class="option-text">Option</span>
+                <span class="option-subtitle">Subtitle</span>
+              </div>
+            </div>
+            <div class="select-option is-active">
+              <div class="option-content">
+                <span class="option-text">Option</span>
+                <span class="option-subtitle">Subtitle</span>
+              </div>
+              <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="16" height="16" aria-hidden="true" />
+            </div>
+            <div class="select-option">
+              <div class="option-content">
+                <span class="option-text">Option</span>
+                <span class="option-subtitle">Subtitle</span>
+              </div>
+            </div>
+            <div class="select-option" style="background: var(--color-cmpt-component-hover);">
+              <div class="option-content">
+                <span class="option-text">Option</span>
+                <span class="option-subtitle">Subtitle</span>
+              </div>
+            </div>
+            <div class="select-option">
+              <div class="option-content">
+                <span class="option-text">Option</span>
+                <span class="option-subtitle">Subtitle</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="select-state-badge">7</span>
+      </div>
+      <div class="select-panel-variant-item">
+        <div class="select-menu-preview select-menu-preview--md select-menu-preview--variant-8">
+          <div class="select-menu-preview__search">
+            <div class="search search--md">
+              <div class="search__input-wrap">
+                <span class="search__icon"><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_Search.svg" alt="" width="16" height="16" /></span>
+                <input type="text" class="search__input" placeholder="Search" readonly aria-label="搜索" />
+              </div>
+            </div>
+          </div>
+          <div class="select-menu-preview__list">
+            <div class="select-option">
+              <div class="option-primary">
+                <span class="option-text">Option</span>
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_hot_fill.svg" alt="Hot" class="option-hot-icon" width="16" height="16" aria-hidden="true" />
+              </div>
+            </div>
+            <div class="select-option is-active">
+              <div class="option-primary">
+                <span class="option-text">Option</span>
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_hot_fill.svg" alt="Hot" class="option-hot-icon" width="16" height="16" aria-hidden="true" />
+              </div>
+              <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="16" height="16" aria-hidden="true" />
+            </div>
+            <div class="select-option">
+              <span class="option-text">Option</span>
+            </div>
+          </div>
+        </div>
+        <span class="select-state-badge">8</span>
+      </div>
+      <div class="select-panel-variant-item">
+        <div class="select-menu-preview select-menu-preview--md select-menu-preview--variant-9">
+          <div class="select-menu-preview__list">
+            <div class="select-option">
+              <div class="option-primary">
+                <span class="option-text">Option</span>
+                <span class="option-tag">Tag</span>
+              </div>
+            </div>
+            <div class="select-option is-active">
+              <div class="option-primary">
+                <span class="option-text">Option</span>
+                <span class="option-tag">Tag</span>
+              </div>
+              <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="16" height="16" aria-hidden="true" />
+            </div>
+            <div class="select-option">
+              <span class="option-text">Option</span>
+            </div>
+            <div class="select-option" style="background: var(--color-cmpt-component-hover);">
+              <span class="option-text">Option</span>
+            </div>
+          </div>
+        </div>
+        <span class="select-state-badge">9</span>
+      </div>
+      <div class="select-panel-variant-item">
+        <div class="select-menu-preview select-menu-preview--w400 select-menu-preview--variant-10">
+          <div class="select-menu-preview__search">
+            <div class="search search--md">
+              <div class="search__input-wrap">
+                <span class="search__icon"><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_Search.svg" alt="" width="16" height="16" /></span>
+                <input type="text" class="search__input" placeholder="Search" readonly aria-label="搜索" />
+              </div>
+            </div>
+          </div>
+          <div class="select-menu-preview__list">
+            <div class="select-option"><span class="option-text">Option</span></div>
+            <div class="select-option"><span class="option-text">Option</span></div>
+            <div class="select-option is-active"><span class="option-text">Option</span><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="16" height="16" aria-hidden="true" /></div>
+            <div class="select-option"><span class="option-text">Option</span></div>
+            <div class="select-option"><span class="option-text">Option</span></div>
+          </div>
+        </div>
+        <span class="select-state-badge">10</span>
+      </div>
+      <div class="select-panel-variant-item">
+        <div class="select-menu-preview select-menu-preview--md select-menu-preview--variant-11">
+          <div class="select-menu-preview__list">
+            <div class="select-option"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="option-prefix option-prefix--placeholder" width="20" height="20" /><span class="option-text">Option</span></div>
+            <div class="select-option is-active"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="option-prefix option-prefix--placeholder" width="20" height="20" /><span class="option-text">Option</span><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="16" height="16" aria-hidden="true" /></div>
+            <div class="select-option"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="option-prefix option-prefix--placeholder" width="20" height="20" /><span class="option-text">Option</span></div>
+          </div>
+        </div>
+        <span class="select-state-badge">11</span>
+      </div>
+      <div class="select-panel-variant-item">
+        <div class="select-menu-preview select-menu-preview--md select-menu-preview--variant-12">
+          <div class="select-menu-preview__list">
+            <div class="select-option"><img src="Guidelines/icons/Currency%20Icons/Crypto_BTC.svg" alt="" class="option-prefix option-prefix--coin" width="20" height="20" aria-hidden="true" /><span class="option-text">Option</span></div>
+            <div class="select-option"><img src="Guidelines/icons/Currency%20Icons/Crypto_ETH.svg" alt="" class="option-prefix option-prefix--coin" width="20" height="20" aria-hidden="true" /><span class="option-text">Option</span></div>
+            <div class="select-option is-active"><img src="Guidelines/icons/Currency%20Icons/Crypto_USDT.svg" alt="" class="option-prefix option-prefix--coin" width="20" height="20" aria-hidden="true" /><span class="option-text">Option</span><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="16" height="16" aria-hidden="true" /></div>
+          </div>
+        </div>
+        <span class="select-state-badge">12</span>
+      </div>
+      <div class="select-panel-variant-item">
+        <div class="select-menu-preview select-menu-preview--w400 select-menu-preview--variant-13">
+          <div class="select-menu-preview__list">
+            <div class="select-option" style="background: var(--color-cmpt-component-hover);"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="option-prefix option-prefix--placeholder" width="20" height="20" /><span class="option-text">Option</span></div>
+            <div class="select-option is-active"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="option-prefix option-prefix--placeholder" width="20" height="20" /><span class="option-text">Option</span><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="16" height="16" aria-hidden="true" /></div>
+            <div class="select-option"><img src="Guidelines/icons/Basic%20Product%20Icons/Iconplaceholder.svg" alt="" class="option-prefix option-prefix--placeholder" width="20" height="20" /><span class="option-text">Option</span></div>
+          </div>
+        </div>
+        <span class="select-state-badge">13</span>
+      </div>
+      <div class="select-panel-variant-item">
+        <div class="select-menu-preview select-menu-preview--w400 select-menu-preview--variant-14">
+          <div class="select-menu-preview__search">
+            <div class="search search--md">
+              <div class="search__input-wrap">
+                <span class="search__icon"><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_Search.svg" alt="" width="16" height="16" /></span>
+                <input type="text" class="search__input" placeholder="Search" readonly aria-label="搜索" />
+              </div>
+            </div>
+          </div>
+          <div class="select-menu-preview__list">
+            <div class="select-option is-active"><img src="Guidelines/icons/National%20Flag%20Icons/cn.svg" alt="" class="option-prefix option-prefix--country" width="20" height="20" /><span class="option-text">Option</span><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="16" height="16" aria-hidden="true" /></div>
+            <div class="select-option"><img src="Guidelines/icons/National%20Flag%20Icons/cn.svg" alt="" class="option-prefix option-prefix--country" width="20" height="20" /><span class="option-text">Option</span></div>
+            <div class="select-option"><img src="Guidelines/icons/National%20Flag%20Icons/cn.svg" alt="" class="option-prefix option-prefix--country" width="20" height="20" /><span class="option-text">Option</span></div>
+            <div class="select-option"><img src="Guidelines/icons/National%20Flag%20Icons/cn.svg" alt="" class="option-prefix option-prefix--country" width="20" height="20" /><span class="option-text">Option</span></div>
+          </div>
+        </div>
+        <span class="select-state-badge">14</span>
+      </div>
+      <div class="select-panel-variant-item">
+        <div class="select-menu-preview select-menu-preview--w400 select-menu-preview--variant-15">
+          <div class="select-menu-preview__search">
+            <div class="search search--md">
+              <div class="search__input-wrap">
+                <span class="search__icon"><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_Search.svg" alt="" width="16" height="16" /></span>
+                <input type="text" class="search__input" placeholder="Search" readonly aria-label="搜索" />
+              </div>
+            </div>
+          </div>
+          <div class="select-menu-preview__list">
+            <div class="select-option"><img src="Guidelines/icons/National%20Flag%20Icons/cn.svg" alt="" class="option-prefix option-prefix--country" width="20" height="20" /><span class="option-text">Option</span><span class="option-suffix-text">+86</span></div>
+            <div class="select-option is-active"><img src="Guidelines/icons/National%20Flag%20Icons/cn.svg" alt="" class="option-prefix option-prefix--country" width="20" height="20" /><span class="option-text">Option</span><span class="option-suffix-text">+86</span></div>
+            <div class="select-option"><img src="Guidelines/icons/National%20Flag%20Icons/cn.svg" alt="" class="option-prefix option-prefix--country" width="20" height="20" /><span class="option-text">Option</span><span class="option-suffix-text">+1</span></div>
+            <div class="select-option"><img src="Guidelines/icons/National%20Flag%20Icons/cn.svg" alt="" class="option-prefix option-prefix--country" width="20" height="20" /><span class="option-text">Option</span><span class="option-suffix-text">+44</span></div>
+          </div>
+        </div>
+        <span class="select-state-badge">15</span>
+      </div>
+      <div class="select-panel-variant-item">
+        <div class="select-menu-preview select-menu-preview--w400 select-menu-preview--variant-16">
+          <div class="select-menu-preview__search">
+            <div class="search search--md">
+              <div class="search__input-wrap">
+                <span class="search__icon"><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_Search.svg" alt="" width="16" height="16" /></span>
+                <input type="text" class="search__input" placeholder="Search" readonly aria-label="搜索" />
+              </div>
+            </div>
+          </div>
+          <div class="select-menu-preview__list">
+            <div class="select-list-category">常用</div>
+            <div class="select-option"><img src="Guidelines/icons/National%20Flag%20Icons/cn.svg" alt="" class="option-prefix option-prefix--country" width="20" height="20" /><span class="option-text">Option</span></div>
+            <div class="select-option"><img src="Guidelines/icons/National%20Flag%20Icons/cn.svg" alt="" class="option-prefix option-prefix--country" width="20" height="20" /><span class="option-text">Option</span></div>
+            <hr class="select-list-divider" aria-hidden="true" />
+            <div class="select-list-category">全部</div>
+            <div class="select-option"><img src="Guidelines/icons/National%20Flag%20Icons/cn.svg" alt="" class="option-prefix option-prefix--country" width="20" height="20" /><span class="option-text">Option</span></div>
+            <div class="select-option" style="background: var(--color-cmpt-component-hover);"><img src="Guidelines/icons/National%20Flag%20Icons/cn.svg" alt="" class="option-prefix option-prefix--country" width="20" height="20" /><span class="option-text">Option</span></div>
+          </div>
+        </div>
+        <span class="select-state-badge">16</span>
+      </div>
+    </div>
+    <div class="section-desc" style="margin-top: 24px;">
+      <strong>Variants</strong>
+      <p style="margin: 8px 0 0 0;">设计稿 134900:15114 中 16 个 Select_V5 变体：1 为 Small(100px)，2–12 为 Medium(240px)，13–16 为 400px 宽；<strong>4</strong> 为左侧蓝色竖线（3×12px，<code>--color-link-default</code>），非 icon 占位；其余部分含搜索、部分为 Default/Icon 选项类型。</p>
+    </div>
+  </section>
+
+  <!-- 9. 搜索与回显状态：搜索为空、搜索结果高亮、多选回显、单行 Text 极端原则 -->
+  <section class="section" id="search-and-display-states">
+    <h2 class="section-title">9. 搜索与回显状态</h2>
+    <p class="section-desc">设计稿 9163:79791、14778:29577、12487:364157、9163:79881。展示搜索为空、搜索结果高亮、多选回显（逗号隔开）、单行 Text 极端原则（与 icon 间距 12px，超出省略，建议优化文案）。</p>
+
+    <div class="select-search-display-grid">
+      <!-- 9.1 搜索为空：480px，选择器+下拉引用组件，面板内搜索引用 Search 组件，可交互；空状态插画区分白天/暗黑 -->
+      <div class="select-search-display-item">
+        <div class="select-search-display-label">搜索为空</div>
+        <div class="select-state-inactive">
+          <div class="select-wrap select-wrap--w480">
+          <div class="select-trigger select-trigger--md select-trigger--w480" data-select>
+            <span class="select-text placeholder" data-value>请选择</span>
+            <span class="select-suffix">
+              <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="16" height="16" aria-hidden="true" />
+              <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="16" height="16" aria-hidden="true" style="display:none" />
+            </span>
+          </div>
+          <div class="select-menu" data-menu>
+            <div class="select-menu__search">
+              <div class="search search--in-select" style="width: 100%;">
+                <div class="search__input-wrap">
+                  <span class="search__icon"><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_Search.svg" alt="" width="20" height="20" /></span>
+                  <input type="text" class="search__input" data-search placeholder="Search" aria-label="搜索" />
+                  <button type="button" class="search__clear" aria-label="清空"><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_error.svg" alt="" width="20" height="20" /></button>
+                </div>
+              </div>
+            </div>
+            <div class="select-menu__list" data-list>
+              <div class="select-option" data-opt="Option1"><span class="option-text">Option1</span></div>
+              <div class="select-option" data-opt="Option2"><span class="option-text">Option2</span></div>
+              <div class="select-option" data-opt="Option3"><span class="option-text">Option3</span></div>
+            </div>
+            <div class="select-menu__empty" style="display: none;" aria-live="polite">
+              <picture>
+                <source media="(prefers-color-scheme: dark)" srcset="assets/96px-_____-dark-fd2a8336-02a0-4fe3-aefe-d9a6debbb96f.png" />
+                <img src="assets/96px-_____-light-a41a7e9c-fda7-4c50-b327-452d04b4ae10.png" alt="" class="select-menu__empty-img" width="96" height="96" />
+              </picture>
+              <span>No results found</span>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+
+      <!-- 9.2 搜索结果高亮：样式同搜索为空，搜索时选项内匹配字母高亮（Figma 14778:29577） -->
+      <div class="select-search-display-item">
+        <div class="select-search-display-label">搜索结果高亮</div>
+        <div class="select-state-inactive">
+          <div class="select-wrap select-wrap--w480">
+            <div class="select-trigger select-trigger--md select-trigger--w480" data-select>
+              <span class="select-text placeholder" data-value>请选择</span>
+              <span class="select-suffix">
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="16" height="16" aria-hidden="true" />
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="16" height="16" aria-hidden="true" style="display:none" />
+              </span>
+            </div>
+            <div class="select-menu" data-menu>
+              <div class="select-menu__search">
+                <div class="search search--in-select" style="width: 100%;">
+                  <div class="search__input-wrap">
+                    <span class="search__icon"><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_Search.svg" alt="" width="20" height="20" /></span>
+                    <input type="text" class="search__input" data-search placeholder="Search" aria-label="搜索" />
+                    <button type="button" class="search__clear" aria-label="清空"><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_error.svg" alt="" width="20" height="20" /></button>
+                  </div>
+                </div>
+              </div>
+              <div class="select-menu__list" data-list>
+                <div class="select-option" data-opt="BT"><span class="option-text">BT</span></div>
+                <div class="select-option" data-opt="BTC"><span class="option-text">BTC</span></div>
+                <div class="select-option" data-opt="BTC"><span class="option-text">BTC</span></div>
+                <div class="select-option" data-opt="ETH"><span class="option-text">ETH</span></div>
+              </div>
+              <div class="select-menu__empty" style="display: none;" aria-live="polite">
+                <picture>
+                  <source media="(prefers-color-scheme: dark)" srcset="assets/96px-_____-dark-fd2a8336-02a0-4fe3-aefe-d9a6debbb96f.png" />
+                  <img src="assets/96px-_____-light-a41a7e9c-fda7-4c50-b327-452d04b4ae10.png" alt="" class="select-menu__empty-img" width="96" height="96" />
+                </picture>
+                <span>No results found</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 9.3 多选回显（逗号隔开）：选择器与面板 240px，icon/勾选/搜索引用对应组件（Figma 12487:364157） -->
+      <div class="select-search-display-item">
+        <div class="select-search-display-label">多选回显（逗号隔开）</div>
+        <div class="select-state-inactive">
+          <div class="select-wrap select-wrap--w240 select-wrap--multiple">
+            <div class="select-trigger select-trigger--md select-trigger--w240" data-select>
+              <span class="select-text" data-value>Option2, Option3, Option5</span>
+              <span class="select-suffix">
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="16" height="16" aria-hidden="true" />
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="16" height="16" aria-hidden="true" style="display:none" />
+              </span>
+            </div>
+            <div class="select-menu" data-menu>
+              <div class="select-menu__search">
+                <div class="search search--in-select" style="width: 100%;">
+                  <div class="search__input-wrap">
+                    <span class="search__icon"><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_Search.svg" alt="" width="20" height="20" /></span>
+                    <input type="text" class="search__input" data-search placeholder="Search" aria-label="搜索" />
+                    <button type="button" class="search__clear" aria-label="清空"><img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_error.svg" alt="" width="20" height="20" /></button>
+                  </div>
+                </div>
+              </div>
+              <div class="select-menu__list" data-list>
+                <div class="select-option" data-opt="Option1" data-option-checkbox role="button" tabindex="0" aria-checked="false">
+                  <span class="option-checkbox" aria-hidden="true"><img src="Guidelines/Slicing/Checkbox/Checkbox16-Inactive.svg" alt="" width="16" height="16" /></span>
+                  <span class="option-text">Option1</span>
+                </div>
+                <div class="select-option is-active" data-opt="Option2" data-option-checkbox role="button" tabindex="0" aria-checked="true">
+                  <span class="option-checkbox" aria-hidden="true"><img src="Guidelines/Slicing/Checkbox/Checkbox16-Active.svg" alt="" width="16" height="16" /></span>
+                  <span class="option-text">Option2</span>
+                </div>
+                <div class="select-option is-active" data-opt="Option3" data-option-checkbox role="button" tabindex="0" aria-checked="true">
+                  <span class="option-checkbox" aria-hidden="true"><img src="Guidelines/Slicing/Checkbox/Checkbox16-Active.svg" alt="" width="16" height="16" /></span>
+                  <span class="option-text">Option3</span>
+                </div>
+                <div class="select-option" data-opt="Option4" data-option-checkbox role="button" tabindex="0" aria-checked="false">
+                  <span class="option-checkbox" aria-hidden="true"><img src="Guidelines/Slicing/Checkbox/Checkbox16-Inactive.svg" alt="" width="16" height="16" /></span>
+                  <span class="option-text">Option4</span>
+                </div>
+                <div class="select-option is-active" data-opt="Option5" data-option-checkbox role="button" tabindex="0" aria-checked="true">
+                  <span class="option-checkbox" aria-hidden="true"><img src="Guidelines/Slicing/Checkbox/Checkbox16-Active.svg" alt="" width="16" height="16" /></span>
+                  <span class="option-text">Option5</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 9.4 单行 Text 极端原则：选择器与下拉 240px，icon 引用 icon 组件，样式引用已有组件（Figma 9163:79881） -->
+      <div class="select-search-display-item">
+        <div class="select-search-display-label">单行 Text 极端原则</div>
+        <div class="select-state-inactive">
+          <div class="select-wrap select-wrap--w240">
+            <div class="select-trigger select-trigger--md select-trigger--w240 select-trigger--text-gap-12" data-select>
+              <span class="select-text" data-value title="Text fieldText fieldText fieldText fieldText field">Text fieldText fieldText fieldText fieldT...</span>
+              <span class="select-suffix">
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_down.svg" alt="" class="select-arrow-down" width="16" height="16" aria-hidden="true" />
+                <img src="Guidelines/icons/Basic%20Product%20Icons/CEX_chevron_up.svg" alt="" class="select-arrow-up" width="16" height="16" aria-hidden="true" style="display:none" />
+              </span>
+            </div>
+            <div class="select-menu" data-menu>
+              <div class="select-menu__list" data-list>
+                <div class="select-option" data-opt="Option1"><span class="option-text">Option1</span></div>
+                <div class="select-option" data-opt="Option2"><span class="option-text">Option2</span></div>
+                <div class="select-option" data-opt="Option3"><span class="option-text">Option3</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="select-extreme-note">文本与 icon 间距 12px，超出省略；建议优化文案，控制单行展示长度。</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    function escapeHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+    function syncSelectArrowIcons() {
+      document.querySelectorAll('.select-wrap').forEach(wrap => {
+        const trigger = wrap.querySelector('.select-trigger[data-select], .select-trigger.is-disabled');
+        const suffix = trigger?.querySelector('.select-suffix');
+        const arrowDown = suffix?.querySelector('.select-arrow-down');
+        const arrowUp = suffix?.querySelector('.select-arrow-up');
+        if (arrowDown && arrowUp) {
+          const isOpen = trigger.classList.contains('is-open');
+          arrowDown.style.display = isOpen ? 'none' : '';
+          arrowUp.style.display = isOpen ? '' : 'none';
+        }
+      });
+    }
+
+    document.querySelectorAll('[data-select]').forEach(trigger => {
+      const wrap = trigger.closest('.select-wrap');
+      const menu = wrap?.querySelector('[data-menu]');
+      const valueEl = wrap?.querySelector('[data-value]');
+      const placeholder = valueEl?.classList.contains('placeholder');
+      const searchInput = wrap?.querySelector('[data-search]');
+      const listEl = wrap?.querySelector('[data-list]');
+      const options = wrap?.querySelectorAll('.select-option[data-opt]');
+
+      if (!wrap || !menu) return;
+
+      /* 点击下拉面板内部（含搜索框、清空 icon、选项列表）不关闭面板，避免误关 */
+      menu.addEventListener('click', (e) => { e.stopPropagation(); });
+
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = menu.classList.contains('is-open');
+        document.querySelectorAll('.select-menu.is-open').forEach(m => m.classList.remove('is-open'));
+        document.querySelectorAll('.select-trigger.is-open').forEach(t => t.classList.remove('is-open'));
+        if (!isOpen) {
+          menu.classList.add('is-open');
+          trigger.classList.add('is-open');
+          if (searchInput) searchInput.focus();
+        }
+        syncSelectArrowIcons();
+      });
+
+      const iconHtml = '<img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="16" height="16" aria-hidden="true" />';
+      const checkboxInactiveSrc = 'Guidelines/Slicing/Checkbox/Checkbox16-Inactive.svg';
+      const checkboxActiveSrc = 'Guidelines/Slicing/Checkbox/Checkbox16-Active.svg';
+
+      if (wrap.classList.contains('select-wrap--multiple')) {
+        const multiOpts = listEl?.querySelectorAll('.select-option[data-option-checkbox][data-opt]');
+        const updateMultiValue = () => {
+          if (!valueEl || !listEl) return;
+          const labels = listEl.querySelectorAll('.select-option.is-active[data-opt]');
+          const text = Array.from(labels).map(o => o.dataset.opt).filter(Boolean).join(', ') || '请选择';
+          valueEl.textContent = text;
+          valueEl.classList.toggle('placeholder', text === '请选择');
+        };
+        multiOpts?.forEach(opt => {
+          opt.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const active = opt.classList.toggle('is-active');
+            opt.setAttribute('aria-checked', active);
+            const img = opt.querySelector('.option-checkbox img');
+            if (img) img.src = active ? checkboxActiveSrc : checkboxInactiveSrc;
+            updateMultiValue();
+          });
+        });
+      } else {
+        options?.forEach(opt => {
+          opt.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const val = opt.dataset.opt;
+            if (valueEl) {
+              const inner = valueEl.querySelector('span:first-child');
+              if (inner) inner.textContent = val;
+              else valueEl.textContent = val;
+              valueEl.classList.remove('placeholder');
+            }
+            options.forEach(o => {
+              o.classList.remove('is-active');
+              o.querySelector('.option-icon')?.remove();
+            });
+            opt.classList.add('is-active');
+            if (!opt.querySelector('.option-icon')) opt.insertAdjacentHTML('beforeend', iconHtml);
+            menu.classList.remove('is-open');
+            trigger.classList.remove('is-open');
+            syncSelectArrowIcons();
+          });
+        });
+      }
+
+      if (searchInput && listEl) {
+        const allOpts = listEl.querySelectorAll('.select-option');
+        const emptyEl = menu.querySelector('.select-menu__empty');
+        const inputWrap = searchInput.closest('.search__input-wrap');
+        const clearBtn = wrap.querySelector('.search__clear');
+        const syncClearIcon = () => {
+          if (inputWrap) inputWrap.classList.toggle('has-value', (searchInput.value || '').length > 0);
+        };
+        const syncEmptyState = () => {
+          const q = (searchInput.value || '').toLowerCase().trim();
+          let visibleCount = 0;
+          allOpts.forEach(o => {
+            const textEl = o.querySelector('.option-text');
+            const raw = (o.dataset.originalText != null ? o.dataset.originalText : (o.dataset.originalText = (textEl?.textContent || '').trim()));
+            const textLower = raw.toLowerCase();
+            const show = !q || textLower.includes(q);
+            o.style.display = show ? '' : 'none';
+            if (show) visibleCount++;
+            if (textEl && q) {
+              const idx = textLower.indexOf(q);
+              if (idx === -1) textEl.innerHTML = escapeHtml(raw);
+              else textEl.innerHTML = escapeHtml(raw.slice(0, idx)) + '<span class="option-text--highlight">' + escapeHtml(raw.slice(idx, idx + q.length)) + '</span>' + escapeHtml(raw.slice(idx + q.length));
+            } else if (textEl && !q) textEl.innerHTML = escapeHtml(raw);
+          });
+          if (emptyEl) {
+            emptyEl.style.display = visibleCount === 0 ? 'flex' : 'none';
+            listEl.style.display = visibleCount === 0 ? 'none' : '';
+          }
+        };
+        searchInput.addEventListener('input', () => { syncClearIcon(); syncEmptyState(); });
+        searchInput.addEventListener('focus', () => { syncClearIcon(); syncEmptyState(); });
+        if (clearBtn) {
+          clearBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            searchInput.value = '';
+            searchInput.focus();
+            syncClearIcon();
+            syncEmptyState();
+          });
+        }
+      }
+    });
+
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.select-menu.is-open').forEach(m => m.classList.remove('is-open'));
+      document.querySelectorAll('.select-trigger.is-open').forEach(t => t.classList.remove('is-open'));
+      syncSelectArrowIcons();
+    });
+
+    syncSelectArrowIcons();
+
+    /* 第 5 个变体：展开/收起二级选项（Suffix Dropdown） */
+    document.querySelectorAll('.select-option[data-expand]').forEach(opt => {
+      opt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const expanded = opt.classList.toggle('is-expanded');
+        opt.setAttribute('aria-expanded', expanded);
+      });
+      opt.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          opt.click();
+        }
+      });
+    });
+
+    /* 第 6 个变体：左侧勾选组件，无右侧选中效果（Figma 9255:197017） */
+    const checkboxInactiveSrc = 'Guidelines/Slicing/Checkbox/Checkbox16-Inactive.svg';
+    const checkboxActiveSrc = 'Guidelines/Slicing/Checkbox/Checkbox16-Active.svg';
+    document.querySelectorAll('.select-menu-preview--variant-6 .select-option[data-option-checkbox]').forEach(opt => {
+      opt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const checked = opt.classList.toggle('is-active');
+        opt.setAttribute('aria-checked', checked);
+        const img = opt.querySelector('.option-checkbox img');
+        if (img) img.src = checked ? checkboxActiveSrc : checkboxInactiveSrc;
+      });
+      opt.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          opt.click();
+        }
+      });
+    });
+
+    /* 第 5 个变体：二级选项可选中（同组内单选，显示勾选图标） */
+    const subOptionIconHtml = '<img src="Guidelines/icons/Basic%20Product%20Icons/CEX_circlefilled_success.svg" alt="" class="option-icon" width="16" height="16" aria-hidden="true" />';
+    document.querySelectorAll('.select-menu-preview--variant-5 .select-option-sublist .select-option--sub').forEach(subOpt => {
+      subOpt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const sublist = subOpt.closest('.select-option-sublist');
+        sublist.querySelectorAll('.select-option--sub').forEach(o => {
+          o.classList.remove('is-active');
+          o.querySelector('.option-icon')?.remove();
+        });
+        subOpt.classList.add('is-active');
+        if (!subOpt.querySelector('.option-icon')) subOpt.insertAdjacentHTML('beforeend', subOptionIconHtml);
+      });
+    });
+
+    document.querySelectorAll('[data-coin-text]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const isActive = btn.classList.toggle('is-active');
+        const arrowDown = btn.querySelector('.coin-text-arrow-down');
+        const arrowUp = btn.querySelector('.coin-text-arrow-up');
+        if (arrowDown && arrowUp) {
+          arrowDown.style.display = isActive ? 'none' : '';
+          arrowUp.style.display = isActive ? '' : 'none';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
